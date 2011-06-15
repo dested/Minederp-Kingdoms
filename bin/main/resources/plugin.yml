@@ -1,0 +1,10 @@
+name: Kingdoms
+main: com.minderp.kingdoms
+version: "${project.version}"
+commands:
+    kingdom:
+        description: Kingdom commands
+        usage: /<command> <arguments...>
+    town:
+        description: Town commands
+        usage: /<command> <arguments...>

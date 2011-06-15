@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Dested9/Downloads/bukkit-0.0.1-SNAPSHOT (2).jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dested9/Downloads/worldedit-4.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dested9/Downloads/craftbukkit-0.0.1-SNAPSHOT (4).jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

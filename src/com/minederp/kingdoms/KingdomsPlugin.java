@@ -1,6 +1,6 @@
 // $Id$
 /*
- * MapBook
+ * Kingdoms
  * Copyright (C) 2011 dested <>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.minederp.kingdoms
+package com.minederp.kingdoms;
+  
 
 import java.io.*;
 import java.util.Arrays;
@@ -30,24 +31,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.map.MapInitializeEvent;
-import org.bukkit.event.map.MapListener;
-import org.bukkit.maps.RenderPriority;
+
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
+import com.minederp.kingdoms.commands.*; 
+import com.sk89q.bukkit.migration.PermissionsResolverManager;
+import com.sk89q.bukkit.migration.PermissionsResolverServerListener; 
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissionsException;
+import com.sk89q.minecraft.util.commands.CommandUsageException;
+import com.sk89q.minecraft.util.commands.CommandsManager;
+import com.sk89q.minecraft.util.commands.MissingNestedCommandException;
+import com.sk89q.minecraft.util.commands.WrappedCommandException;
+import com.sk89q.worldedit.commands.WorldEditCommands;
 
 /**
- * Base plugin class for the Kingdoms plugin.
+ * Base plugin class for Kingdoms.
  * 
- * @author dested
+ * @author sk89q
  */
 public class KingdomsPlugin extends JavaPlugin {
 
 	protected static final Logger logger = Logger
 			.getLogger("Minecraft.Kingdoms");
- 
+
+	private PermissionsResolverManager perms;
+	protected CommandsManager<CommandSender> commands;
+
+
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
 	 * and the plugin is setup.
@@ -72,7 +85,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		perms.load();
 
 		// Register the commands that we want to use
-		final MapBookPlugin plugin = this;
+		final KingdomsPlugin plugin = this;
 		commands = new CommandsManager<CommandSender>() {
 			@Override
 			public boolean hasPermission(CommandSender player, String perm) {
@@ -80,7 +93,8 @@ public class KingdomsPlugin extends JavaPlugin {
 			}
 		};
 
-		commands.register(RailwayCommands.class);
+		commands.register(KingdomCommands.class);
+		commands.register(TownCommands.class);
 
 		// commands.register(GeneralCommands.class);
 
@@ -95,12 +109,13 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * Register the events that are used.
 	 */
 	protected void registerEvents() {
-/*		PluginManager pm = getServer().getPluginManager();
-		final MapBookPlugin plugin = this;
-		pm.registerEvent(Event.Type.MAP_INITIALIZE, new MapListener() {
+		PluginManager pm = getServer().getPluginManager();
+		final KingdomsPlugin plugin = this;
+	/*	pm.registerEvent(Event.Type.MAP_INITIALIZE, new MapListener() {
 			@Override
 			public void onMapInitialize(MapInitializeEvent event) {
-			 
+			
+			}
 		}, Priority.Normal, this);*/
 	}
 

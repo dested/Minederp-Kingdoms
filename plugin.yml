@@ -1,5 +1,5 @@
 name: Kingdoms
-main: com.minderp.kingdoms
+main: com.minederp.kingdoms
 version: "${project.version}"
 commands:
     kingdom:

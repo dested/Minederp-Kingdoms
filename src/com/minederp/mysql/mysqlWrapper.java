@@ -33,7 +33,8 @@ public class mysqlWrapper {
 	public ResultSet selectQuery(String columns, String table, String extra)
 			throws Exception {
 		// Result set get the result of the SQL query
-		resultSet = statement.executeQuery("select " + columns + " from "+ table + " " + extra);
+		resultSet = statement.executeQuery("select " + columns + " from "
+				+ table + " " + extra);
 		// writeResultSet(resultSet);
 		return resultSet;
 	}
@@ -52,7 +53,8 @@ public class mysqlWrapper {
 
 	public void deleteQuery(String table, String conditional) throws Exception {
 		// Remove again the insert comment
-		preparedStatement = connect.prepareStatement("delete from "+table+" where ?; ");
+		preparedStatement = connect.prepareStatement("delete from " + table
+				+ " where ?; ");
 		preparedStatement.setString(1, conditional);
 		preparedStatement.executeUpdate();
 

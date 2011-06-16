@@ -21,6 +21,7 @@ package com.minederp.kingdoms;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,6 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
+import com.minederp.mysql.mysqlWrapper;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
 import com.sk89q.bukkit.migration.PermissionsResolverServerListener;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -47,7 +49,13 @@ import com.sk89q.minecraft.util.commands.CommandUsageException;
 import com.sk89q.minecraft.util.commands.CommandsManager;
 import com.sk89q.minecraft.util.commands.MissingNestedCommandException;
 import com.sk89q.minecraft.util.commands.WrappedCommandException;
-import com.sk89q.worldedit.commands.WorldEditCommands;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
 
 /**
  * Base plugin class for Kingdoms.
@@ -61,6 +69,8 @@ public class KingdomsPlugin extends JavaPlugin {
 
 	private PermissionsResolverManager perms;
 	protected CommandsManager<CommandSender> commands;
+
+	private mysqlWrapper wrapper = new mysqlWrapper();
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -79,6 +89,13 @@ public class KingdomsPlugin extends JavaPlugin {
 
 		// Load configuration
 		populateConfiguration();
+
+		try {
+			wrapper.connectDatabase();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Mysql cannot be connected");
+			e.printStackTrace();
+		}
 
 		// Prepare permissions
 		perms = new PermissionsResolverManager(getConfiguration(), getServer(),
@@ -271,4 +288,5 @@ public class KingdomsPlugin extends JavaPlugin {
 			throw new CommandPermissionsException();
 		}
 	}
+
 }

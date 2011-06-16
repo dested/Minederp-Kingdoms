@@ -46,7 +46,7 @@ import com.sk89q.minecraft.util.commands.WrappedCommandException;
 /**
  * Base plugin class for Kingdoms.
  * 
- * @author sk89q
+ * @author dested
  */
 public class KingdomsPlugin extends JavaPlugin {
 

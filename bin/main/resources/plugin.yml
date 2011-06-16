@@ -1,5 +1,5 @@
 name: Kingdoms
-main: com.minederp.kingdoms
+main: com.minederp.kingdoms.KingdomsPlugin
 version: "${project.version}"
 commands:
     kingdom:

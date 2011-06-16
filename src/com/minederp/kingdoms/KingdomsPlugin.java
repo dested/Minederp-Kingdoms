@@ -18,7 +18,6 @@
  */
 
 package com.minederp.kingdoms;
-  
 
 import java.io.*;
 import java.util.Arrays;
@@ -31,14 +30,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockCanBuildEvent;
+import org.bukkit.event.block.BlockListener;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-import com.minederp.kingdoms.commands.*; 
+import com.minederp.kingdoms.commands.*;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
-import com.sk89q.bukkit.migration.PermissionsResolverServerListener; 
+import com.sk89q.bukkit.migration.PermissionsResolverServerListener;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
 import com.sk89q.minecraft.util.commands.CommandUsageException;
@@ -59,7 +61,6 @@ public class KingdomsPlugin extends JavaPlugin {
 
 	private PermissionsResolverManager perms;
 	protected CommandsManager<CommandSender> commands;
-
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -109,14 +110,14 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * Register the events that are used.
 	 */
 	protected void registerEvents() {
-		PluginManager pm = getServer().getPluginManager();
-		final KingdomsPlugin plugin = this;
-	/*	pm.registerEvent(Event.Type.MAP_INITIALIZE, new MapListener() {
-			@Override
-			public void onMapInitialize(MapInitializeEvent event) {
-			
-			}
-		}, Priority.Normal, this);*/
+		registerEvent(Event.Type.BLOCK_CANBUILD, new KingdomsBlockListener());
+		registerEvent(Event.Type.BLOCK_BREAK, new KingdomsBlockListener());
+
+		registerEvent(Event.Type.PLAYER_MOVE, new KingdomsPlayerListener());
+		registerEvent(Event.Type.PLAYER_JOIN, new KingdomsPlayerListener());
+		registerEvent(Event.Type.PLAYER_QUIT, new KingdomsPlayerListener());
+		registerEvent(Event.Type.PLAYER_RESPAWN, new KingdomsPlayerListener());
+		registerEvent(Event.Type.PLAYER_PRELOGIN, new KingdomsPlayerListener());
 	}
 
 	/**
@@ -127,7 +128,8 @@ public class KingdomsPlugin extends JavaPlugin {
 	}
 
 	/**
-	 * Called on a command.
+	 * Called on a command. Boilerplate from sk89q Should not be modified or
+	 * understood.
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,

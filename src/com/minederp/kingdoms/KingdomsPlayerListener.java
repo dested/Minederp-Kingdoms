@@ -18,6 +18,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
+	 
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
@@ -27,6 +28,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerPreLogin(PlayerPreLoginEvent event) {
+		
 	}
 
 }

@@ -19,8 +19,8 @@ public class mysqlWrapper {
 			Class.forName("com.mysql.jdbc.Driver");
 			// Setup the connection with the DB
 			connect = DriverManager
-					.getConnection("jdbc:mysql://localhost/feedback?"
-							+ "user=sqluser&password=sqluserpw");
+					.getConnection("jdbc:mysql://mysql8.000webhost.com/feedback?"
+							+ "user=a5857490_mineder&password=MineDerp1");
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 		} catch (Exception e) {
@@ -30,41 +30,30 @@ public class mysqlWrapper {
 		}
 	}
 
-	public ResultSet selectQuery() throws Exception {
-
+	public ResultSet selectQuery(String columns, String table, String extra)
+			throws Exception {
 		// Result set get the result of the SQL query
-		resultSet = statement.executeQuery("select * from FEEDBACK.COMMENTS");
-		writeResultSet(resultSet);
+		resultSet = statement.executeQuery("select " + columns + " from "+ table + " " + extra);
+		// writeResultSet(resultSet);
 		return resultSet;
 	}
 
-	public void insertQuery() throws SQLException {
+	public void insertQuery(String table, String... params) throws SQLException {
 
 		// PreparedStatements can use variables and are more efficient
-		preparedStatement = connect
-				.prepareStatement("insert into  FEEDBACK.COMMENTS values (default, ?, ?, ?, ? , ?, ?)");
-		// "myuser, webpage, datum, summery, COMMENTS from FEEDBACK.COMMENTS");
+		preparedStatement = connect.prepareStatement("insert into " + table
+				+ "values (default, ?, ?, ?, ? , ?, ?)");
 		// Parameters start with 1
-		preparedStatement.setString(1, "Test");
-		preparedStatement.setString(2, "TestEmail");
-		preparedStatement.setString(3, "TestWebpage");
-		preparedStatement.setDate(4, new java.sql.Date(2009, 12, 11));
-		preparedStatement.setString(5, "TestSummary");
-		preparedStatement.setString(6, "TestComment");
+		for (int i = 0; i < params.length; i++) {
+			preparedStatement.setObject(i + 1, params[i]);
+		}
 		preparedStatement.executeUpdate();
 	}
 
-	public void getAllAndDelete() throws Exception {
-
-		preparedStatement = connect
-				.prepareStatement("SELECT myuser, webpage, datum, summery, COMMENTS from FEEDBACK.COMMENTS");
-		resultSet = preparedStatement.executeQuery();
-		writeResultSet(resultSet);
-
+	public void deleteQuery(String table, String conditional) throws Exception {
 		// Remove again the insert comment
-		preparedStatement = connect
-				.prepareStatement("delete from FEEDBACK.COMMENTS where myuser= ? ; ");
-		preparedStatement.setString(1, "Test");
+		preparedStatement = connect.prepareStatement("delete from "+table+" where ?; ");
+		preparedStatement.setString(1, conditional);
 		preparedStatement.executeUpdate();
 
 		resultSet = statement.executeQuery("select * from FEEDBACK.COMMENTS");

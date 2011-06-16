@@ -20,22 +20,15 @@
 package com.minederp.kingdoms;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockCanBuildEvent;
-import org.bukkit.event.block.BlockListener;
-
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
@@ -49,13 +42,6 @@ import com.sk89q.minecraft.util.commands.CommandUsageException;
 import com.sk89q.minecraft.util.commands.CommandsManager;
 import com.sk89q.minecraft.util.commands.MissingNestedCommandException;
 import com.sk89q.minecraft.util.commands.WrappedCommandException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
 
 /**
  * Base plugin class for Kingdoms.
@@ -71,6 +57,9 @@ public class KingdomsPlugin extends JavaPlugin {
 	protected CommandsManager<CommandSender> commands;
 
 	private mysqlWrapper wrapper = new mysqlWrapper();
+
+	private Listener blockListener = new KingdomsBlockListener();
+	private Listener playerListener = new KingdomsPlayerListener();
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -96,6 +85,7 @@ public class KingdomsPlugin extends JavaPlugin {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();
 		}
+		
 
 		// Prepare permissions
 		perms = new PermissionsResolverManager(getConfiguration(), getServer(),
@@ -127,14 +117,14 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * Register the events that are used.
 	 */
 	protected void registerEvents() {
-		registerEvent(Event.Type.BLOCK_CANBUILD, new KingdomsBlockListener());
-		registerEvent(Event.Type.BLOCK_BREAK, new KingdomsBlockListener());
+		registerEvent(Event.Type.BLOCK_CANBUILD, blockListener);
+		registerEvent(Event.Type.BLOCK_BREAK, blockListener);
 
-		registerEvent(Event.Type.PLAYER_MOVE, new KingdomsPlayerListener());
-		registerEvent(Event.Type.PLAYER_JOIN, new KingdomsPlayerListener());
-		registerEvent(Event.Type.PLAYER_QUIT, new KingdomsPlayerListener());
-		registerEvent(Event.Type.PLAYER_RESPAWN, new KingdomsPlayerListener());
-		registerEvent(Event.Type.PLAYER_PRELOGIN, new KingdomsPlayerListener());
+		registerEvent(Event.Type.PLAYER_MOVE, playerListener);
+		registerEvent(Event.Type.PLAYER_JOIN, playerListener);
+		registerEvent(Event.Type.PLAYER_QUIT, playerListener);
+		registerEvent(Event.Type.PLAYER_RESPAWN, playerListener);
+		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
 	}
 
 	/**

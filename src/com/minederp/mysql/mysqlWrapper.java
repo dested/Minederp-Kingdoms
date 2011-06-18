@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.Properties;
 
 public class mysqlWrapper {
 	private Connection connect = null;
@@ -18,9 +19,12 @@ public class mysqlWrapper {
 		try { // This will load the MySQL driver, each DB has its own driver
 			Class.forName("com.mysql.jdbc.Driver");
 			// Setup the connection with the DB
-			connect = DriverManager
-					.getConnection("jdbc:mysql://mysql8.000webhost.com/feedback?"
-							+ "user=a5857490_mineder&password=MineDerp1");
+
+			Properties connectionProps = new Properties();
+			connectionProps.put("user", "dested");
+			connectionProps.put("password", "minederp");
+			connect = DriverManager.getConnection(
+					"jdbc:mysql://minederp.com/dested", connectionProps);
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 		} catch (Exception e) {
@@ -28,6 +32,23 @@ public class mysqlWrapper {
 		} finally {
 			close();
 		}
+		
+		ResultSet resultSet=selectQuery("*", "", "where ");
+		
+		while (resultSet.next()) {
+			String user = resultSet.getString("myuser");
+			String website = resultSet.getString("webpage");
+			String summery = resultSet.getString("summery");
+			Date date = resultSet.getDate("datum");
+			String comment = resultSet.getString("comments");
+			System.out.println("User: " + user);
+			System.out.println("Website: " + website);
+			System.out.println("Summery: " + summery);
+			System.out.println("Date: " + date);
+			System.out.println("Comment: " + comment);
+		}
+		
+		
 	}
 
 	public ResultSet selectQuery(String columns, String table, String extra)

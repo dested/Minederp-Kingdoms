@@ -58,8 +58,8 @@ public class KingdomsPlugin extends JavaPlugin {
 
 	private mysqlWrapper wrapper = new mysqlWrapper();
 
-	private Listener blockListener = new KingdomsBlockListener();
-	private Listener playerListener = new KingdomsPlayerListener();
+	private Listener blockListener = new KingdomsBlockListener(this);
+	private Listener playerListener = new KingdomsPlayerListener(this);
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -80,12 +80,11 @@ public class KingdomsPlugin extends JavaPlugin {
 		populateConfiguration();
 
 		try {
-			wrapper.connectDatabase();
+			// wrapper.connectDatabase();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();
 		}
-		
 
 		// Prepare permissions
 		perms = new PermissionsResolverManager(getConfiguration(), getServer(),
@@ -100,8 +99,10 @@ public class KingdomsPlugin extends JavaPlugin {
 				return plugin.hasPermission(player, perm);
 			}
 		};
-
+		commands.register(CTFCommands.class);
+		
 		commands.register(KingdomCommands.class);
+		
 		commands.register(TownCommands.class);
 
 		// commands.register(GeneralCommands.class);
@@ -109,9 +110,13 @@ public class KingdomsPlugin extends JavaPlugin {
 		// Register events
 		registerEvents();
 
+		ctfGame.onLoad();
+		
 		// The permissions resolver has some hooks of its own
 		(new PermissionsResolverServerListener(perms)).register(this);
 	}
+
+	public CaptureTheFlagGame ctfGame = new CaptureTheFlagGame();
 
 	/**
 	 * Register the events that are used.
@@ -121,6 +126,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.BLOCK_BREAK, blockListener);
 
 		registerEvent(Event.Type.PLAYER_MOVE, playerListener);
+		registerEvent(Event.Type.PLAYER_INTERACT, playerListener);
 		registerEvent(Event.Type.PLAYER_JOIN, playerListener);
 		registerEvent(Event.Type.PLAYER_QUIT, playerListener);
 		registerEvent(Event.Type.PLAYER_RESPAWN, playerListener);

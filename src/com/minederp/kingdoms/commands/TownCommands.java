@@ -9,7 +9,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 
 public class TownCommands {
-	@Command(aliases = { "town","t" }, usage = "", desc = "Town commands", min = 0, max = 0)
+	@Command(aliases = { "town","t" }, usage = "", desc = "Town commands", min = 0, max = 2)
 	public static void town(CommandContext args, KingdomsPlugin plugin,
 			CommandSender sender) throws CommandException {
 		if (args.argsLength() > 0) {

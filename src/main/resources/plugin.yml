@@ -8,3 +8,6 @@ commands:
     town:
         description: Town commands
         usage: /<command> <arguments...>
+    ctf:
+        description: Capture the flag commands
+        usage: /<command> <arguments...>

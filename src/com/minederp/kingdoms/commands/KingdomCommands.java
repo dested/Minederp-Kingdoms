@@ -9,7 +9,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 
 public class KingdomCommands {
-	@Command(aliases = { "kingdom","k" }, usage = "", desc = "Kingdom commands", min = 0, max = 0)
+	@Command(aliases = { "kingdom","k" }, usage = "", desc = "Kingdom commands", min = 0, max = 2)
 	public static void kingdom(CommandContext args, KingdomsPlugin plugin,
 			CommandSender sender) throws CommandException {
 		if (args.argsLength() > 0) {

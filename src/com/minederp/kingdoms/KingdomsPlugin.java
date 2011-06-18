@@ -33,6 +33,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
+import com.minederp.kingdoms.listeners.KingdomsBlockListener;
+import com.minederp.kingdoms.listeners.KingdomsEntityListener;
+import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
 import com.minederp.mysql.mysqlWrapper;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
 import com.sk89q.bukkit.migration.PermissionsResolverServerListener;
@@ -59,6 +62,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private mysqlWrapper wrapper = new mysqlWrapper();
 
 	private Listener blockListener = new KingdomsBlockListener(this);
+	private Listener entityListener = new KingdomsEntityListener(this);
 	private Listener playerListener = new KingdomsPlayerListener(this);
 
 	/**
@@ -80,7 +84,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		populateConfiguration();
 
 		try {
-			// wrapper.connectDatabase();
+			  //wrapper.connectDatabase();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();
@@ -124,6 +128,9 @@ public class KingdomsPlugin extends JavaPlugin {
 	protected void registerEvents() {
 		registerEvent(Event.Type.BLOCK_CANBUILD, blockListener);
 		registerEvent(Event.Type.BLOCK_BREAK, blockListener);
+
+		registerEvent(Event.Type.ENTITY_DEATH, entityListener);
+		 
 
 		registerEvent(Event.Type.PLAYER_MOVE, playerListener);
 		registerEvent(Event.Type.PLAYER_INTERACT, playerListener);

@@ -1,4 +1,4 @@
-package com.minederp.kingdoms;
+package com.minederp.kingdoms.listeners;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -8,6 +8,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+
+import com.minederp.kingdoms.KingdomsPlugin;
 
 public class KingdomsPlayerListener extends PlayerListener {
 
@@ -33,12 +35,14 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		kingdomsPlugin.ctfGame.playerDied(event.getPlayer());
+
+		kingdomsPlugin.ctfGame.playerRespawn(event.getPlayer());
 
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		kingdomsPlugin.ctfGame.blockClick(event.getClickedBlock(), event.getPlayer());
+		kingdomsPlugin.ctfGame.blockClick(event.getClickedBlock(),
+				event.getPlayer());
 	}
 
 	public void onPlayerLogin(PlayerLoginEvent event) {

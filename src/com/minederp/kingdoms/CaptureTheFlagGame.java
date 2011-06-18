@@ -19,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Door;
 
 import sun.security.action.GetLongAction;
 
@@ -86,20 +87,8 @@ public class CaptureTheFlagGame extends Game {
 		}
 
 		if (inGame) {
-			playingTeam.players.remove(movingPlayer);
-
-			for (CTFTeam team : teams) {
-				if (team.withFlag != null && team.withFlag.getName().equals(movingPlayer.getName())) {
-					drawFlag(team.flag, team.color, true);
-					movingPlayer.getInventory().remove(team.flagItem);
-					team.withFlag = null;
-				}
-			}
-			kingdomsPlugin.inventoryStasher.RefillInventory(playerInventories.get(movingPlayer.getName()), movingPlayer.getInventory());
-
-			movingPlayer.sendMessage(ChatColor.GREEN + "You Has left the CTF Game");
-
-			sendAllPlayers(ChatColor.GREEN + movingPlayer.getDisplayName() + " Has left the team " + playingTeam.name);
+		leaveGame(movingPlayer);
+			
 		} else {
 			triedToAdd.remove(movingPlayer);
 		}
@@ -172,6 +161,10 @@ public class CaptureTheFlagGame extends Game {
 			joinGame(player);
 			return;
 		}
+		if (args.getString(0).toLowerCase().equals("leave")) {
+			leaveGame(player);
+			return;
+		}
 
 		if (args.getString(0).toLowerCase().equals("startgame")) {
 			sendAllGamePlayers(player.getWorld().getPlayers(), ChatColor.BLUE + "Capture the flag has started.");
@@ -237,6 +230,30 @@ public class CaptureTheFlagGame extends Game {
 				return;
 			}
 		}
+	}
+
+	private void leaveGame(Player player) {
+		 
+		for (CTFTeam teamc : teams) {
+			if (comparePlayers(teamc.players, player))
+				return;
+			teamc.players.remove(player) ;
+
+			for (CTFTeam team : teams) {
+				if (team.withFlag != null && team.withFlag.getName().equals(player.getName())) {
+					drawFlag(team.flag, team.color, true);
+					player.getInventory().remove(team.flagItem);
+					team.withFlag = null;
+				}
+			}
+			kingdomsPlugin.inventoryStasher.RefillInventory(playerInventories.get(player.getName()), player.getInventory());
+
+			player.sendMessage(ChatColor.GREEN + "You Has left the CTF Game");
+
+			sendAllPlayers(ChatColor.GREEN + player.getDisplayName() + " Has left the team " + teamc.name);
+
+		} 
+
 	}
 
 	public boolean blockDestroyed(Block block, Player clickedPlayer) {
@@ -320,12 +337,31 @@ public class CaptureTheFlagGame extends Game {
 				} else
 					gameLocation.height = block.getZ() - gameLocation.y;
 
+				int door = 0;
+
 				if (gameLocation.x > gameLocation.x + gameLocation.width)
 					for (int x = gameLocation.x; x > gameLocation.x + gameLocation.width; x--) {
-						for (int y = block.getY(); y < block.getY() + 8; y++) {
-							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
-							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
+
+						if (door++ % 15 == 7) {
+
+							block.getWorld().getBlockAt(x, block.getY(), gameLocation.y).setType(Material.AIR);
+							block.getWorld().getBlockAt(x, block.getY(), gameLocation.y + gameLocation.height).setType(Material.AIR);
+
+							block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y).setType(Material.AIR);
+							block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y + gameLocation.height).setType(Material.AIR);
+
+							for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+								block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
+								block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
+							}
+
+						} else {
+							for (int y = block.getY(); y < block.getY() + 8; y++) {
+								block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
+								block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
+							}
 						}
+
 					}
 				else
 					for (int x = gameLocation.x; x < gameLocation.x + gameLocation.width; x++) {
@@ -477,7 +513,7 @@ public class CaptureTheFlagGame extends Game {
 		for (CTFTeam team : teams) {
 			if (comparePlayers(team.players, damagee)) {
 				if (comparePlayers(team.players, damager)) {
-					damagee.sendMessage( ChatColor.RED+ "Cannot fight members of your team");
+					damagee.sendMessage(ChatColor.RED + "Cannot fight members of your team");
 					return false;
 				}
 				return true;

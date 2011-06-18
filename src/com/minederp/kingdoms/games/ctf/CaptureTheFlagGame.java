@@ -134,6 +134,8 @@ public class CaptureTheFlagGame extends Game {
 		player.teleport(playingTeam.spawn);
 	}
 
+	private Player actingPlayer;
+
 	@Override
 	public void processCommand(CommandContext args, Player player) {
 		if (args.argsLength() == 0 || args.getString(0).toLowerCase().equals("getteams")) {
@@ -189,6 +191,7 @@ public class CaptureTheFlagGame extends Game {
 		if (args.getString(0).toLowerCase().equals("setrectangle") || args.getString(0).toLowerCase().equals("sr")) {
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "The next block you click will be the top left of the rectangle.");
 			drawingRectangle = 1;
+			actingPlayer = player;
 			return;
 		}
 		for (CTFTeam team : teams) {
@@ -199,6 +202,8 @@ public class CaptureTheFlagGame extends Game {
 					player.sendMessage(ChatColor.GOLD + "The next block you click will be the flag. It will be converted to a flag.");
 					team.setSpawn = false;
 					team.setFlag = true;
+					actingPlayer = player;
+
 					return;
 				}
 
@@ -206,11 +211,12 @@ public class CaptureTheFlagGame extends Game {
 					player.sendMessage(ChatColor.GOLD + "The next block you click will be the Spawn. It will be converted to Gold.");
 					team.setSpawn = true;
 					team.setFlag = false;
+					actingPlayer = player;
 
 					return;
 				}
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new StringBuilder(); 
 				sb.append(ChatColor.LIGHT_PURPLE + team.name + " Information:   " + team.points + " Points");
 				for (Player cplayer : team.players) {
 					sb.append(ChatColor.AQUA + " " + cplayer.getDisplayName());
@@ -304,12 +310,16 @@ public class CaptureTheFlagGame extends Game {
 	@Override
 	public void blockClick(Block block, Player clickedPlayer) {
 
-		if (drawingRectangle > 0) {
+		if (drawingRectangle > 0 && actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
 			drawRectangleLogic(block, clickedPlayer);
+
+			return;
 		}
 
 		for (CTFTeam team : teams) {
-			if (team.setFlag) {
+			if (team.setFlag && actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
+				actingPlayer = null;
+
 				team.flag = block.getLocation();
 				drawFlag(block.getLocation(), team.color, true);
 
@@ -318,7 +328,9 @@ public class CaptureTheFlagGame extends Game {
 				return;
 			}
 
-			if (team.setSpawn) {
+			if (team.setSpawn && actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
+				actingPlayer = null;
+
 				block.setType(Material.GOLD_BLOCK);
 				block = block.getRelative(BlockFace.UP);
 				team.spawn = block.getLocation();
@@ -368,6 +380,7 @@ public class CaptureTheFlagGame extends Game {
 			drawingRectangle = 2;
 			break;
 		case 2:
+			actingPlayer = null;
 			drawingRectangle = 0;
 			clickedPlayer.sendMessage(ChatColor.AQUA + "You have completed the rectangle.");
 
@@ -411,24 +424,72 @@ public class CaptureTheFlagGame extends Game {
 				}
 			else
 				for (int x = gameLocation.x; x < gameLocation.x + gameLocation.width; x++) {
-					for (int y = block.getY(); y < block.getY() + 8; y++) {
-						block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
-						block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
+
+					if (door++ % 15 == 7) {
+
+						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y + gameLocation.height).setType(Material.AIR);
+
+						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y + gameLocation.height).setType(Material.AIR);
+
+						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
+							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
+						}
+
+					} else {
+						for (int y = block.getY(); y < block.getY() + 8; y++) {
+							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
+							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
+						}
 					}
+
 				}
 
 			if (gameLocation.y > gameLocation.y + gameLocation.height)
 				for (int z = gameLocation.y; z > gameLocation.y + gameLocation.height; z--) {
-					for (int y = block.getY(); y < block.getY() + 8; y++) {
-						block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
-						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
+
+					if (door++ % 15 == 7) {
+
+						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.AIR);
+
+						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 1, z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 1, z).setType(Material.AIR);
+
+						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
+							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
+						}
+
+					} else {
+						for (int y = block.getY(); y < block.getY() + 8; y++) {
+							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
+							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
+						}
 					}
 				}
 			else
 				for (int z = gameLocation.y; z < gameLocation.y + gameLocation.height; z++) {
-					for (int y = block.getY(); y < block.getY() + 8; y++) {
-						block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
-						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
+					if (door++ % 15 == 7) {
+
+						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.AIR);
+
+						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 1, z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 1, z).setType(Material.AIR);
+
+						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
+							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
+						}
+
+					} else {
+						for (int y = block.getY(); y < block.getY() + 8; y++) {
+							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
+							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
+						}
 					}
 				}
 
@@ -471,9 +532,11 @@ public class CaptureTheFlagGame extends Game {
 
 	}
 
+	Timer t = new Timer();
+
 	@Override
-	public void playerDied(Player player) {
-		for (CTFTeam fteam : teams) {
+	public void playerDied(final Player player) {
+		for (final CTFTeam fteam : teams) {
 			if (fteam.withFlag != null && fteam.withFlag.getName().equals(player.getName())) {
 				drawFlag(fteam.flag, fteam.color, true);
 
@@ -489,18 +552,24 @@ public class CaptureTheFlagGame extends Game {
 		for (final CTFTeam fteam : teams) {
 			if (containsPlayers(fteam.players, player)) {
 				player.sendMessage("You will be ready to play in " + waitTime + " seconds.");
-				player.teleport(fteam.spawn);
-				Timer t = new Timer();
 				t.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (containsPlayers(fteam.players, player)) {
-							player.teleport(fteam.spawn);
-							player.sendMessage("You have rejoined the war.");
-							messagePlayersInGame(ChatColor.GREEN + player.getDisplayName() + " has rejoined the war.");
-						}
+						player.teleport(fteam.spawn);
+						player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, (short) 0, fteam.color.getData()));
+						player.sendMessage("You have rejoined the war.");
+						messagePlayersInGame(ChatColor.GREEN + player.getDisplayName() + " has rejoined the war.");
 					}
+
 				}, waitTime * 1000);
+				t.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						player.teleport(fteam.spawn);
+					}
+
+				}, 100);
+
 				return;
 			}
 		}

@@ -10,4 +10,5 @@ commands:
         usage: /<command> <arguments...>
     ctf:
         description: Capture the flag commands
-        usage: /<command> <arguments...>
+        usage: /ctf ({setrectangle|startgame|endgame|join) ({red|blue} {setflag|setspawn})  
+        

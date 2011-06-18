@@ -2,12 +2,10 @@ package com.minederp.kingdoms.listeners;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.block.BlockCanBuildEvent;
+import org.bukkit.event.block.BlockListener; 
 
 import com.minederp.kingdoms.KingdomsPlugin;
-
-import sun.net.www.content.text.plain;
+ 
 
 public class KingdomsBlockListener extends BlockListener {
 

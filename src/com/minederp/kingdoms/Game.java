@@ -1,24 +1,33 @@
 package com.minederp.kingdoms;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class Game {
+import com.sk89q.minecraft.util.commands.CommandContext;
 
-	public void onLoad() {
+public abstract class Game {
 
-	}
+	public abstract void onLoad();
 
-	public boolean canPlayerJoin(Player player) {
-		return true;
-	}
+	public abstract boolean canPlayerJoin(Player player);
 
-	public void onPlayerJoin(Player player) {
+	public abstract void updatePlayerGamePosition(Player player, Location to);
 
-	}
+	public abstract void joinGame(Player player);
 
-	public void updatePlayerGamePosition(Player player, Location to) {
+	public abstract void leaveGame(Player player);
 
-	}
+	public abstract void processCommand(CommandContext args, Player player);
+
+	public abstract boolean blockDestroyed(Block block, Player clickedPlayer);
+
+	public abstract void blockClick(Block block, Player clickedPlayer);
+
+	public abstract void playerRespawn(Player player);
+
+	public abstract void playerDied(Player player);
+
+	public abstract boolean playerFight(Player damagee, Player damager);
 
 }

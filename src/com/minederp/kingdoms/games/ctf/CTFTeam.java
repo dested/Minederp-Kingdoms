@@ -1,4 +1,4 @@
-package com.minederp.kingdoms;
+package com.minederp.kingdoms.games.ctf;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,10 +2,8 @@ package com.minederp.kingdoms.listeners;
 
 import net.minecraft.server.EntityPlayer;
 
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -23,7 +21,7 @@ public class KingdomsEntityListener extends EntityListener {
 	}
 
 	public void onEntityDeath(EntityDeathEvent event) {
-		if (event.getEntity() instanceof EntityPlayer) {
+		if (event.getEntity() instanceof CraftPlayer) {
 
 			kingdomsPlugin.ctfGame.playerDied((Player) event.getEntity());
 
@@ -32,7 +30,7 @@ public class KingdomsEntityListener extends EntityListener {
 
 	public void onEntityDamage(EntityDamageEvent event) {
 
-		if (event.getEntity() instanceof EntityPlayer && event instanceof EntityDamageByEntityEvent) {
+		if (event.getEntity() instanceof CraftPlayer && event instanceof EntityDamageByEntityEvent) {
 			event.setCancelled(!kingdomsPlugin.ctfGame.playerFight((Player) event.getEntity(),
 					(Player) ((EntityDamageByEntityEvent) event).getDamager()));
 		}

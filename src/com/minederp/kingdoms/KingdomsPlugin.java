@@ -33,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
+import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
 import com.minederp.kingdoms.listeners.KingdomsEntityListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
@@ -60,7 +61,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private PermissionsResolverManager perms;
 	protected CommandsManager<CommandSender> commands;
 
-	private mysqlWrapper wrapper = new mysqlWrapper();
+	public mysqlWrapper wrapper = new mysqlWrapper();
 
 	public InventoryStasher inventoryStasher= new InventoryStasher(this);
 

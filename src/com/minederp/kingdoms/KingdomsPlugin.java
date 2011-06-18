@@ -133,6 +133,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.BLOCK_BREAK, blockListener);
 
 		registerEvent(Event.Type.ENTITY_DEATH, entityListener);
+		registerEvent(Event.Type.ENTITY_DAMAGE, entityListener);
 		 
 
 		registerEvent(Event.Type.PLAYER_MOVE, playerListener);

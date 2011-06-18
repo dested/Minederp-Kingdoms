@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -470,5 +471,20 @@ public class CaptureTheFlagGame extends Game {
 				return;
 			}
 		}
+	}
+
+	public boolean playerFight(Player damagee, Player damager) {
+		for (CTFTeam team : teams) {
+			if (comparePlayers(team.players, damagee)) {
+				if (comparePlayers(team.players, damager)) {
+					damagee.sendMessage( ChatColor.RED+ "Cannot fight members of your team");
+					return false;
+				}
+				return true;
+			}
+
+		}
+		return true;
+
 	}
 }

@@ -36,6 +36,7 @@ import com.minederp.kingdoms.commands.*;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
 import com.minederp.kingdoms.listeners.KingdomsEntityListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
+import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
 import com.sk89q.bukkit.migration.PermissionsResolverServerListener;
@@ -60,6 +61,8 @@ public class KingdomsPlugin extends JavaPlugin {
 	protected CommandsManager<CommandSender> commands;
 
 	private mysqlWrapper wrapper = new mysqlWrapper();
+
+	public InventoryStasher inventoryStasher= new InventoryStasher(this);
 
 	private Listener blockListener = new KingdomsBlockListener(this);
 	private Listener entityListener = new KingdomsEntityListener(this);
@@ -120,7 +123,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		(new PermissionsResolverServerListener(perms)).register(this);
 	}
 
-	public CaptureTheFlagGame ctfGame = new CaptureTheFlagGame();
+	public CaptureTheFlagGame ctfGame = new CaptureTheFlagGame(this);
 
 	/**
 	 * Register the events that are used.

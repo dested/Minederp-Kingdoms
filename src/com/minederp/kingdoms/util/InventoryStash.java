@@ -17,10 +17,10 @@ public class InventoryStash {
 
 	public InventoryStash(ItemStack[] contents, ItemStack helmet, ItemStack chest, ItemStack legs, ItemStack feet) {
 		this.setContents(contents);
-		this.setHelmet(helmet);
-		this.setChest(chest);
-		this.setLegs(legs);
-		this.setFeet(feet);
+		this.setHelmet(helmet.getTypeId()==0?null:helmet);
+		this.setChest(chest.getTypeId()==0?null:chest);
+		this.setLegs(legs.getTypeId()==0?null:legs);
+		this.setFeet(feet.getTypeId()==0?null:feet);
 
 	}
 

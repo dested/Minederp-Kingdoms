@@ -24,7 +24,7 @@ public class mysqlWrapper {
 			connectionProps.put("user", "dested");
 			connectionProps.put("password", "minederp");
 			connect = DriverManager.getConnection(
-					"jdbc:mysql://minederp.com/dested", connectionProps);
+					"jdbc:mysql://minederp.com:3306/dested", connectionProps);
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 		} catch (Exception e) {

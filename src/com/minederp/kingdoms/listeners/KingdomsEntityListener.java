@@ -23,7 +23,7 @@ public class KingdomsEntityListener extends EntityListener {
 	public void onEntityDeath(EntityDeathEvent event) {
 		if (event.getEntity() instanceof CraftPlayer) {
 
-			kingdomsPlugin.ctfGame.playerDied((Player) event.getEntity());
+			kingdomsPlugin.gameLogic.playerDied((Player) event.getEntity());
 
 		}
 	}
@@ -31,7 +31,10 @@ public class KingdomsEntityListener extends EntityListener {
 	public void onEntityDamage(EntityDamageEvent event) {
 
 		if (event.getEntity() instanceof CraftPlayer && event instanceof EntityDamageByEntityEvent) {
-			event.setCancelled(!kingdomsPlugin.ctfGame.playerFight((Player) event.getEntity(),
+			if(((Player) event.getEntity()).getHealth()==0){
+				kingdomsPlugin.gameLogic.playerDying((Player) event.getEntity());
+			}
+			event.setCancelled(!kingdomsPlugin.gameLogic.playerFight((Player) event.getEntity(),
 					(Player) ((EntityDamageByEntityEvent) event).getDamager()));
 		}
 	}

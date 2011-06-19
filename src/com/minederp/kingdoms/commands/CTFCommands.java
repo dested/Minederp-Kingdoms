@@ -13,7 +13,7 @@ public class CTFCommands {
 	public static void ctf(CommandContext args, KingdomsPlugin plugin,
 			CommandSender sender) throws CommandException {
 
-		plugin.ctfGame.processCommand(args, ((Player) sender));
+		plugin.gameLogic.processCommand(args, ((Player) sender));
 
 	}
 

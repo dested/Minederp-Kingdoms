@@ -23,6 +23,8 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftZombie;
@@ -36,15 +38,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
+import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
 import com.minederp.kingdoms.listeners.KingdomsEntityListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
+import com.minederp.kingdoms.util.Game;
 import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
 import com.sk89q.bukkit.migration.PermissionsResolverServerListener;
+import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
 import com.sk89q.minecraft.util.commands.CommandUsageException;
@@ -59,15 +64,16 @@ import com.sk89q.minecraft.util.commands.WrappedCommandException;
  */
 public class KingdomsPlugin extends JavaPlugin {
 
-	protected static final Logger logger = Logger
-			.getLogger("Minecraft.Kingdoms");
+	protected static final Logger logger = Logger.getLogger("Minecraft.Kingdoms");
+
+	public GameLogic gameLogic = new GameLogic();
 
 	private PermissionsResolverManager perms;
 	protected CommandsManager<CommandSender> commands;
 
 	public static mysqlWrapper wrapper = new mysqlWrapper();
 
-	public InventoryStasher inventoryStasher= new InventoryStasher(this);
+	public InventoryStasher inventoryStasher = new InventoryStasher(this);
 
 	private Listener blockListener = new KingdomsBlockListener(this);
 	private Listener entityListener = new KingdomsEntityListener(this);
@@ -79,8 +85,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	 */
 	public void onEnable() {
 
-		logger.info(getDescription().getName() + " "
-				+ getDescription().getVersion() + " enabled.");
+		logger.info(getDescription().getName() + " " + getDescription().getVersion() + " enabled.");
 
 		// Make the data folder for the plugin where configuration files
 		// and other data files will be stored
@@ -88,23 +93,18 @@ public class KingdomsPlugin extends JavaPlugin {
 
 		createDefaultConfiguration("config.yml");
 
-
-//getServer().getWorlds().get(0).spawnCreature(arg0, CreatureType.PIG_ZOMBIE);
-		
-		
 		// Load configuration
 		populateConfiguration();
 
 		try {
-			  wrapper.connectDatabase();
+			wrapper.connectDatabase();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();
 		}
 
 		// Prepare permissions
-		perms = new PermissionsResolverManager(getConfiguration(), getServer(),
-				getDescription().getName(), logger);
+		perms = new PermissionsResolverManager(getConfiguration(), getServer(), getDescription().getName(), logger);
 		perms.load();
 
 		// Register the commands that we want to use
@@ -116,9 +116,9 @@ public class KingdomsPlugin extends JavaPlugin {
 			}
 		};
 		commands.register(CTFCommands.class);
-		
+
 		commands.register(KingdomCommands.class);
-		
+
 		commands.register(TownCommands.class);
 
 		// commands.register(GeneralCommands.class);
@@ -126,14 +126,15 @@ public class KingdomsPlugin extends JavaPlugin {
 		// Register events
 		registerEvents();
 
-		ctfGame.onLoad();
-		
+
+		gameLogic.addGame(new CaptureTheFlagGame(this));
+		gameLogic.addGame(new ZombiesGame(this));
+		 
 		// The permissions resolver has some hooks of its own
 		(new PermissionsResolverServerListener(perms)).register(this);
 	}
 
-	public CaptureTheFlagGame ctfGame = new CaptureTheFlagGame(this);
-	public ZombiesGame zombiesGame = new ZombiesGame(this);
+
 
 	/**
 	 * Register the events that are used.
@@ -144,7 +145,6 @@ public class KingdomsPlugin extends JavaPlugin {
 
 		registerEvent(Event.Type.ENTITY_DEATH, entityListener);
 		registerEvent(Event.Type.ENTITY_DAMAGE, entityListener);
-		 
 
 		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
 
@@ -161,7 +161,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * temporary data occurs here.
 	 */
 	public void onDisable() {
-		
+
 		wrapper.close();
 	}
 
@@ -170,8 +170,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * understood.
 	 */
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		try {
 			commands.execute(cmd.getName(), args, sender, this, sender);
 		} catch (CommandPermissionsException e) {
@@ -183,11 +182,9 @@ public class KingdomsPlugin extends JavaPlugin {
 			sender.sendMessage(ChatColor.RED + e.getUsage());
 		} catch (WrappedCommandException e) {
 			if (e.getCause() instanceof NumberFormatException) {
-				sender.sendMessage(ChatColor.RED
-						+ "Number expected, string received instead.");
+				sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
 			} else {
-				sender.sendMessage(ChatColor.RED
-						+ "An error has occurred. See console.");
+				sender.sendMessage(ChatColor.RED + "An error has occurred. See console.");
 				e.printStackTrace();
 			}
 		} catch (CommandException e) {
@@ -204,10 +201,8 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * @param listener
 	 * @param priority
 	 */
-	protected void registerEvent(Event.Type type, Listener listener,
-			Priority priority) {
-		getServer().getPluginManager().registerEvent(type, listener, priority,
-				this);
+	protected void registerEvent(Event.Type type, Listener listener, Priority priority) {
+		getServer().getPluginManager().registerEvent(type, listener, priority, this);
 	}
 
 	/**
@@ -217,8 +212,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * @param listener
 	 */
 	protected void registerEvent(Event.Type type, Listener listener) {
-		getServer().getPluginManager().registerEvent(type, listener,
-				Priority.Normal, this);
+		getServer().getPluginManager().registerEvent(type, listener, Priority.Normal, this);
 	}
 
 	/**
@@ -232,14 +226,15 @@ public class KingdomsPlugin extends JavaPlugin {
 	/**
 	 * Create a default configuration file from the .jar.
 	 * 
+	 * Boiler Plate
+	 * 
 	 * @param name
 	 */
 	protected void createDefaultConfiguration(String name) {
 		File actual = new File(getDataFolder(), name);
 		if (!actual.exists()) {
 
-			InputStream input = this.getClass().getResourceAsStream(
-					"/defaults/" + name);
+			InputStream input = this.getClass().getResourceAsStream("/defaults/" + name);
 			if (input != null) {
 				FileOutputStream output = null;
 
@@ -251,8 +246,7 @@ public class KingdomsPlugin extends JavaPlugin {
 						output.write(buf, 0, length);
 					}
 
-					logger.info(getDescription().getName()
-							+ ": Default configuration file written: " + name);
+					logger.info(getDescription().getName() + ": Default configuration file written: " + name);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
@@ -303,8 +297,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * @param perm
 	 * @throws CommandPermissionsException
 	 */
-	public void checkPermission(CommandSender sender, String perm)
-			throws CommandPermissionsException {
+	public void checkPermission(CommandSender sender, String perm) throws CommandPermissionsException {
 		if (!hasPermission(sender, perm)) {
 			throw new CommandPermissionsException();
 		}

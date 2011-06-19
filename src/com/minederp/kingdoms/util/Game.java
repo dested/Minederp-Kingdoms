@@ -30,4 +30,6 @@ public abstract class Game {
 
 	public abstract boolean playerFight(Player damagee, Player damager);
 
+	public abstract void playerDying(Player entity);
+
 }

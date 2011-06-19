@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -32,6 +33,8 @@ public class CaptureTheFlagGame extends Game {
 	public int drawingRectangle;
 	private final KingdomsPlugin kingdomsPlugin;
 	HashMap<String, String> playerInventories = new HashMap<String, String>();
+	private Player actingPlayer;
+	List<Item> blocksForReprint = new ArrayList<Item>();
 
 	public CaptureTheFlagGame(KingdomsPlugin kingdomsPlugin) {
 		this.kingdomsPlugin = kingdomsPlugin;
@@ -50,8 +53,98 @@ public class CaptureTheFlagGame extends Game {
 		playersInTheArea = new ArrayList<Player>();
 	}
 
+	public class Item {
+		public Item(int x2, int y2, int z2, int typeId, byte data) {
+			X = x2;
+			Y = y2;
+			Z = z2;
+			Data = data;
+			Type = typeId;
+		}
+
+		int Type;
+		byte Data;
+		int X;
+		int Y;
+		int Z;
+	}
+
 	@Override
 	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
+		if (blocksForReprint.size() > 0) {
+			World w = movingPlayer.getWorld();
+			for (Item it : blocksForReprint) {
+				w.getBlockAt(it.X, it.Y, it.Z).setTypeId(it.Type);
+			}
+
+			blocksForReprint.clear();
+		}
+		if (drawingRectangle == 2) {
+
+			Rectangle mRectangle = new Rectangle(gameLocation);
+
+			if (movingPlayer.getLocation().getBlockX() < mRectangle.x) {
+				mRectangle.width = mRectangle.x - movingPlayer.getLocation().getBlockX();
+				mRectangle.x = movingPlayer.getLocation().getBlockX();
+			} else
+				mRectangle.width = movingPlayer.getLocation().getBlockX() - mRectangle.x;
+
+			if (movingPlayer.getLocation().getBlockZ() < mRectangle.y) {
+				mRectangle.height = mRectangle.y - movingPlayer.getLocation().getBlockZ();
+				mRectangle.y = movingPlayer.getLocation().getBlockZ();
+			} else
+				mRectangle.height = movingPlayer.getLocation().getBlockZ() - mRectangle.y;
+
+			int door = 0;
+			int y = to.getBlockY() - 1;
+			Block bc;
+			if (mRectangle.x > mRectangle.x + mRectangle.width)
+				for (int x = mRectangle.x; x > mRectangle.x + mRectangle.width; x--) {
+
+					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
+							.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+					blocksForReprint.add(new Item(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x, y,
+							mRectangle.y + mRectangle.height)).getTypeId(), bc.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+
+				}
+
+			else
+				for (int x = mRectangle.x; x < mRectangle.x + mRectangle.width; x++) {
+					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
+							.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+					blocksForReprint.add(new Item(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x, y,
+							mRectangle.y + mRectangle.height)).getTypeId(), bc.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+
+				}
+
+			if (mRectangle.y > mRectangle.y + mRectangle.height)
+				for (int z = mRectangle.y; z > mRectangle.y + mRectangle.height; z--) {
+
+					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
+							.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+					blocksForReprint.add(new Item(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
+							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+
+				}
+			else
+				for (int z = mRectangle.y; z < mRectangle.y + mRectangle.height; z++) {
+
+					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
+							.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+					blocksForReprint.add(new Item(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
+							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData()));
+					bc.setType(Material.DIAMOND_BLOCK);
+
+				}
+
+		}
 
 		if (!gameIsHappening)
 			return;
@@ -59,7 +152,7 @@ public class CaptureTheFlagGame extends Game {
 		boolean inGame = false;
 		CTFTeam playingTeam = null;
 		for (CTFTeam team : teams) {
-			if (containsPlayers(team.players, movingPlayer)) {
+			if (Helper.containsPlayers(team.players, movingPlayer)) {
 				playingTeam = team;
 				inGame = true;
 			}
@@ -72,7 +165,7 @@ public class CaptureTheFlagGame extends Game {
 				return;
 			}
 
-			if (containsPlayers(playersInTheArea, movingPlayer)) {
+			if (Helper.containsPlayers(playersInTheArea, movingPlayer)) {
 				return;
 			}
 
@@ -88,29 +181,18 @@ public class CaptureTheFlagGame extends Game {
 		}
 	}
 
-	public boolean containsPlayers(List<Player> players, Player play) {
-		for (Player player : players) {
-			if (player.getName().equals(play.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public void messagePlayersInGame(String message) {
 		for (CTFTeam team : teams) {
 			Helper.messagePlayerInList(team.players, message);
 		}
 	}
 
-
-
 	@Override
 	public void joinGame(Player player) {
 		int lowestPlayers = Integer.MAX_VALUE;
 		CTFTeam playingTeam = null;
 		for (CTFTeam team : teams) {
-			if (containsPlayers(team.players, player))
+			if (Helper.containsPlayers(team.players, player))
 				return;
 
 			if (team.players.size() < lowestPlayers) {
@@ -124,14 +206,12 @@ public class CaptureTheFlagGame extends Game {
 		messagePlayersInGame(ChatColor.AQUA + player.getDisplayName() + " has joined team " + playingTeam.name);
 		playingTeam.players.add(player);
 		player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, (short) 0, playingTeam.color.getData()));
-		if (containsPlayers(playersInTheArea, player)) {
+		if (Helper.containsPlayers(playersInTheArea, player)) {
 			playersInTheArea.remove(player);
 		}
 
 		player.teleport(playingTeam.spawn);
 	}
-
-	private Player actingPlayer;
 
 	@Override
 	public void processCommand(CommandContext args, Player player) {
@@ -213,7 +293,7 @@ public class CaptureTheFlagGame extends Game {
 					return;
 				}
 
-				StringBuilder sb = new StringBuilder(); 
+				StringBuilder sb = new StringBuilder();
 				sb.append(ChatColor.LIGHT_PURPLE + team.name + " Information:   " + team.points + " Points");
 				for (Player cplayer : team.players) {
 					sb.append(ChatColor.AQUA + " " + cplayer.getDisplayName());
@@ -228,8 +308,9 @@ public class CaptureTheFlagGame extends Game {
 	public void leaveGame(Player player) {
 
 		for (CTFTeam teamc : teams) {
-			if (containsPlayers(teamc.players, player))
-				return;
+			if (!Helper.containsPlayers(teamc.players, player))
+				continue;
+			;
 			teamc.players.remove(player);
 
 			for (CTFTeam team : teams) {
@@ -268,14 +349,14 @@ public class CaptureTheFlagGame extends Game {
 			Location blockLoc = block.getLocation();
 
 			if (blockLoc.getZ() == team.flag.getZ() && blockLoc.getX() == team.flag.getX()) {
-				if (containsPlayers(team.players, clickedPlayer)) {
+				if (Helper.containsPlayers(team.players, clickedPlayer)) {
 					clickedPlayer.sendMessage(ChatColor.RED + "You cannot capture your own flag");
 					return false;
 				}
 
 				for (CTFTeam fteam : teams) {
 					if (!fteam.name.equals(team.name.toLowerCase())) {
-						if (containsPlayers(fteam.players, clickedPlayer)) {
+						if (Helper.containsPlayers(fteam.players, clickedPlayer)) {
 
 							drawFlag(team.flag, team.color, false);
 
@@ -340,7 +421,7 @@ public class CaptureTheFlagGame extends Game {
 				continue;
 
 			if (block.getRelative(BlockFace.UP).getLocation().equals(team.spawn)) {
-				if (!containsPlayers(team.players, clickedPlayer)) {
+				if (!Helper.containsPlayers(team.players, clickedPlayer)) {
 					clickedPlayer.sendMessage(" This is not your teams spawn.");
 				} else {
 					for (CTFTeam fteam : teams) {
@@ -371,7 +452,7 @@ public class CaptureTheFlagGame extends Game {
 	private void drawRectangleLogic(Block block, Player clickedPlayer) {
 		switch (drawingRectangle) {
 		case 1:
-			clickedPlayer.sendMessage(ChatColor.AQUA + "Please clicked the far corner of the rectangle.");
+			clickedPlayer.sendMessage(ChatColor.AQUA + "Now please click the far corner of the rectangle.");
 			gameLocation.x = block.getX();
 			gameLocation.y = block.getZ();
 			drawingRectangle = 2;
@@ -547,7 +628,7 @@ public class CaptureTheFlagGame extends Game {
 	@Override
 	public void playerRespawn(final Player player) {
 		for (final CTFTeam fteam : teams) {
-			if (containsPlayers(fteam.players, player)) {
+			if (Helper.containsPlayers(fteam.players, player)) {
 				player.sendMessage("You will be ready to play in " + waitTime + " seconds.");
 				t.schedule(new TimerTask() {
 					@Override
@@ -575,8 +656,8 @@ public class CaptureTheFlagGame extends Game {
 	@Override
 	public boolean playerFight(Player damagee, Player damager) {
 		for (CTFTeam team : teams) {
-			if (containsPlayers(team.players, damagee)) {
-				if (containsPlayers(team.players, damager)) {
+			if (Helper.containsPlayers(team.players, damagee)) {
+				if (Helper.containsPlayers(team.players, damager)) {
 					damager.sendMessage(ChatColor.RED + "Cannot fight members of your team");
 					return false;
 				}
@@ -586,5 +667,14 @@ public class CaptureTheFlagGame extends Game {
 		}
 		return true;
 
+	}
+
+	@Override
+	public void playerDying(Player entity) {
+		for (final CTFTeam fteam : teams) {
+			if (Helper.containsPlayers(fteam.players, entity)) {
+				entity.getInventory().clear();
+			}
+		}
 	}
 }

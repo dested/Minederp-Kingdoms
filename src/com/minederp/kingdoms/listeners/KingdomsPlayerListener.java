@@ -40,7 +40,6 @@ public class KingdomsPlayerListener extends PlayerListener {
 			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
 					+ " Has just begun his Kingdoms Journey.");
 		} else {
-	
 
 			player.sendMessage(ChatColor.AQUA + " Welcome back to the game. Please read the help map. (Help map not available)");
 
@@ -54,18 +53,18 @@ public class KingdomsPlayerListener extends PlayerListener {
 
 	public void onPlayerMove(PlayerMoveEvent event) {
 
-		kingdomsPlugin.ctfGame.updatePlayerGamePosition(event.getPlayer(), event.getTo());
+		kingdomsPlugin.gameLogic.updatePlayerGamePosition(event.getPlayer(), event.getTo());
 
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 
-		kingdomsPlugin.ctfGame.playerRespawn(event.getPlayer());
+		kingdomsPlugin.gameLogic.playerRespawn(event.getPlayer());
 
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		kingdomsPlugin.ctfGame.blockClick(event.getClickedBlock(), event.getPlayer());
+		kingdomsPlugin.gameLogic.blockClick(event.getClickedBlock(), event.getPlayer());
 	}
 
 	public void onPlayerLogin(PlayerLoginEvent event) {

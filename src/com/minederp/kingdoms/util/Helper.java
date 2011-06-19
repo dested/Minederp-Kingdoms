@@ -10,4 +10,12 @@ public class Helper {
 			player.sendMessage(message);
 		}
 	}
+	public static boolean containsPlayers(List<Player> players, Player play) {
+		for (Player player : players) {
+			if (player.getName().equals(play.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -29,7 +29,9 @@ public class ZombiesGame extends Game {
 	@Override
 	public void onLoad() {
 		// TODO Auto-generated method stub
-		
+		// getServer().getWorlds().get(0).spawnCreature(arg0,
+		// CreatureType.PIG_ZOMBIE);
+
 	}
 
 	@Override
@@ -596,4 +598,10 @@ public class ZombiesGame extends Game {
 		return true;
 
 	}*/
+
+	@Override
+	public void playerDying(Player entity) {
+		// TODO Auto-generated method stub
+		
+	}
 }

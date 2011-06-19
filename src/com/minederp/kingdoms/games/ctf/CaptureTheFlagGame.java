@@ -16,8 +16,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.minederp.kingdoms.Game;
 import com.minederp.kingdoms.KingdomsPlugin;
+import com.minederp.kingdoms.util.Game;
+import com.minederp.kingdoms.util.Helper;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 public class CaptureTheFlagGame extends Game {
@@ -98,15 +99,11 @@ public class CaptureTheFlagGame extends Game {
 
 	public void messagePlayersInGame(String message) {
 		for (CTFTeam team : teams) {
-			messagePlayerInList(team.players, message);
+			Helper.messagePlayerInList(team.players, message);
 		}
 	}
 
-	public void messagePlayerInList(List<Player> players, String message) {
-		for (Player player : players) {
-			player.sendMessage(message);
-		}
-	}
+
 
 	@Override
 	public void joinGame(Player player) {
@@ -158,7 +155,7 @@ public class CaptureTheFlagGame extends Game {
 		}
 
 		if (args.getString(0).toLowerCase().equals("startgame") || args.getString(0).toLowerCase().equals("sg")) {
-			messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + "Capture the flag has started.");
+			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + "Capture the flag has started.");
 			gameIsHappening = true;
 			for (Player wPlayer : player.getWorld().getPlayers()) {
 				Location to = wPlayer.getLocation();
@@ -175,7 +172,7 @@ public class CaptureTheFlagGame extends Game {
 		}
 		if (args.getString(0).toLowerCase().equals("endgame") || args.getString(0).toLowerCase().equals("eg")) {
 			gameIsHappening = false;
-			messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + "Capture the flag has ended.");
+			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + "Capture the flag has ended.");
 			for (CTFTeam team : teams) {
 
 				for (Player pl : team.players) {

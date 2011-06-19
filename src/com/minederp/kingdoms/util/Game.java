@@ -1,4 +1,4 @@
-package com.minederp.kingdoms;
+package com.minederp.kingdoms.util;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;

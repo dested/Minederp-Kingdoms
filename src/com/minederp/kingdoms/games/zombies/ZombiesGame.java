@@ -16,11 +16,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.minederp.kingdoms.Game;
 import com.minederp.kingdoms.KingdomsPlugin;
+import com.minederp.kingdoms.util.Game;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 public class ZombiesGame extends Game {
+
+	public ZombiesGame(KingdomsPlugin kingdomsPlugin) {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void onLoad() {

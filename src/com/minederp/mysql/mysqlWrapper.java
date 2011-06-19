@@ -17,70 +17,46 @@ public class mysqlWrapper {
 
 	public void connectDatabase() throws Exception {
 		try { // This will load the MySQL driver, each DB has its own driver
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			// Setup the connection with the DB
 
-			Properties connectionProps = new Properties();
-			connectionProps.put("user", "dested");
-			connectionProps.put("password", "minederp");
-			connect = DriverManager.getConnection(
-					"jdbc:mysql://minederp.com:3306/dested", connectionProps);
+			Properties pro=new Properties();
+			pro.put("user", "dested");
+			pro.put("password", "minederp");
+			connect = DriverManager.getConnection("jdbc:mysql://minederp.com/dested",pro);
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			close();
-		}
-		
-		ResultSet resultSet=selectQuery("*", "", "where ");
-		
-		while (resultSet.next()) {
-			String user = resultSet.getString("myuser");
-			String website = resultSet.getString("webpage");
-			String summery = resultSet.getString("summery");
-			Date date = resultSet.getDate("datum");
-			String comment = resultSet.getString("comments");
-			System.out.println("User: " + user);
-			System.out.println("Website: " + website);
-			System.out.println("Summery: " + summery);
-			System.out.println("Date: " + date);
-			System.out.println("Comment: " + comment);
-		}
-		
-		
+		} 
 	}
-
-	public ResultSet selectQuery(String columns, String table, String extra)
-			throws Exception {
+ 
+	public ResultSet selectQuery(String columns, String table, String extra) throws SQLException {
 		// Result set get the result of the SQL query
-		resultSet = statement.executeQuery("select " + columns + " from "
-				+ table + " " + extra);
+		resultSet = statement.executeQuery("select " + columns + " from " + table + " " + extra+";");
 		// writeResultSet(resultSet);
 		return resultSet;
 	}
 
-	public void insertQuery(String table, String... params) throws SQLException {
+	public void insertQuery(String table,String qru) throws SQLException {
+
+		statement.execute("insert into " + table + " values ( "+qru+"  );");
+		 
+	}
+	public void updateQuery(String query) throws SQLException {
 
 		// PreparedStatements can use variables and are more efficient
-		preparedStatement = connect.prepareStatement("insert into " + table
-				+ "values (default, ?, ?, ?, ? , ?, ?)");
-		// Parameters start with 1
-		for (int i = 0; i < params.length; i++) {
-			preparedStatement.setObject(i + 1, params[i]);
-		}
+		preparedStatement = connect.prepareStatement(query);
+	
 		preparedStatement.executeUpdate();
 	}
 
-	public void deleteQuery(String table, String conditional) throws Exception {
+	public void deleteQuery(String table, String conditional) throws SQLException {
 		// Remove again the insert comment
-		preparedStatement = connect.prepareStatement("delete from " + table
-				+ " where ?; ");
+		preparedStatement = connect.prepareStatement("delete from " + table + " where ?; ");
 		preparedStatement.setString(1, conditional);
 		preparedStatement.executeUpdate();
-
-		resultSet = statement.executeQuery("select * from FEEDBACK.COMMENTS");
-		writeMetaData(resultSet);
+ 
 
 	}
 
@@ -92,8 +68,7 @@ public class mysqlWrapper {
 
 		System.out.println("Table: " + resultSet.getMetaData().getTableName(1));
 		for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
-			System.out.println("Column " + i + " "
-					+ resultSet.getMetaData().getColumnName(i));
+			System.out.println("Column " + i + " " + resultSet.getMetaData().getColumnName(i));
 		}
 	}
 
@@ -118,7 +93,7 @@ public class mysqlWrapper {
 	}
 
 	// You need to close the resultSet
-	private void close() {
+	public void close() {
 		try {
 			if (resultSet != null) {
 				resultSet.close();

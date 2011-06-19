@@ -25,7 +25,10 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.entity.CraftZombie;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Listener;
@@ -34,6 +37,7 @@ import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
+import com.minederp.kingdoms.games.zombies.ZombiesGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
 import com.minederp.kingdoms.listeners.KingdomsEntityListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
@@ -61,7 +65,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private PermissionsResolverManager perms;
 	protected CommandsManager<CommandSender> commands;
 
-	public mysqlWrapper wrapper = new mysqlWrapper();
+	public static mysqlWrapper wrapper = new mysqlWrapper();
 
 	public InventoryStasher inventoryStasher= new InventoryStasher(this);
 
@@ -84,6 +88,10 @@ public class KingdomsPlugin extends JavaPlugin {
 
 		createDefaultConfiguration("config.yml");
 
+
+//getServer().getWorlds().get(0).spawnCreature(arg0, CreatureType.PIG_ZOMBIE);
+		
+		
 		// Load configuration
 		populateConfiguration();
 
@@ -125,6 +133,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	}
 
 	public CaptureTheFlagGame ctfGame = new CaptureTheFlagGame(this);
+	public ZombiesGame zombiesGame = new ZombiesGame(this);
 
 	/**
 	 * Register the events that are used.
@@ -136,6 +145,8 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.ENTITY_DEATH, entityListener);
 		registerEvent(Event.Type.ENTITY_DAMAGE, entityListener);
 		 
+
+		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
 
 		registerEvent(Event.Type.PLAYER_MOVE, playerListener);
 		registerEvent(Event.Type.PLAYER_INTERACT, playerListener);
@@ -150,6 +161,8 @@ public class KingdomsPlugin extends JavaPlugin {
 	 * temporary data occurs here.
 	 */
 	public void onDisable() {
+		
+		wrapper.close();
 	}
 
 	/**

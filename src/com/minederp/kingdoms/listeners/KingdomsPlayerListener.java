@@ -1,5 +1,7 @@
 package com.minederp.kingdoms.listeners;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -10,6 +12,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.minederp.kingdoms.KingdomsPlugin;
+import com.minederp.kingdoms.orm.KingdomPlayer;
+import com.minederp.kingdoms.util.Helper;
 
 public class KingdomsPlayerListener extends PlayerListener {
 
@@ -21,7 +25,28 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
 
+		KingdomPlayer p = KingdomPlayer.getFirstByPlayerName(player.getName());
+		if (p == null) {
+			p = new KingdomPlayer();
+			p.setPlayerName(event.getPlayer().getName());
+			p.setPlayerNickName(event.getPlayer().getName());
+			p.setKingdomID(0);
+			p.insert();
+
+			player.sendMessage(ChatColor.LIGHT_PURPLE + " Welcome to the game. Please read the help map. (Help map not available)");
+
+			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
+					+ " Has just begun his Kingdoms Journey.");
+		} else {
+	
+
+			player.sendMessage(ChatColor.AQUA + " Welcome back to the game. Please read the help map. (Help map not available)");
+
+			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
+					+ " Has resumed his Kingdoms Journey.");
+		}
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
@@ -29,8 +54,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 
 	public void onPlayerMove(PlayerMoveEvent event) {
 
-		kingdomsPlugin.ctfGame.updatePlayerGamePosition(event.getPlayer(),
-				event.getTo());
+		kingdomsPlugin.ctfGame.updatePlayerGamePosition(event.getPlayer(), event.getTo());
 
 	}
 
@@ -41,8 +65,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		kingdomsPlugin.ctfGame.blockClick(event.getClickedBlock(),
-				event.getPlayer());
+		kingdomsPlugin.ctfGame.blockClick(event.getClickedBlock(), event.getPlayer());
 	}
 
 	public void onPlayerLogin(PlayerLoginEvent event) {

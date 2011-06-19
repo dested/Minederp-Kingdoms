@@ -14,7 +14,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.minederp.kingdoms.KingdomsPlugin;
@@ -74,7 +77,7 @@ public class CaptureTheFlagGame extends Game {
 		if (blocksForReprint.size() > 0) {
 			World w = movingPlayer.getWorld();
 			for (Item it : blocksForReprint) {
-				w.getBlockAt(it.X, it.Y, it.Z).setTypeId(it.Type);
+				w.getBlockAt(it.X, it.Y, it.Z).setTypeIdAndData(it.Type, it.Data, false);
 			}
 
 			blocksForReprint.clear();
@@ -214,7 +217,11 @@ public class CaptureTheFlagGame extends Game {
 	}
 
 	@Override
-	public void processCommand(CommandContext args, Player player) {
+	public void processCommand(String header, CommandContext args, Player player) {
+
+		if (!header.equals("ctf"))
+			return;
+
 		if (args.argsLength() == 0 || args.getString(0).toLowerCase().equals("getteams")) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(ChatColor.LIGHT_PURPLE + "Capture the flag teams");
@@ -322,7 +329,7 @@ public class CaptureTheFlagGame extends Game {
 			}
 			kingdomsPlugin.inventoryStasher.RefillInventory(playerInventories.get(player.getName()), player.getInventory());
 
-			player.sendMessage(ChatColor.GREEN + "You Has left the CTF Game");
+			player.sendMessage(ChatColor.GREEN + "You have left the CTF Game");
 
 			messagePlayersInGame(ChatColor.GREEN + player.getDisplayName() + " Has left the team " + teamc.name);
 
@@ -486,8 +493,10 @@ public class CaptureTheFlagGame extends Game {
 
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y + gameLocation.height).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y + gameLocation.height).setType(Material.AIR);
 
-						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
 							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
 							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
 						}
@@ -510,8 +519,10 @@ public class CaptureTheFlagGame extends Game {
 
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y + gameLocation.height).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y + gameLocation.height).setType(Material.AIR);
 
-						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
 							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
 							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
 						}
@@ -536,7 +547,10 @@ public class CaptureTheFlagGame extends Game {
 						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 1, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 1, z).setType(Material.AIR);
 
-						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 2, z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 2, z).setType(Material.AIR);
+
+						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
 							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
 							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
 						}
@@ -550,15 +564,17 @@ public class CaptureTheFlagGame extends Game {
 				}
 			else
 				for (int z = gameLocation.y; z < gameLocation.y + gameLocation.height; z++) {
-					if (door++ % 15 == 7) {
+					if (door++ % 10 == 5) {
 
 						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.AIR);
 
 						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 1, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 1, z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 2, z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 2, z).setType(Material.AIR);
 
-						for (int y = block.getY() + 2; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
 							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
 							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
 						}
@@ -615,6 +631,7 @@ public class CaptureTheFlagGame extends Game {
 	@Override
 	public void playerDied(final Player player) {
 		for (final CTFTeam fteam : teams) {
+
 			if (fteam.withFlag != null && fteam.withFlag.getName().equals(player.getName())) {
 				drawFlag(fteam.flag, fteam.color, true);
 
@@ -622,6 +639,10 @@ public class CaptureTheFlagGame extends Game {
 				fteam.withFlag = null;
 				return;
 			}
+		}
+		for (final CTFTeam fteam : teams) {
+			if (Helper.containsPlayers(fteam.players, player))
+				messagePlayersInGame(player.getDisplayName() + " has died. He will be revived in "+waitTime+" seconds.");
 		}
 	}
 
@@ -677,4 +698,17 @@ public class CaptureTheFlagGame extends Game {
 			}
 		}
 	}
+
+	@Override
+	public void entityDied(Entity entity, EntityDeathEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void entityHurt(Entity entity, EntityDamageEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+ 
 }

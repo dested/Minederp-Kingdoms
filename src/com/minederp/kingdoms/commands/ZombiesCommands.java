@@ -8,12 +8,12 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 
-public class CTFCommands {
-	@Command(aliases = { "ctf", "capture" }, usage = "", desc = "Capture the flag commands", min = 0, max = 3, flags = "")
+public class ZombiesCommands {
+	@Command(aliases = { "z", "zombies" }, usage = "", desc = "Zombies commands", min = 0, max = 3, flags = "")
 	public static void ctf(CommandContext args, KingdomsPlugin plugin,
 			CommandSender sender) throws CommandException {
 
-		plugin.gameLogic.processCommand("ctf",args, ((Player) sender));
+		plugin.gameLogic.processCommand("z",args, ((Player) sender));
 
 	}
 

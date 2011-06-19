@@ -116,6 +116,7 @@ public class KingdomsPlugin extends JavaPlugin {
 			}
 		};
 		commands.register(CTFCommands.class);
+		commands.register(ZombiesCommands.class);
 
 		commands.register(KingdomCommands.class);
 

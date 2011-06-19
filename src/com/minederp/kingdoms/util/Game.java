@@ -1,8 +1,11 @@
 package com.minederp.kingdoms.util;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.block.Block; 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 
@@ -18,7 +21,7 @@ public abstract class Game {
 
 	public abstract void leaveGame(Player player);
 
-	public abstract void processCommand(CommandContext args, Player player);
+	public abstract void processCommand(String header, CommandContext args, Player player);
 
 	public abstract boolean blockDestroyed(Block block, Player clickedPlayer);
 
@@ -31,5 +34,9 @@ public abstract class Game {
 	public abstract boolean playerFight(Player damagee, Player damager);
 
 	public abstract void playerDying(Player entity);
+
+	public abstract void entityDied(Entity  entity, EntityDeathEvent event);
+
+	public abstract void entityHurt(Entity entity, EntityDamageEvent event);
 
 }

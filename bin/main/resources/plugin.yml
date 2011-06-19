@@ -11,4 +11,7 @@ commands:
     ctf:
         description: Capture the flag commands
         usage: /ctf ({setrectangle|startgame|endgame|join) ({red|blue} {setflag|setspawn})  
+    z:
+        description: Zombies commands
+        usage: /z ({setrectangle|startgame|endgame|join) ({sethuman|setzombie})  
         

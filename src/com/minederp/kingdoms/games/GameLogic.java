@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.minederp.kingdoms.util.Game;
 import com.sk89q.minecraft.util.commands.CommandContext;
@@ -56,9 +59,9 @@ public class GameLogic extends Game {
 	}
 
 	@Override
-	public void processCommand(CommandContext args, Player player) {
+	public void processCommand(String msg, CommandContext args, Player player) {
 		for (Game g : Games)
-			g.processCommand(args, player);
+			g.processCommand(msg, args, player);
 	}
 
 	@Override
@@ -101,6 +104,20 @@ public class GameLogic extends Game {
 	public void playerDying(Player entity) {
 		for (Game g : Games)
 			g.playerDying(entity);
+	}
+
+	@Override
+	public void entityDied(Entity entity, EntityDeathEvent event) {
+		for (Game g : Games)
+			g.entityDied(entity, event);
+
+	}
+
+	@Override
+	public void entityHurt(Entity entity, EntityDamageEvent event) {
+		for (Game g : Games)
+			g.entityHurt(entity,event);
+
 	}
 
 }

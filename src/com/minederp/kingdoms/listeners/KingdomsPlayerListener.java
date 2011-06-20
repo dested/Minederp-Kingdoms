@@ -35,9 +35,6 @@ public class KingdomsPlayerListener extends PlayerListener {
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
 
-	 	event.getPlayer().getInventory().setHelmet(new ItemStack(Material.GLOWSTONE));
-		 event.getPlayer().getLocation().getBlock().getChunk().
-		
 		Player player = event.getPlayer();
 
 		KingdomPlayer p = KingdomPlayer.getFirstByPlayerName(player.getName());
@@ -65,6 +62,8 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
+		Location l = event.getPlayer().getLocation();
+		event.getPlayer().getLocation().getBlock().getChunk().setLight(l.getBlockX(), l.getBlockY(), l.getBlockZ(), 15);
 
 		kingdomsPlugin.gameLogic.updatePlayerGamePosition(event.getPlayer(), event.getTo());
 

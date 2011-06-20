@@ -24,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.Game;
+import com.minederp.kingdoms.games.GameItem;
+import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.util.Helper;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
@@ -39,7 +41,7 @@ public class CaptureTheFlagGame extends Game {
 	private final KingdomsPlugin kingdomsPlugin;
 	HashMap<String, String> playerInventories = new HashMap<String, String>();
 	private Player actingPlayer;
-	List<Item> blocksForReprint = new ArrayList<Item>();
+	private GameLogic logic;;
 
 	public CaptureTheFlagGame(KingdomsPlugin kingdomsPlugin) {
 		this.kingdomsPlugin = kingdomsPlugin;
@@ -54,37 +56,15 @@ public class CaptureTheFlagGame extends Game {
 	}
 
 	@Override
-	public void onLoad() {
+	public void onLoad(GameLogic logic) {
+		this.logic = logic;
 		playersInTheArea = new ArrayList<Player>();
-	}
-
-	public class Item {
-		public Item(int x2, int y2, int z2, int typeId, byte data) {
-			X = x2;
-			Y = y2;
-			Z = z2;
-			Data = data;
-			Type = typeId;
-		}
-
-		int Type;
-		byte Data;
-		int X;
-		int Y;
-		int Z;
 	}
 
 	@Override
 	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
-		if (blocksForReprint.size() > 0) {
-			World w = movingPlayer.getWorld();
-			for (Item it : blocksForReprint) {
-				w.getBlockAt(it.X, it.Y, it.Z).setTypeIdAndData(it.Type, it.Data, false);
-			}
-
-			blocksForReprint.clear();
-		}
-		if (drawingRectangle == 2 && actingPlayer!=null && actingPlayer.getName().equals(movingPlayer.getName())) {
+		logic.clearReprint(movingPlayer, "Drawing");
+		if (drawingRectangle == 2 && actingPlayer != null && actingPlayer.getName().equals(movingPlayer.getName())) {
 
 			Rectangle mRectangle = new Rectangle(gameLocation);
 
@@ -106,45 +86,45 @@ public class CaptureTheFlagGame extends Game {
 			if (mRectangle.x > mRectangle.x + mRectangle.width)
 				for (int x = mRectangle.x; x >= mRectangle.x + mRectangle.width; x--) {
 
-					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
-							.getData()));
+					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
+							.getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					blocksForReprint.add(new Item(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x, y,
-							mRectangle.y + mRectangle.height)).getTypeId(), bc.getData()));
+					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
+							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
 
 			else
 				for (int x = mRectangle.x; x <= mRectangle.x + mRectangle.width; x++) {
-					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
-							.getData()));
+					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
+							.getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					blocksForReprint.add(new Item(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x, y,
-							mRectangle.y + mRectangle.height)).getTypeId(), bc.getData()));
+					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
+							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
 
 			if (mRectangle.y > mRectangle.y + mRectangle.height)
-				for (int z = mRectangle.y; z >=mRectangle.y + mRectangle.height; z--) {
+				for (int z = mRectangle.y; z >= mRectangle.y + mRectangle.height; z--) {
 
-					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
-							.getData()));
+					this.logic.blocksForReprint.add(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
+							.getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					blocksForReprint.add(new Item(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
-							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData()));
+					this.logic.blocksForReprint.add(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
+							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
 			else
 				for (int z = mRectangle.y; z <= mRectangle.y + mRectangle.height; z++) {
 
-					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
-							.getData()));
+					this.logic.blocksForReprint.add(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
+							.getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					blocksForReprint.add(new Item(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
-							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData()));
+					this.logic.blocksForReprint.add(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
+							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(),"Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
@@ -644,7 +624,7 @@ public class CaptureTheFlagGame extends Game {
 		}
 		for (final CTFTeam fteam : teams) {
 			if (Helper.containsPlayers(fteam.players, player))
-				messagePlayersInGame(player.getDisplayName() + " has died. He will be revived in "+waitTime+" seconds.");
+				messagePlayersInGame(player.getDisplayName() + " has died. He will be revived in " + waitTime + " seconds.");
 		}
 	}
 
@@ -704,13 +684,13 @@ public class CaptureTheFlagGame extends Game {
 	@Override
 	public void entityDied(Entity entity, EntityDeathEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void entityHurt(Entity entity, EntityDamageEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
- 
+
 }

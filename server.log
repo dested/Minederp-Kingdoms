@@ -1,0 +1,8 @@
+2011-06-19 22:43:36 [INFO] Starting minecraft server version Beta 1.6.6
+2011-06-19 22:43:36 [INFO] Loading properties
+2011-06-19 22:43:36 [WARNING] server.properties does not exist
+2011-06-19 22:43:36 [INFO] Generating new properties file
+2011-06-19 22:43:36 [INFO] Starting Minecraft server on *:25565
+2011-06-19 22:43:36 [WARNING] **** FAILED TO BIND TO PORT!
+2011-06-19 22:43:36 [WARNING] The exception was: java.net.BindException: Address already in use: JVM_Bind
+2011-06-19 22:43:36 [WARNING] Perhaps a server is already running on that port?

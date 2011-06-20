@@ -4,6 +4,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryListener;
 import org.bukkit.event.inventory.InventoryOpenedClosedEvent;
 import org.bukkit.event.inventory.InventoryTransactionEvent;
+import org.bukkit.event.inventory.TransactionType;
+import org.bukkit.inventory.Inventory;
 
 public class KingdomsInventoryListener extends InventoryListener {
 	private final KingdomsPlugin kingdomsPlugin;
@@ -14,11 +16,23 @@ public class KingdomsInventoryListener extends InventoryListener {
 	}
 
 	public void onInventoryTransaction(InventoryTransactionEvent event) {
-		event.setCancled(true);
-
+		if (one != null && two  != null && two.getName().equals(event.getContainer().getName())) {
+			if (event.getRightType() == TransactionType.Chest && event.getLeft()!=null) {
+				one.addItem(event.getLeft());
+				event.setLeft(null);
+			}
+		}
 	}
 
+	Inventory one;
+	Inventory two;
+
 	public void onInventoryOpened(InventoryOpenedClosedEvent event) {
+		if (one == null)
+			one = event.getContainer();
+		else
+			two = event.getContainer();
+
 		event.setCancled(false);
 
 	}

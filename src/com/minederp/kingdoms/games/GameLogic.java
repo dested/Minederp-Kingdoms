@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,15 +19,13 @@ public class GameLogic extends Game {
 
 	public void addGame(Game g) {
 		Games.add(g);
-		g.onLoad();
+		g.onLoad(this);
 
 	}
 
 	@Override
-	public void onLoad() {
-		for (Game g : Games) {
-			g.onLoad();
-		}
+	public void onLoad(GameLogic n) {
+
 	}
 
 	@Override
@@ -37,8 +36,27 @@ public class GameLogic extends Game {
 		return false;
 	}
 
+	public List<GameItem> blocksForReprint = new ArrayList<GameItem>();
+
+	public void clearReprint(Player player, String key) {
+		if (blocksForReprint.size() > 0) {
+			World w = player.getWorld();
+			for (int i = blocksForReprint.size() - 1; i >= 0; i--) {
+				GameItem it = blocksForReprint.get(i);
+				if (it.Key.equals(key)) {
+					w.getBlockAt(it.X, it.Y, it.Z).setTypeIdAndData(it.Type, it.Data, false);
+					blocksForReprint.remove(i);
+				}
+
+			}
+
+		}
+
+	}
+
 	@Override
 	public void updatePlayerGamePosition(Player player, Location to) {
+
 		for (Game g : Games)
 			g.updatePlayerGamePosition(player, to);
 
@@ -115,7 +133,7 @@ public class GameLogic extends Game {
 	@Override
 	public void entityHurt(Entity entity, EntityDamageEvent event) {
 		for (Game g : Games)
-			g.entityHurt(entity,event);
+			g.entityHurt(entity, event);
 
 	}
 

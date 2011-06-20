@@ -99,7 +99,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		populateConfiguration();
 
 		try {
-			wrapper.connectDatabase();
+			//wrapper.connectDatabase();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();

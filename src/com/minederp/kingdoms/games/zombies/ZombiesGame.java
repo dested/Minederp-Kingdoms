@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.Game;
+import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.util.Helper;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
@@ -92,6 +93,8 @@ public class ZombiesGame extends Game {
 
 	private World gameWorld;
 
+	private GameLogic logic;
+
 	public ZombiesGame(KingdomsPlugin kingdomsPlugin) {
 		this.kingdomsPlugin = kingdomsPlugin;
 	}
@@ -102,7 +105,8 @@ public class ZombiesGame extends Game {
 	}
 
 	@Override
-	public void onLoad() {
+	public void onLoad(GameLogic logic) {
+		this.logic = logic;
 		waitingInTheArea = new ArrayList<Player>();
 		playingInTheArea = new ArrayList<ZombiePlayer>();
 	}

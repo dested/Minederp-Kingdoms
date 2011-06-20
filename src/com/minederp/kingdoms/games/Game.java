@@ -11,7 +11,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 
 public abstract class Game {
 
-	public abstract void onLoad();
+	public abstract void onLoad(GameLogic logic);
 
 	public abstract boolean canPlayerJoin(Player player);
 

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import com.minederp.kingdoms.util.Game;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 public class GameLogic extends Game {

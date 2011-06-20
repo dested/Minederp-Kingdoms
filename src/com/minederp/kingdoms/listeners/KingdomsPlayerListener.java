@@ -1,6 +1,14 @@
 package com.minederp.kingdoms.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -10,6 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.orm.KingdomPlayer;
@@ -25,6 +34,10 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
+
+	 	event.getPlayer().getInventory().setHelmet(new ItemStack(Material.GLOWSTONE));
+		 event.getPlayer().getLocation().getBlock().getChunk().
+		
 		Player player = event.getPlayer();
 
 		KingdomPlayer p = KingdomPlayer.getFirstByPlayerName(player.getName());

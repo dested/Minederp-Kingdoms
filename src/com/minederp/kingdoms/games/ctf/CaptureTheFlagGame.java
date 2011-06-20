@@ -23,7 +23,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.minederp.kingdoms.KingdomsPlugin;
-import com.minederp.kingdoms.util.Game;
+import com.minederp.kingdoms.games.Game;
 import com.minederp.kingdoms.util.Helper;
 import com.sk89q.minecraft.util.commands.CommandContext;
 

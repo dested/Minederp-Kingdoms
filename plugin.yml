@@ -10,8 +10,17 @@ commands:
         usage: /<command> <arguments...>
     ctf:
         description: Capture the flag commands
-        usage: /ctf ({setrectangle|startgame|endgame|join) ({red|blue} {setflag|setspawn})  
+        usage: /ctf (setrectangle|startgame|endgame|join) ((red|blue) (setflag|setspawn))  
     z:
         description: Zombies commands
-        usage: /z ({setrectangle|startgame|endgame|join) ({sethuman|setzombie})  
+        usage: /z (setrectangle|startgame|endgame|join) (sethuman|setzombie)  
+    zombies:
+        description: Zombies commands
+        usage: /zombies (setrectangle|startgame|endgame|join) (sethuman|setzombie)  
+    m:
+        description: Map based commands
+        usage: /m (setid {index})  
+    map:
+        description: Map based commands
+        usage: /map (setid {index})  
         

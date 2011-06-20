@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -82,7 +84,7 @@ public class CaptureTheFlagGame extends Game {
 
 			blocksForReprint.clear();
 		}
-		if (drawingRectangle == 2) {
+		if (drawingRectangle == 2 && actingPlayer!=null && actingPlayer.getName().equals(movingPlayer.getName())) {
 
 			Rectangle mRectangle = new Rectangle(gameLocation);
 
@@ -102,7 +104,7 @@ public class CaptureTheFlagGame extends Game {
 			int y = to.getBlockY() - 1;
 			Block bc;
 			if (mRectangle.x > mRectangle.x + mRectangle.width)
-				for (int x = mRectangle.x; x > mRectangle.x + mRectangle.width; x--) {
+				for (int x = mRectangle.x; x >= mRectangle.x + mRectangle.width; x--) {
 
 					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
 							.getData()));
@@ -114,7 +116,7 @@ public class CaptureTheFlagGame extends Game {
 				}
 
 			else
-				for (int x = mRectangle.x; x < mRectangle.x + mRectangle.width; x++) {
+				for (int x = mRectangle.x; x <= mRectangle.x + mRectangle.width; x++) {
 					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
 							.getData()));
 					bc.setType(Material.DIAMOND_BLOCK);
@@ -125,7 +127,7 @@ public class CaptureTheFlagGame extends Game {
 				}
 
 			if (mRectangle.y > mRectangle.y + mRectangle.height)
-				for (int z = mRectangle.y; z > mRectangle.y + mRectangle.height; z--) {
+				for (int z = mRectangle.y; z >=mRectangle.y + mRectangle.height; z--) {
 
 					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
 							.getData()));
@@ -136,7 +138,7 @@ public class CaptureTheFlagGame extends Game {
 
 				}
 			else
-				for (int z = mRectangle.y; z < mRectangle.y + mRectangle.height; z++) {
+				for (int z = mRectangle.y; z <= mRectangle.y + mRectangle.height; z++) {
 
 					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
 							.getData()));
@@ -484,7 +486,7 @@ public class CaptureTheFlagGame extends Game {
 			int door = 0;
 
 			if (gameLocation.x > gameLocation.x + gameLocation.width)
-				for (int x = gameLocation.x; x > gameLocation.x + gameLocation.width; x--) {
+				for (int x = gameLocation.x; x >= gameLocation.x + gameLocation.width; x--) {
 
 					if (door++ % 15 == 7) {
 
@@ -510,7 +512,7 @@ public class CaptureTheFlagGame extends Game {
 
 				}
 			else
-				for (int x = gameLocation.x; x < gameLocation.x + gameLocation.width; x++) {
+				for (int x = gameLocation.x; x <= gameLocation.x + gameLocation.width; x++) {
 
 					if (door++ % 15 == 7) {
 
@@ -537,7 +539,7 @@ public class CaptureTheFlagGame extends Game {
 				}
 
 			if (gameLocation.y > gameLocation.y + gameLocation.height)
-				for (int z = gameLocation.y; z > gameLocation.y + gameLocation.height; z--) {
+				for (int z = gameLocation.y; z >= gameLocation.y + gameLocation.height; z--) {
 
 					if (door++ % 15 == 7) {
 
@@ -563,7 +565,7 @@ public class CaptureTheFlagGame extends Game {
 					}
 				}
 			else
-				for (int z = gameLocation.y; z < gameLocation.y + gameLocation.height; z++) {
+				for (int z = gameLocation.y; z <= gameLocation.y + gameLocation.height; z++) {
 					if (door++ % 10 == 5) {
 
 						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.AIR);

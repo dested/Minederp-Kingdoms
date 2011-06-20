@@ -9,14 +9,13 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 
 public class TownCommands {
-	@Command(aliases = { "town","t" }, usage = "", desc = "Town commands", min = 0, max = 2)
-	public static void town(CommandContext args, KingdomsPlugin plugin,
-			CommandSender sender) throws CommandException {
+	@Command(aliases = { "town", "t" }, usage = "", desc = "Town commands", min = 0, max = 2)
+	public static void town(CommandContext args, KingdomsPlugin plugin, CommandSender sender) throws CommandException {
 		if (args.argsLength() > 0) {
 			sender.sendMessage(ChatColor.YELLOW + args.getString(0));
 
 			if (args.getString(0).toLowerCase().equals("join")) {
-				//do
+				// do
 				sender.sendMessage(ChatColor.YELLOW + " You have joined a town.");
 			}
 		}

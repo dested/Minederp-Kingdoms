@@ -133,7 +133,7 @@ public class ZombiesGame extends Game {
 
 			blocksForReprint.clear();
 		}
-		if (drawingRectangle == 2) {
+		if (drawingRectangle == 2 && actingPlayer != null && movingPlayer.getName().equals(actingPlayer.getName())) {
 
 			Rectangle mRectangle = new Rectangle(gameLocation);
 
@@ -153,7 +153,7 @@ public class ZombiesGame extends Game {
 			int y = to.getBlockY() - 1;
 			Block bc;
 			if (mRectangle.x > mRectangle.x + mRectangle.width)
-				for (int x = mRectangle.x; x > mRectangle.x + mRectangle.width; x--) {
+				for (int x = mRectangle.x; x >= mRectangle.x + mRectangle.width; x--) {
 
 					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
 							.getData()));
@@ -165,7 +165,7 @@ public class ZombiesGame extends Game {
 				}
 
 			else
-				for (int x = mRectangle.x; x < mRectangle.x + mRectangle.width; x++) {
+				for (int x = mRectangle.x; x <= mRectangle.x + mRectangle.width; x++) {
 					blocksForReprint.add(new Item(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y)).getTypeId(), bc
 							.getData()));
 					bc.setType(Material.DIAMOND_BLOCK);
@@ -176,7 +176,7 @@ public class ZombiesGame extends Game {
 				}
 
 			if (mRectangle.y > mRectangle.y + mRectangle.height)
-				for (int z = mRectangle.y; z > mRectangle.y + mRectangle.height; z--) {
+				for (int z = mRectangle.y; z >= mRectangle.y + mRectangle.height; z--) {
 
 					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
 							.getData()));
@@ -187,7 +187,7 @@ public class ZombiesGame extends Game {
 
 				}
 			else
-				for (int z = mRectangle.y; z < mRectangle.y + mRectangle.height; z++) {
+				for (int z = mRectangle.y; z <= mRectangle.y + mRectangle.height; z++) {
 
 					blocksForReprint.add(new Item(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z)).getTypeId(), bc
 							.getData()));
@@ -248,7 +248,6 @@ public class ZombiesGame extends Game {
 
 	@Override
 	public void joinGame(Player player) {
-		int lowestPlayers = Integer.MAX_VALUE;
 
 		if (myContainsPlayers(playingInTheArea, player))
 			return;
@@ -311,7 +310,7 @@ public class ZombiesGame extends Game {
 
 			gameWorld = player.getWorld();
 
-			zombieMaking = kingdomsPlugin.getServer().getScheduler().scheduleSyncRepeatingTask(kingdomsPlugin, zombieMaker, 10, 80);
+			zombieMaking = kingdomsPlugin.getServer().getScheduler().scheduleSyncRepeatingTask(kingdomsPlugin, zombieMaker, 10, 160);
 
 			for (Player wPlayer : player.getWorld().getPlayers()) {
 				Location to = wPlayer.getLocation();
@@ -459,27 +458,27 @@ public class ZombiesGame extends Game {
 				gameLocation.height = block.getZ() - gameLocation.y;
 
 			int door = 0;
-
+			int wallHeight = 15;
 			if (gameLocation.x > gameLocation.x + gameLocation.width)
-				for (int x = gameLocation.x; x > gameLocation.x + gameLocation.width; x--) {
+				for (int x = gameLocation.x; x >= gameLocation.x + gameLocation.width; x--) {
 
 					if (door++ % 15 == 7) {
 
-						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y).setType(Material.AIR);
-						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y + gameLocation.height).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y).setType(Material.GLOWSTONE);
+						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y + gameLocation.height).setType(Material.GLOWSTONE);
 
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y + gameLocation.height).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y + gameLocation.height).setType(Material.AIR);
 
-						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
 							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
 						}
 
 					} else {
-						for (int y = block.getY(); y < block.getY() + 8; y++) {
+						for (int y = block.getY(); y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
 							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
 						}
@@ -487,25 +486,25 @@ public class ZombiesGame extends Game {
 
 				}
 			else
-				for (int x = gameLocation.x; x < gameLocation.x + gameLocation.width; x++) {
+				for (int x = gameLocation.x; x <= gameLocation.x + gameLocation.width; x++) {
 
 					if (door++ % 15 == 7) {
 
-						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y).setType(Material.AIR);
-						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y + gameLocation.height).setType(Material.AIR);
+						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y).setType(Material.GLOWSTONE);
+						block.getWorld().getBlockAt(x, block.getY(), gameLocation.y + gameLocation.height).setType(Material.GLOWSTONE);
 
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 1, gameLocation.y + gameLocation.height).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y).setType(Material.AIR);
 						block.getWorld().getBlockAt(x, block.getY() + 2, gameLocation.y + gameLocation.height).setType(Material.AIR);
 
-						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
 							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
 						}
 
 					} else {
-						for (int y = block.getY(); y < block.getY() + 8; y++) {
+						for (int y = block.getY(); y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(x, y, gameLocation.y).setType(Material.GLASS);
 							block.getWorld().getBlockAt(x, y, gameLocation.y + gameLocation.height).setType(Material.GLASS);
 						}
@@ -514,12 +513,12 @@ public class ZombiesGame extends Game {
 				}
 
 			if (gameLocation.y > gameLocation.y + gameLocation.height)
-				for (int z = gameLocation.y; z > gameLocation.y + gameLocation.height; z--) {
+				for (int z = gameLocation.y; z >= gameLocation.y + gameLocation.height; z--) {
 
 					if (door++ % 15 == 7) {
 
-						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.AIR);
-						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.GLOWSTONE);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.GLOWSTONE);
 
 						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 1, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 1, z).setType(Material.AIR);
@@ -527,37 +526,37 @@ public class ZombiesGame extends Game {
 						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 2, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 2, z).setType(Material.AIR);
 
-						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
 							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
 						}
 
 					} else {
-						for (int y = block.getY(); y < block.getY() + 8; y++) {
+						for (int y = block.getY(); y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
 							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
 						}
 					}
 				}
 			else
-				for (int z = gameLocation.y; z < gameLocation.y + gameLocation.height; z++) {
+				for (int z = gameLocation.y; z <= gameLocation.y + gameLocation.height; z++) {
 					if (door++ % 10 == 5) {
 
-						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.AIR);
-						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.AIR);
+						block.getWorld().getBlockAt(gameLocation.x, block.getY(), z).setType(Material.GLOWSTONE);
+						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY(), z).setType(Material.GLOWSTONE);
 
 						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 1, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 1, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x, block.getY() + 2, z).setType(Material.AIR);
 						block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, block.getY() + 2, z).setType(Material.AIR);
 
-						for (int y = block.getY() + 3; y < block.getY() + 8; y++) {
+						for (int y = block.getY() + 3; y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
 							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
 						}
 
 					} else {
-						for (int y = block.getY(); y < block.getY() + 8; y++) {
+						for (int y = block.getY(); y < block.getY() + wallHeight; y++) {
 							block.getWorld().getBlockAt(gameLocation.x, y, z).setType(Material.GLASS);
 							block.getWorld().getBlockAt(gameLocation.x + gameLocation.width, y, z).setType(Material.GLASS);
 						}

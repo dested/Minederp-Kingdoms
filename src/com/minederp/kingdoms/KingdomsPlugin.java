@@ -78,6 +78,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private Listener blockListener = new KingdomsBlockListener(this);
 	private Listener entityListener = new KingdomsEntityListener(this);
 	private Listener playerListener = new KingdomsPlayerListener(this);
+	private Listener mapListener = new KingdomsMapListener(this);
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -117,10 +118,12 @@ public class KingdomsPlugin extends JavaPlugin {
 		};
 		commands.register(CTFCommands.class);
 		commands.register(ZombiesCommands.class);
-
 		commands.register(KingdomCommands.class);
-
 		commands.register(TownCommands.class);
+		commands.register(MapsCommands.class);
+
+		
+		
 
 		// commands.register(GeneralCommands.class);
 
@@ -155,6 +158,8 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.PLAYER_QUIT, playerListener);
 		registerEvent(Event.Type.PLAYER_RESPAWN, playerListener);
 		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
+
+		registerEvent(Event.Type.MAP_INITIALIZE, mapListener);
 	}
 
 	/**

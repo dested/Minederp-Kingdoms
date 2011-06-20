@@ -13,14 +13,17 @@ commands:
         usage: /ctf (setrectangle|startgame|endgame|join) ((red|blue) (setflag|setspawn))  
     z:
         description: Zombies commands
-        usage: /z (setrectangle|startgame|endgame|join) (sethuman|setzombie)  
+        usage: /z (SetRectangle|StartGame|EndGame|Join) (SetHuman|SetZombie)  
     zombies:
         description: Zombies commands
-        usage: /zombies (setrectangle|startgame|endgame|join) (sethuman|setzombie)  
+        usage: /zombies (SetRectangle|StartGame|EndGame|Join) (SetHuman|SetZombie)  
     m:
         description: Map based commands
-        usage: /m (setid {index})  
+        usage: /m (SetId {index})  
     map:
         description: Map based commands
-        usage: /map (setid {index})  
+        usage: /map (SetId {index})  
+    t:
+        description: Town based commands
+        usage: /t (ShowWalls(False|True)|SetPolygon)
         

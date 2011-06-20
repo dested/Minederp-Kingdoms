@@ -1,9 +1,10 @@
-package com.minederp.kingdoms;
+package com.minederp.kingdoms.listeners;
 
 import org.bukkit.event.map.MapIndexCreatedEvent;
 import org.bukkit.event.map.MapInitializeEvent;
 import org.bukkit.event.map.MapListener;
 
+import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.maps.ChestWatcherBase;
 
 

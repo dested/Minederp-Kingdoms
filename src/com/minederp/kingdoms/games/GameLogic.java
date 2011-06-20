@@ -38,9 +38,9 @@ public class GameLogic extends Game {
 
 	public List<GameItem> blocksForReprint = new ArrayList<GameItem>();
 
-	public void clearReprint(Player player, String key) {
+	public void clearReprint(World w, String key) {
 		if (blocksForReprint.size() > 0) {
-			World w = player.getWorld();
+			
 			for (int i = blocksForReprint.size() - 1; i >= 0; i--) {
 				GameItem it = blocksForReprint.get(i);
 				if (it.Key.equals(key)) {
@@ -90,9 +90,11 @@ public class GameLogic extends Game {
 	}
 
 	@Override
-	public void blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(Block block, Player clickedPlayer) {
 		for (Game g : Games)
-			g.blockClick(block, clickedPlayer);
+			if (g.blockClick(block, clickedPlayer))
+				return true;
+		return false;
 	}
 
 	@Override
@@ -135,6 +137,14 @@ public class GameLogic extends Game {
 		for (Game g : Games)
 			g.entityHurt(entity, event);
 
+	}
+
+	@Override
+	public boolean blockPlaced(Block block, Player player) {
+		for (Game g : Games)
+			if (g.blockPlaced(block, player))
+				return true;
+		return false;
 	}
 
 }

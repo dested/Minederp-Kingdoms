@@ -23,14 +23,10 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftZombie;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Listener;
@@ -38,13 +34,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
-import com.minederp.kingdoms.games.Game;
 import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
-import com.minederp.kingdoms.listeners.KingdomsEntityListener; 
+import com.minederp.kingdoms.listeners.KingdomsEntityListener;
+import com.minederp.kingdoms.listeners.KingdomsInventoryListener;
+import com.minederp.kingdoms.listeners.KingdomsMapListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
+import com.minederp.kingdoms.towns.TownsGame;
 import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
@@ -78,7 +76,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private Listener blockListener = new KingdomsBlockListener(this);
 	private Listener entityListener = new KingdomsEntityListener(this);
 	private Listener playerListener = new KingdomsPlayerListener(this);
-	 private Listener inventoryListener = new KingdomsInventoryListener(this);
+	private Listener inventoryListener = new KingdomsInventoryListener(this);
 	private Listener mapListener = new KingdomsMapListener(this);
 
 	/**
@@ -99,7 +97,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		populateConfiguration();
 
 		try {
-			//wrapper.connectDatabase();
+			// wrapper.connectDatabase();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();
@@ -121,22 +119,21 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(ZombiesCommands.class);
 		commands.register(KingdomCommands.class);
 		commands.register(TownCommands.class);
-		commands.register(MapsCommands.class); 
+		commands.register(MapsCommands.class);
 
 		// commands.register(GeneralCommands.class);
 
 		// Register events
 		registerEvents();
 
-
 		gameLogic.addGame(new CaptureTheFlagGame(this));
 		gameLogic.addGame(new ZombiesGame(this));
-		 
+
+		gameLogic.addGame(new TownsGame(this));
+
 		// The permissions resolver has some hooks of its own
 		(new PermissionsResolverServerListener(perms)).register(this);
 	}
-
-
 
 	/**
 	 * Register the events that are used.
@@ -151,12 +148,10 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
 
 		registerEvent(Event.Type.PLAYER_MOVE, playerListener);
-		registerEvent(Event.Type.PLAYER_INTERACT, playerListener); 
+		registerEvent(Event.Type.PLAYER_INTERACT, playerListener);
 		registerEvent(Event.Type.PLAYER_JOIN, playerListener);
 		registerEvent(Event.Type.PLAYER_QUIT, playerListener);
 		registerEvent(Event.Type.PLAYER_RESPAWN, playerListener);
-
-
 
 		registerEvent(Event.Type.INVENTORY_TRANSACTION, inventoryListener);
 		registerEvent(Event.Type.INVENTORY_OPEN, inventoryListener);
@@ -308,6 +303,11 @@ public class KingdomsPlugin extends JavaPlugin {
 		if (!hasPermission(sender, perm)) {
 			throw new CommandPermissionsException();
 		}
+	}
+
+	public boolean blockClick(Block clickedBlock, Player player) {
+		return gameLogic.blockClick(clickedBlock, player);
+
 	}
 
 }

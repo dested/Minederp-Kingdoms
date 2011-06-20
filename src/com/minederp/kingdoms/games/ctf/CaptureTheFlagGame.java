@@ -63,7 +63,7 @@ public class CaptureTheFlagGame extends Game {
 
 	@Override
 	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
-		logic.clearReprint(movingPlayer, "Drawing");
+		logic.clearReprint(movingPlayer.getWorld(), "Drawing");
 		if (drawingRectangle == 2 && actingPlayer != null && actingPlayer.getName().equals(movingPlayer.getName())) {
 
 			Rectangle mRectangle = new Rectangle(gameLocation);
@@ -87,10 +87,10 @@ public class CaptureTheFlagGame extends Game {
 				for (int x = mRectangle.x; x >= mRectangle.x + mRectangle.width; x--) {
 
 					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
-							.getTypeId(), bc.getData(),"Drawing"));
+							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
-							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(),"Drawing"));
+							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
@@ -98,10 +98,10 @@ public class CaptureTheFlagGame extends Game {
 			else
 				for (int x = mRectangle.x; x <= mRectangle.x + mRectangle.width; x++) {
 					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
-							.getTypeId(), bc.getData(),"Drawing"));
+							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
-							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(),"Drawing"));
+							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
@@ -110,10 +110,10 @@ public class CaptureTheFlagGame extends Game {
 				for (int z = mRectangle.y; z >= mRectangle.y + mRectangle.height; z--) {
 
 					this.logic.blocksForReprint.add(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
-							.getTypeId(), bc.getData(),"Drawing"));
+							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 					this.logic.blocksForReprint.add(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
-							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(),"Drawing"));
+							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
@@ -121,10 +121,10 @@ public class CaptureTheFlagGame extends Game {
 				for (int z = mRectangle.y; z <= mRectangle.y + mRectangle.height; z++) {
 
 					this.logic.blocksForReprint.add(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
-							.getTypeId(), bc.getData(),"Drawing"));
+							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 					this.logic.blocksForReprint.add(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
-							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(),"Drawing"));
+							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
 				}
@@ -375,12 +375,12 @@ public class CaptureTheFlagGame extends Game {
 	}
 
 	@Override
-	public void blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(Block block, Player clickedPlayer) {
 
 		if (drawingRectangle > 0 && actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
 			drawRectangleLogic(block, clickedPlayer);
 
-			return;
+			return true;
 		}
 
 		for (CTFTeam team : teams) {
@@ -392,7 +392,7 @@ public class CaptureTheFlagGame extends Game {
 
 				team.setFlag = false;
 				team.setSpawn = false;
-				return;
+				return true;
 			}
 
 			if (team.setSpawn && actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
@@ -404,7 +404,7 @@ public class CaptureTheFlagGame extends Game {
 
 				team.setFlag = false;
 				team.setSpawn = false;
-				return;
+				return true;
 			}
 			if (team.flag == null || team.spawn == null || block == null || block.getLocation() == null)
 				continue;
@@ -428,7 +428,7 @@ public class CaptureTheFlagGame extends Game {
 									+ " points)");
 
 							fteam.withFlag = null;
-							return;
+							return true;
 						}
 					}
 
@@ -436,6 +436,7 @@ public class CaptureTheFlagGame extends Game {
 				}
 			}
 		}
+		return false;
 	}
 
 	private void drawRectangleLogic(Block block, Player clickedPlayer) {
@@ -691,6 +692,12 @@ public class CaptureTheFlagGame extends Game {
 	public void entityHurt(Entity entity, EntityDamageEvent event) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean blockPlaced(Block block, Player player) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

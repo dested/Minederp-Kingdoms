@@ -25,7 +25,7 @@ public abstract class Game {
 
 	public abstract boolean blockDestroyed(Block block, Player clickedPlayer);
 
-	public abstract void blockClick(Block block, Player clickedPlayer);
+	public abstract boolean blockClick(Block block, Player clickedPlayer);
 
 	public abstract void playerRespawn(Player player);
 
@@ -38,5 +38,7 @@ public abstract class Game {
 	public abstract void entityDied(Entity  entity, EntityDeathEvent event);
 
 	public abstract void entityHurt(Entity entity, EntityDamageEvent event);
+
+	public abstract boolean blockPlaced(Block block, Player player) ;
 
 }

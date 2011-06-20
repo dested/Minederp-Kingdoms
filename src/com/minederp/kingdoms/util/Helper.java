@@ -10,6 +10,7 @@ public class Helper {
 			player.sendMessage(message);
 		}
 	}
+
 	public static boolean containsPlayers(List<Player> players, Player play) {
 		for (Player player : players) {
 			if (player.getName().equals(play.getName())) {
@@ -17,5 +18,23 @@ public class Helper {
 			}
 		}
 		return false;
+	}
+
+	public static boolean argEquals(String string, String string2) {
+
+		if (string.toLowerCase().equals(string2.toLowerCase()))
+			return true;
+		StringBuilder sb=new StringBuilder();
+		for (char c: string2.toCharArray()) {
+			String h = Character.toString(c);
+			if(h.toUpperCase().equals(h)){
+				sb.append(h);
+			}
+		}
+		if (sb.toString().toLowerCase().equals(string.toLowerCase()))
+			return true;
+
+		return false;
+
 	}
 }

@@ -1,4 +1,4 @@
-package com.minederp.kingdoms;
+package com.minederp.kingdoms.listeners;
 
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryListener;
@@ -6,6 +6,8 @@ import org.bukkit.event.inventory.InventoryOpenedClosedEvent;
 import org.bukkit.event.inventory.InventoryTransactionEvent;
 import org.bukkit.event.inventory.TransactionType;
 import org.bukkit.inventory.Inventory;
+
+import com.minederp.kingdoms.KingdomsPlugin;
 
 public class KingdomsInventoryListener extends InventoryListener {
 	private final KingdomsPlugin kingdomsPlugin;

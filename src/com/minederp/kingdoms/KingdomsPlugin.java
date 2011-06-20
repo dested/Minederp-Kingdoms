@@ -43,7 +43,7 @@ import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
-import com.minederp.kingdoms.listeners.KingdomsEntityListener;
+import com.minederp.kingdoms.listeners.KingdomsEntityListener; 
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
 import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
@@ -78,6 +78,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private Listener blockListener = new KingdomsBlockListener(this);
 	private Listener entityListener = new KingdomsEntityListener(this);
 	private Listener playerListener = new KingdomsPlayerListener(this);
+	 private Listener inventoryListener = new KingdomsInventoryListener(this);
 	private Listener mapListener = new KingdomsMapListener(this);
 
 	/**
@@ -120,10 +121,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(ZombiesCommands.class);
 		commands.register(KingdomCommands.class);
 		commands.register(TownCommands.class);
-		commands.register(MapsCommands.class);
-
-		
-		
+		commands.register(MapsCommands.class); 
 
 		// commands.register(GeneralCommands.class);
 
@@ -153,12 +151,15 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
 
 		registerEvent(Event.Type.PLAYER_MOVE, playerListener);
-		registerEvent(Event.Type.PLAYER_INTERACT, playerListener);
+		registerEvent(Event.Type.PLAYER_INTERACT, playerListener); 
 		registerEvent(Event.Type.PLAYER_JOIN, playerListener);
 		registerEvent(Event.Type.PLAYER_QUIT, playerListener);
 		registerEvent(Event.Type.PLAYER_RESPAWN, playerListener);
-		registerEvent(Event.Type.PLAYER_PRELOGIN, playerListener);
 
+
+
+		registerEvent(Event.Type.INVENTORY_TRANSACTION, inventoryListener);
+		registerEvent(Event.Type.INVENTORY_OPEN, inventoryListener);
 		registerEvent(Event.Type.MAP_INITIALIZE, mapListener);
 	}
 

@@ -49,10 +49,8 @@ public class KingdomsPlayerListener extends PlayerListener {
 
 			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
 					+ " Has just begun his Kingdoms Journey.");
-		} else {
-
-			player.sendMessage(ChatColor.AQUA + " Welcome back to the game. Please read the help map. (Help map not available)");
-
+		} else { 
+			player.sendMessage(ChatColor.AQUA + " Welcome back to the game. Please read the help map. (Help map not available)"); 
 			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
 					+ " Has resumed his Kingdoms Journey.");
 		}

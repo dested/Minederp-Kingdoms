@@ -1,5 +1,6 @@
 package com.minederp.kingdoms.towns;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +22,19 @@ import com.minederp.kingdoms.util.Helper;
 import com.minederp.kingdoms.util.Polygon;
 import com.minederp.kingdoms.util.PolygonPoint;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.worldedit.blocks.BlockType;
 
 public class TownsGame extends Game {
 	private List<Player> playersInTheArea;
 	private List<Player> notPlayersInTheArea;
 
-	private Polygon townLocation=new Polygon(); 
+	private Polygon townLocation = new Polygon();
 	public int drawingPolygon;
 	private final KingdomsPlugin kingdomsPlugin;
+	private int polygonSetIndex = 0;
+
 	private Player actingPlayer;
-	private GameLogic logic; 
+	private GameLogic logic;
 
 	public TownsGame(KingdomsPlugin kingdomsPlugin) {
 		this.kingdomsPlugin = kingdomsPlugin;
@@ -46,12 +50,12 @@ public class TownsGame extends Game {
 		this.logic = logic;
 		playersInTheArea = new ArrayList<Player>();
 		notPlayersInTheArea = new ArrayList<Player>();
+		townLocation = new Polygon();
 	}
 
 	@Override
 	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
 		logic.clearReprint(movingPlayer.getWorld(), "Drawing");
-		 
 
 		if (townLocation.contains(to.getBlockX(), to.getBlockZ())) {
 
@@ -99,15 +103,14 @@ public class TownsGame extends Game {
 			return;
 		}
 		if (Helper.argEquals(args.getString(0), "SetPolygon")) {
-			player.sendMessage(ChatColor.LIGHT_PURPLE+ "The next block you click will be the first corner");
-			player.sendMessage(ChatColor.AQUA+ "Right click the last block to end the polygon");
-			player.sendMessage(ChatColor.GOLD+ "Sneak + click to remove a corner.");
-			
-			
+			player.sendMessage(ChatColor.LIGHT_PURPLE + "    The next block you click will be the first corner");
+			player.sendMessage(ChatColor.AQUA + "      Right click the last block to end the polygon");
+			player.sendMessage(ChatColor.GOLD + "      Sneak + click to remove a corner.");
+
 			drawingPolygon = 1;
 			actingPlayer = player;
+			drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
 
-			townLocation = new Polygon();
 			return;
 		}
 
@@ -115,7 +118,7 @@ public class TownsGame extends Game {
 
 	private void showWalls(World w, boolean b) {
 		if (b)
-			drawPolygon(Material.GOLD_BLOCK, w);
+			drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, w);
 		else {
 
 			logic.clearReprint(w, "Line");
@@ -135,35 +138,71 @@ public class TownsGame extends Game {
 
 			int y;
 			Location loc = clickedBlock.getLocation();
-			if (townLocation.size() > 1) {
-				y = townLocation.get(0).Y;
-			} else
+		//	if (townLocation.size() > 1) {
+		//		y = townLocation.get(0).Y;
+		//	} else
 				y = loc.getBlockY();
 
 			if (player.isSneaking()) {
-				townLocation.remove(loc.getBlockX(), y, loc.getBlockZ());
 				player.sendMessage(ChatColor.GREEN + "Corner Removed.");
-			} else {
-				townLocation.add(new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
-				player.sendMessage(ChatColor.GREEN + "Corner Added.");
+				townLocation.remove(loc.getBlockX(), y, loc.getBlockZ());
+				polygonSetIndex--;
 
+			} else {
+
+				for (int i = 0; i < townLocation.size(); i++) {
+					PolygonPoint p = townLocation.get(i);
+					if (p.X == loc.getBlockX() && p.Z == loc.getBlockZ()) {
+						polygonSetIndex = i + 1;
+						player.sendMessage(ChatColor.GREEN + "Corner Selected.");
+
+						drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
+						return true;
+					}
+
+				}
+
+				if (polygonSetIndex == townLocation.size()) {
+					townLocation.add(new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
+					polygonSetIndex++;
+				} else {
+					townLocation.add(polygonSetIndex, new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
+					polygonSetIndex++;
+				}
+
+				player.sendMessage(ChatColor.GREEN + "Corner Added.");
 			}
 
-			drawPolygon(Material.OBSIDIAN, player.getWorld());
+			drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
 			return true;
 		}
 		return false;
 	}
 
-	private void drawPolygon(Material mat, World world) {
+	private void drawPolygon(Material mat, Material mat2, World world) {
+		if (townLocation == null || townLocation.size()==0)
+			return;
 		for (int i = 0; i < townLocation.size() - 1; i++) {
 			PolygonPoint p = townLocation.get(i);
 			PolygonPoint p2 = townLocation.get(i + 1);
-			drawLineInternal(world, mat, p.X, p.Z, p2.X, p2.Z, p.Y);
+			drawLineInternal(world, mat, p.X, p.Z, p2.X, p2.Z);
+
 		}
 		PolygonPoint p = townLocation.get(townLocation.size() - 1);
 		PolygonPoint p2 = townLocation.get(0);
-		drawLineInternal(world, mat, p.X, p.Z, p2.X, p2.Z, p.Y);
+		drawLineInternal(world, mat, p.X, p.Z, p2.X, p2.Z);
+
+		for (int i = 0; i < townLocation.size(); i++) {
+			p = townLocation.get(i);
+			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
+			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			bl.setType(mat2);
+		}
+
+		p = townLocation.get(polygonSetIndex - 1);
+		Block bl = world.getBlockAt(p.X, p.Y, p.Z);
+		kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+		bl.setType(Material.GOLD_BLOCK);
 	}
 
 	@Override
@@ -221,7 +260,7 @@ public class TownsGame extends Game {
 
 	}
 
-	public void drawLineInternal(World world, Material type, int p1X, int p1Y, int p2X, int p2Y, int Y) {
+	public void drawLineInternal(World world, Material type, int p1X, int p1Y, int p2X, int p2Y) {
 		int dx = Math.abs(p2X - p1X);
 		int dy = Math.abs(p2Y - p1Y);
 		int sx = 1, sy = 1, e2;
@@ -231,7 +270,14 @@ public class TownsGame extends Game {
 		if (p1Y > p2Y)
 			sy = -1;
 		while (true) {
-			Block bl = world.getBlockAt(p1X, Y, p1Y);
+			Block bl = null;
+			int Y;
+			for (Y = 127; Y > 0; Y--) {
+				bl = world.getBlockAt(p1X, Y, p1Y);
+				if (!BlockType.canPassThrough(bl.getTypeId()))
+					break;
+			}
+
 			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"));
 			bl.setType(type);
 			if (p1X == p2X && p1Y == p2Y)

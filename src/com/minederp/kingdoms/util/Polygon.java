@@ -17,6 +17,20 @@ public class Polygon {
 		myPoly.addPoint(p.X, p.Z);
 	}
 
+	public void add(int index, PolygonPoint p) {
+		points.add(index, p);
+
+		myPoly = new java.awt.Polygon();
+		int ind = 0;
+		for (PolygonPoint pc : points) {
+			if (index == ind)
+				myPoly.addPoint(p.X, p.Z);
+			myPoly.addPoint(pc.X, pc.Z);
+			ind++;
+		}
+
+	}
+
 	public boolean contains(Point p) {
 		return myPoly.contains(p);
 	}

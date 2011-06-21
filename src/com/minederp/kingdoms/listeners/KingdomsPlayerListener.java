@@ -64,8 +64,8 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
-		Location l = event.getPlayer().getLocation();
-		event.getPlayer().getLocation().getBlock().getChunk().setLight(l.getBlockX(), l.getBlockY(), l.getBlockZ(), 15);
+	//	Location l = event.getPlayer().getLocation();
+	//	event.getPlayer().getLocation().getBlock().getChunk().setLight(l.getBlockX(), l.getBlockY(), l.getBlockZ(), 15);
 
 		kingdomsPlugin.gameLogic.updatePlayerGamePosition(event.getPlayer(), event.getTo());
 

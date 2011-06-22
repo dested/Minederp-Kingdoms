@@ -24,11 +24,12 @@ import com.minederp.kingdoms.util.PolygonPoint;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.worldedit.blocks.BlockType;
 
-public class TownsGame extends Game {
+public class KingdomsGame extends Game {
+
 	private List<Player> playersInTheArea;
 	private List<Player> notPlayersInTheArea;
 
-	private Polygon townLocation = new Polygon();
+	private Polygon kingdomSplit = new Polygon();
 	public int drawingPolygon;
 	private final KingdomsPlugin kingdomsPlugin;
 	private int polygonSetIndex = 0;
@@ -36,7 +37,7 @@ public class TownsGame extends Game {
 	private Player actingPlayer;
 	private GameLogic logic;
 
-	public TownsGame(KingdomsPlugin kingdomsPlugin) {
+	public KingdomsGame(KingdomsPlugin kingdomsPlugin) {
 		this.kingdomsPlugin = kingdomsPlugin;
 	}
 
@@ -50,24 +51,13 @@ public class TownsGame extends Game {
 		this.logic = logic;
 		playersInTheArea = new ArrayList<Player>();
 		notPlayersInTheArea = new ArrayList<Player>();
-		townLocation = new Polygon();
+		kingdomSplit = new Polygon();
 	}
 
 	@Override
 	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
-		logic.clearReprint(movingPlayer.getWorld(), "Drawing");
 
-		if (townLocation.contains(to.getBlockX(), to.getBlockZ())) {
-
-			if (Helper.containsPlayers(playersInTheArea, movingPlayer)) {
-				return;
-			}
-			notPlayersInTheArea.remove(movingPlayer);
-			movingPlayer.sendMessage(ChatColor.AQUA + " You have entered the town.");
-			playersInTheArea.add(movingPlayer);
-			return;
-		}
-
+ 
 		if (Helper.containsPlayers(notPlayersInTheArea, movingPlayer)) {
 			return;
 		}
@@ -102,7 +92,18 @@ public class TownsGame extends Game {
 				showWalls(player.getWorld(), true);
 			return;
 		}
-		if (Helper.argEquals(args.getString(0), "SetPolygon")) {
+		if (Helper.argEquals(args.getString(0), "ModifyLine")) {
+			player.sendMessage(ChatColor.LIGHT_PURPLE + "    The next block you click will be the first corner");
+			player.sendMessage(ChatColor.AQUA + "      Right click the last block to end the polygon");
+			player.sendMessage(ChatColor.GOLD + "      Sneak + click to remove a corner.");
+
+			drawingPolygon = 1;
+			actingPlayer = player;
+			drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
+
+			return;
+		}
+		if (Helper.argEquals(args.getString(0), "Kingdom")) {
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "    The next block you click will be the first corner");
 			player.sendMessage(ChatColor.AQUA + "      Right click the last block to end the polygon");
 			player.sendMessage(ChatColor.GOLD + "      Sneak + click to remove a corner.");
@@ -133,75 +134,12 @@ public class TownsGame extends Game {
 	@Override
 	public boolean blockClick(Block clickedBlock, Player player) {
 
-		if (drawingPolygon > 0 && actingPlayer.getName().equals(player.getName())) {
-			logic.clearReprint(player.getWorld(), "Line");
-
-			int y;
-			Location loc = clickedBlock.getLocation();
-			// if (townLocation.size() > 1) {
-			// y = townLocation.get(0).Y;
-			// } else
-			y = loc.getBlockY();
-
-			if (player.isSneaking()) {
-				player.sendMessage(ChatColor.GREEN + "Corner Removed.");
-				townLocation.remove(loc.getBlockX(), y, loc.getBlockZ());
-				polygonSetIndex--;
-
-			} else {
-
-				for (int i = 0; i < townLocation.size(); i++) {
-					PolygonPoint p = townLocation.get(i);
-					if (p.X == loc.getBlockX() && p.Z == loc.getBlockZ()) {
-						polygonSetIndex = i + 1;
-						player.sendMessage(ChatColor.GREEN + "Corner Selected.");
-
-						drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
-						return true;
-					}
-				}
-
-				if (polygonSetIndex == townLocation.size()) {
-					townLocation.add(new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
-					polygonSetIndex++;
-				} else {
-					townLocation.add(polygonSetIndex, new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
-					polygonSetIndex++;
-				}
-
-				player.sendMessage(ChatColor.GREEN + "Corner Added.");
-			}
-
-			drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
-			return true;
-		}
+		 
 		return false;
 	}
 
 	private void drawPolygon(Material mat, Material mat2, World world) {
-		if (townLocation == null || townLocation.size() == 0)
-			return;
-		for (int i = 0; i < townLocation.size() - 1; i++) {
-			PolygonPoint p = townLocation.get(i);
-			PolygonPoint p2 = townLocation.get(i + 1);
-			drawLineInternal(world, mat, p.X, p.Z, p2.X, p2.Z);
-
-		}
-		PolygonPoint p = townLocation.get(townLocation.size() - 1);
-		PolygonPoint p2 = townLocation.get(0);
-		drawLineInternal(world, mat, p.X, p.Z, p2.X, p2.Z);
-
-		for (int i = 0; i < townLocation.size(); i++) {
-			p = townLocation.get(i);
-			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
-			bl.setType(mat2);
-		}
-
-		p = townLocation.get(polygonSetIndex - 1);
-		Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-		kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
-		bl.setType(Material.GOLD_BLOCK);
+		 
 	}
 
 	@Override

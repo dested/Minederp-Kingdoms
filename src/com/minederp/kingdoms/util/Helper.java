@@ -24,10 +24,10 @@ public class Helper {
 
 		if (string.toLowerCase().equals(string2.toLowerCase()))
 			return true;
-		StringBuilder sb=new StringBuilder();
-		for (char c: string2.toCharArray()) {
+		StringBuilder sb = new StringBuilder();
+		for (char c : string2.toCharArray()) {
 			String h = Character.toString(c);
-			if(h.toUpperCase().equals(h)){
+			if (h.toUpperCase().equals(h)) {
 				sb.append(h);
 			}
 		}

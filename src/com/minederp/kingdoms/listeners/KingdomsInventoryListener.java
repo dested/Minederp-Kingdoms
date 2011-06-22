@@ -18,8 +18,10 @@ public class KingdomsInventoryListener extends InventoryListener {
 	}
 
 	public void onInventoryTransaction(InventoryTransactionEvent event) {
-		if (one != null && two  != null && two.getName().equals(event.getContainer().getName())) {
-			if (event.getRightType() == TransactionType.Chest && event.getLeft()!=null) {
+		if (true)
+			return;
+		if (one != null && two != null && two.getName().equals(event.getContainer().getName())) {
+			if (event.getRightType() == TransactionType.Chest && event.getLeft() != null) {
 				one.addItem(event.getLeft());
 				event.setLeft(null);
 			}
@@ -30,6 +32,8 @@ public class KingdomsInventoryListener extends InventoryListener {
 	Inventory two;
 
 	public void onInventoryOpened(InventoryOpenedClosedEvent event) {
+		if (true)
+			return;
 		if (one == null)
 			one = event.getContainer();
 		else

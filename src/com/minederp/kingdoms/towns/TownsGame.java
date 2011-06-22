@@ -206,7 +206,7 @@ public class TownsGame extends Game {
 		for (int i = 0; i < townLocation.size(); i++) {
 			p = townLocation.get(i);
 			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			kingdomsPlugin.gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
 			bl.setType(mat2);
 		}
 
@@ -214,12 +214,12 @@ public class TownsGame extends Game {
 
 			p = townLocation.get(polygonMoveIndex - 1);
 			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			kingdomsPlugin.gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
 			bl.setType(Material.CLAY_BRICK);
 		} else {
 			p = townLocation.get(polygonSetIndex - 1);
 			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			kingdomsPlugin.gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
 			bl.setType(Material.GOLD_BLOCK);
 		}
 	}
@@ -317,7 +317,7 @@ public class TownsGame extends Game {
 					break;
 			}
 
-			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"));
+			kingdomsPlugin.gameLogic.addBlockForReprint(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"));
 			bl.setType(type);
 			if (p1X == p2X && p1Y == p2Y)
 				break;

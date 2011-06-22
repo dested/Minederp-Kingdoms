@@ -3,6 +3,8 @@ package com.minederp.kingdoms.util;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class Helper {
 	public static void messagePlayerInList(List<Player> players, String message) {
@@ -52,18 +54,36 @@ public class Helper {
 		}
 		return hIndex;
 	}
+
 	public static int lowestIndex(double[] distances) {
 
-		double lowest= Double.MAX_VALUE;
+		double lowest = Double.MAX_VALUE;
 		int lIndex = 0;
 
 		for (int i = 0; i < distances.length; i++) {
 			double d = distances[i];
-			if (lowest< d) {
+			if (lowest < d) {
 				lIndex = i;
 				lowest = d;
 			}
 		}
 		return lIndex;
 	}
+
+	public static Tuple2<ItemStack, Integer> firstNonEmpty(Inventory inventory) {
+		int index = 0;
+		for (ItemStack st : inventory.getContents()) {
+			if (st == null) {
+				index++;
+				continue;
+			}
+			if (st.getAmount() == 0 || st.getTypeId() == 0) {
+				index++;
+				continue;
+			}
+			return new Tuple2<ItemStack, Integer>(st, index);
+		}
+		return null;
+	}
+
 }

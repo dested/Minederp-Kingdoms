@@ -36,11 +36,11 @@ public class GameLogic extends Game {
 		return false;
 	}
 
-	public List<GameItem> blocksForReprint = new ArrayList<GameItem>();
+	private List<GameItem> blocksForReprint = new ArrayList<GameItem>();
 
 	public void clearReprint(World w, String key) {
 		if (blocksForReprint.size() > 0) {
-			
+
 			for (int i = blocksForReprint.size() - 1; i >= 0; i--) {
 				GameItem it = blocksForReprint.get(i);
 				if (it.Key.equals(key)) {
@@ -50,7 +50,19 @@ public class GameLogic extends Game {
 
 			}
 
-		} 
+		}
+	}
+
+	public void addBlockForReprint(GameItem item) {
+		if (blocksForReprint.size() > 0) {
+			for (int i = blocksForReprint.size() - 1; i >= 0; i--) {
+				GameItem it = blocksForReprint.get(i);
+				if (item.X == it.X && item.Y == it.Y && item.Z == it.Z) {
+					return;
+				}
+			}
+		}
+		blocksForReprint.add(item);
 	}
 
 	@Override

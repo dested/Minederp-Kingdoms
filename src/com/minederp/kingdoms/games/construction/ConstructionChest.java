@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Chest;
+import org.bukkit.craftbukkit.block.CraftChest;
 
 public class ConstructionChest {
 
@@ -20,6 +21,7 @@ public class ConstructionChest {
 	}
 
 	public Chest getChest() {
+		chest=new CraftChest(chest.getBlock());
 		return chest;
 	}
 

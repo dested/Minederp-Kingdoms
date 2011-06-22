@@ -63,15 +63,26 @@ public class ConstructionGame extends Game {
 		this.logic = logic;
 		ConstructionModel mod;
 		models.put("wall", mod = new ConstructionModel("wall"));
-		boolean[][][] ml = new boolean[10][5][4];
-		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 5; y++) {
-				for (int z = 0; z < 4; z++) {
-					ml[x][y][z] = true;
+		boolean[][][] ml = new boolean[12][17][9];
+		for (int x = 0; x < 12; x++) {
+			for (int y = 0; y < 17; y++) {
+				for (int z = 0; z < 9; z++) {
+					if (y < 14) {
+						if (x == 0 || x == 11 || x == 1 || x == 10) {
+							if (!(z == 5 || z == 6) && y<5)
+								ml[x][y][z] = true;
+						}
+						if (z == 0 || z == 8) {
+							ml[x][y][z] = true;
+						}
+					} else {
+						ml[x][y][z] = true;
+					}
+
 				}
 			}
 		}
-		mod.addModelChunk(new ConstructionChunk(ml, 10, 5, 4));
+		mod.addModelChunk(new ConstructionChunk(ml, 12, 17, 9));
 	}
 
 	@Override

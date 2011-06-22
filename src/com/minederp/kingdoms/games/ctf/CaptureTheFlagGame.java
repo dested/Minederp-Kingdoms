@@ -86,10 +86,10 @@ public class CaptureTheFlagGame extends Game {
 			if (mRectangle.x > mRectangle.x + mRectangle.width)
 				for (int x = mRectangle.x; x >= mRectangle.x + mRectangle.width; x--) {
 
-					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
+					this.logic.addBlockForReprint(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
 							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
+					this.logic.addBlockForReprint(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
 							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
@@ -97,10 +97,10 @@ public class CaptureTheFlagGame extends Game {
 
 			else
 				for (int x = mRectangle.x; x <= mRectangle.x + mRectangle.width; x++) {
-					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
+					this.logic.addBlockForReprint(new GameItem(x, y, mRectangle.y, (bc = movingPlayer.getWorld().getBlockAt(x, y, mRectangle.y))
 							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					this.logic.blocksForReprint.add(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
+					this.logic.addBlockForReprint(new GameItem(x, y, mRectangle.y + mRectangle.height, (bc = movingPlayer.getWorld().getBlockAt(x,
 							y, mRectangle.y + mRectangle.height)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
@@ -109,10 +109,10 @@ public class CaptureTheFlagGame extends Game {
 			if (mRectangle.y > mRectangle.y + mRectangle.height)
 				for (int z = mRectangle.y; z >= mRectangle.y + mRectangle.height; z--) {
 
-					this.logic.blocksForReprint.add(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
+					this.logic.addBlockForReprint(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
 							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					this.logic.blocksForReprint.add(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
+					this.logic.addBlockForReprint(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
 							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 
@@ -120,10 +120,10 @@ public class CaptureTheFlagGame extends Game {
 			else
 				for (int z = mRectangle.y; z <= mRectangle.y + mRectangle.height; z++) {
 
-					this.logic.blocksForReprint.add(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
+					this.logic.addBlockForReprint(new GameItem(mRectangle.x, y, z, (bc = movingPlayer.getWorld().getBlockAt(mRectangle.x, y, z))
 							.getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
-					this.logic.blocksForReprint.add(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
+					this.logic.addBlockForReprint(new GameItem(mRectangle.x + mRectangle.width, y, z, (bc = movingPlayer.getWorld().getBlockAt(
 							mRectangle.x + mRectangle.width, y, z)).getTypeId(), bc.getData(), "Drawing"));
 					bc.setType(Material.DIAMOND_BLOCK);
 

@@ -213,7 +213,7 @@ public class KingdomsGame extends Game {
 					break;
 			}
 
-			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"));
+			kingdomsPlugin.gameLogic.addBlockForReprint(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"));
 			bl.setType(type);
 			if (p1X == p2X && p1Y == p2Y)
 				break;

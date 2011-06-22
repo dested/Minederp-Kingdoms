@@ -193,7 +193,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 */
 			break;
 		case LEFT_CLICK_BLOCK:
-			event.setCancelled(!kingdomsPlugin.blockClick(event.getClickedBlock(), event.getPlayer()));
+			event.setCancelled(kingdomsPlugin.blockClick(event.getClickedBlock(), event.getPlayer()));
 
 			break;
 		case PHYSICAL:
@@ -201,7 +201,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 		case RIGHT_CLICK_AIR:
 			break;
 		case RIGHT_CLICK_BLOCK:
-			event.setCancelled(!this.kingdomsPlugin.gameLogic.blockPlaced(event.getClickedBlock(), event.getPlayer()));
+			event.setCancelled(this.kingdomsPlugin.gameLogic.blockPlaced(event.getClickedBlock(), event.getPlayer()));
 
 			break;
 

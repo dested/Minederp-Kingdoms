@@ -37,4 +37,33 @@ public class Helper {
 		return false;
 
 	}
+
+	public static int highestInsdex(double[] distances) {
+
+		double highest = 0;
+		int hIndex = 0;
+
+		for (int i = 0; i < distances.length; i++) {
+			double d = distances[i];
+			if (highest > d) {
+				hIndex = i;
+				highest = d;
+			}
+		}
+		return hIndex;
+	}
+	public static int lowestIndex(double[] distances) {
+
+		double lowest= Double.MAX_VALUE;
+		int lIndex = 0;
+
+		for (int i = 0; i < distances.length; i++) {
+			double d = distances[i];
+			if (lowest< d) {
+				lIndex = i;
+				lowest = d;
+			}
+		}
+		return lIndex;
+	}
 }

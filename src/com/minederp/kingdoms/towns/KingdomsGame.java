@@ -55,9 +55,7 @@ public class KingdomsGame extends Game {
 	}
 
 	@Override
-	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
-
- 
+	public void updatePlayerGamePosition(Player movingPlayer, Location to) {  
 		if (Helper.containsPlayers(notPlayersInTheArea, movingPlayer)) {
 			return;
 		}
@@ -128,7 +126,7 @@ public class KingdomsGame extends Game {
 
 	@Override
 	public boolean blockDestroyed(Block block, Player clickedPlayer) {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -164,7 +162,7 @@ public class KingdomsGame extends Game {
 
 	@Override
 	public boolean playerFight(Player damagee, Player damager) {
-		return true;
+		return false;
 
 	}
 

@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,6 +34,7 @@ public class TownsGame extends Game {
 	public int drawingPolygon;
 	private final KingdomsPlugin kingdomsPlugin;
 	private int polygonSetIndex = 0;
+	private int polygonMoveIndex = 0;
 
 	private Player actingPlayer;
 	private GameLogic logic;
@@ -127,7 +130,7 @@ public class TownsGame extends Game {
 
 	@Override
 	public boolean blockDestroyed(Block block, Player clickedPlayer) {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -142,6 +145,15 @@ public class TownsGame extends Game {
 			// y = townLocation.get(0).Y;
 			// } else
 			y = loc.getBlockY();
+
+			if (drawingPolygon == 2) {
+				drawingPolygon = 1;
+				townLocation.setIndex(polygonMoveIndex, loc.getBlockX(), y, loc.getBlockZ());
+				polygonMoveIndex = -1;
+				player.sendMessage(ChatColor.GREEN + "Corner Moved.");
+				drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
+				return true;
+			}
 
 			if (player.isSneaking()) {
 				player.sendMessage(ChatColor.GREEN + "Corner Removed.");
@@ -198,17 +210,45 @@ public class TownsGame extends Game {
 			bl.setType(mat2);
 		}
 
-		p = townLocation.get(polygonSetIndex - 1);
-		Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-		kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
-		bl.setType(Material.GOLD_BLOCK);
+		if (polygonMoveIndex >= 0) {
+
+			p = townLocation.get(polygonMoveIndex - 1);
+			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
+			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			bl.setType(Material.CLAY_BRICK);
+		} else {
+			p = townLocation.get(polygonSetIndex - 1);
+			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
+			kingdomsPlugin.gameLogic.blocksForReprint.add(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			bl.setType(Material.GOLD_BLOCK);
+		}
 	}
 
 	@Override
 	public boolean blockPlaced(Block block, Player player) {
 		if (drawingPolygon == 1 && actingPlayer.getName().equals(player.getName())) {
-			drawingPolygon = 0;
-			logic.clearReprint(player.getWorld(), "Line");
+
+			if (player.isSneaking()) {
+				drawingPolygon = 2;
+
+				Location loc = block.getLocation();
+				for (int i = 0; i < townLocation.size(); i++) {
+					PolygonPoint p = townLocation.get(i);
+					polygonSetIndex = -1;
+					if (p.X == loc.getBlockX() && p.Z == loc.getBlockZ()) {
+						polygonMoveIndex = i + 1;
+						player.sendMessage(ChatColor.GREEN + "Corner Selected For Movement.");
+						drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, player.getWorld());
+
+					}
+				}
+				return true;
+
+			} else {
+
+				drawingPolygon = 0;
+				logic.clearReprint(player.getWorld(), "Line");
+			}
 			return true;
 		}
 		return false;

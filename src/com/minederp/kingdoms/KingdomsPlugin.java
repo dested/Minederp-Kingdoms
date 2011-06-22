@@ -22,6 +22,9 @@ package com.minederp.kingdoms;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.minecraft.server.World;
+
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -35,6 +38,7 @@ import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.games.construction.ConstructionGame;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
@@ -120,6 +124,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(KingdomCommands.class);
 		commands.register(TownCommands.class);
 		commands.register(MapsCommands.class);
+		commands.register(ConstructionCommands.class);
 
 		// commands.register(GeneralCommands.class);
 
@@ -130,6 +135,10 @@ public class KingdomsPlugin extends JavaPlugin {
 		gameLogic.addGame(new ZombiesGame(this));
 
 		gameLogic.addGame(new TownsGame(this));
+		for (org.bukkit.World w : getServer().getWorlds()) {
+			gameLogic.addGame(new ConstructionGame(this,w));
+			
+		}
 
 		// The permissions resolver has some hooks of its own
 		(new PermissionsResolverServerListener(perms)).register(this);

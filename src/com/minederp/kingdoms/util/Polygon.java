@@ -61,4 +61,12 @@ public class Polygon {
 	public PolygonPoint get(int i) {
 		return points.get(i);
 	}
+
+	public void setIndex(int polygonMoveIndex, int x, int y, int z) {
+		points.set(polygonMoveIndex, new PolygonPoint(x, y, z));
+		myPoly = new java.awt.Polygon();
+		for (PolygonPoint p : points) {
+			myPoly.addPoint(p.X, p.Z);
+		}
+	}
 }

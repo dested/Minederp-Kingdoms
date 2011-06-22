@@ -26,4 +26,13 @@ commands:
     t:
         description: Town based commands
         usage: /t (ShowWalls(False|True)|SetPolygon)
+    town:
+        description: Town based commands
+        usage: /t (ShowWalls(False|True)|SetPolygon)
+    c:
+        description: Construction based commands
+        usage: /t (CreateJob(jobname)|AddChestToJob(jobname)|AddCraneToJob(jobname))
+    construction:
+        description: Construction based commands
+        usage: /t (CreateJob(jobname)|AddChestToJob(jobname)|AddCraneToJob(jobname))
         

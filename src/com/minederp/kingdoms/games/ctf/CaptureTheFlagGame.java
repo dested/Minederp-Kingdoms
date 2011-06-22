@@ -324,10 +324,10 @@ public class CaptureTheFlagGame extends Game {
 		if (block.getType() != Material.FENCE) {
 			if (gameLocation.x <= block.getX() && gameLocation.x + gameLocation.width >= block.getX() && gameLocation.y <= block.getZ()
 					&& gameLocation.y + gameLocation.height >= block.getZ()) {
-				return false;
+				return true;
 			}
 
-			return true;
+			return false;
 		}
 
 		for (CTFTeam team : teams) {
@@ -340,7 +340,7 @@ public class CaptureTheFlagGame extends Game {
 			if (blockLoc.getZ() == team.flag.getZ() && blockLoc.getX() == team.flag.getX()) {
 				if (Helper.containsPlayers(team.players, clickedPlayer)) {
 					clickedPlayer.sendMessage(ChatColor.RED + "You cannot capture your own flag");
-					return false;
+					return true;
 				}
 
 				for (CTFTeam fteam : teams) {
@@ -363,7 +363,7 @@ public class CaptureTheFlagGame extends Game {
 								clickedPlayer.getInventory().addItem(itm);
 							}
 
-							return false;
+							return true;
 						}
 					}
 				}

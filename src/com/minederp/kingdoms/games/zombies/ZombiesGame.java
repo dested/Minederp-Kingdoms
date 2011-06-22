@@ -402,12 +402,11 @@ public class ZombiesGame extends Game {
 		if (gameIsHappening) {
 			if (gameLocation.x <= block.getX() && gameLocation.x + gameLocation.width >= block.getX() && gameLocation.y <= block.getZ()
 					&& gameLocation.y + gameLocation.height >= block.getZ()) {
-				return false;
+				return true;
 			}
 
 		}
-		return true;// never destory the pole
-
+		return false;
 	}
 
 	@Override
@@ -432,8 +431,8 @@ public class ZombiesGame extends Game {
 				return true;
 			}
 
-		}		return false;
-
+		}
+		return false;
 
 	}
 

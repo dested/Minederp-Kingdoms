@@ -50,8 +50,7 @@ public class GameLogic extends Game {
 
 			}
 
-		}
-
+		} 
 	}
 
 	@Override

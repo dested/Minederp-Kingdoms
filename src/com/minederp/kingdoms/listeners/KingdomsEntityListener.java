@@ -47,7 +47,7 @@ public class KingdomsEntityListener extends EntityListener {
 
 			if (event instanceof EntityDamageByEntityEvent && event.getEntity() instanceof Player
 					&& ((EntityDamageByEntityEvent) event).getDamager() instanceof Player) {
-				event.setCancelled(!kingdomsPlugin.gameLogic.playerFight((Player) event.getEntity(),
+				event.setCancelled(kingdomsPlugin.gameLogic.playerFight((Player) event.getEntity(),
 						(Player) ((EntityDamageByEntityEvent) event).getDamager()));
 			}
 		}

@@ -24,6 +24,6 @@ public class KingdomsBlockListener extends BlockListener {
 	}
 
 	public void onBlockBreak(BlockBreakEvent event) {
-		event.setCancelled(!this.kingdomsPlugin.gameLogic.blockDestroyed(event.getBlock(), event.getPlayer()));
+		event.setCancelled(this.kingdomsPlugin.gameLogic.blockDestroyed(event.getBlock(), event.getPlayer()));
 	}
 }

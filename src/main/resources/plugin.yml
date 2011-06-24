@@ -41,4 +41,8 @@ commands:
     bulldozer:
         description: Bulldozer based commands
         usage: /b ()
+    tc:
+        description: Tictactoe based commands
+        usage: /tc ()
+       
         

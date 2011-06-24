@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 
+ */
 package com.minederp.kingdoms;
 
 import java.io.*;
@@ -38,6 +38,7 @@ import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.games.bulldozer.BulldozerGame;
 import com.minederp.kingdoms.games.construction.ConstructionGame;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
@@ -46,6 +47,7 @@ import com.minederp.kingdoms.listeners.KingdomsEntityListener;
 import com.minederp.kingdoms.listeners.KingdomsInventoryListener;
 import com.minederp.kingdoms.listeners.KingdomsMapListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
+import com.minederp.kingdoms.listeners.KingdomsVehicleListener;
 import com.minederp.kingdoms.towns.TownsGame;
 import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
@@ -82,6 +84,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	private Listener playerListener = new KingdomsPlayerListener(this);
 	private Listener inventoryListener = new KingdomsInventoryListener(this);
 	private Listener mapListener = new KingdomsMapListener(this);
+	private Listener vehicleListener = new KingdomsVehicleListener(this);
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -101,7 +104,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		populateConfiguration();
 
 		try {
-			 wrapper.connectDatabase();
+			wrapper.connectDatabase();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Mysql cannot be connected");
 			e.printStackTrace();
@@ -120,6 +123,7 @@ public class KingdomsPlugin extends JavaPlugin {
 			}
 		};
 		commands.register(CTFCommands.class);
+		commands.register(BulldozerCommands.class);
 		commands.register(ZombiesCommands.class);
 		commands.register(KingdomCommands.class);
 		commands.register(TownCommands.class);
@@ -135,9 +139,11 @@ public class KingdomsPlugin extends JavaPlugin {
 		gameLogic.addGame(new ZombiesGame(this));
 
 		gameLogic.addGame(new TownsGame(this));
+		//gameLogic.addGame(new VehicleGame(this));
 		for (org.bukkit.World w : getServer().getWorlds()) {
-			gameLogic.addGame(new ConstructionGame(this,w));
-			
+			gameLogic.addGame(new ConstructionGame(this, w));
+			gameLogic.addGame(new BulldozerGame(this, w));
+
 		}
 
 		// The permissions resolver has some hooks of its own
@@ -162,6 +168,10 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.PLAYER_QUIT, playerListener);
 		registerEvent(Event.Type.PLAYER_RESPAWN, playerListener);
 
+		registerEvent(Event.Type.VEHICLE_EXIT, vehicleListener);
+		registerEvent(Event.Type.VEHICLE_ENTER, vehicleListener);
+		registerEvent(Event.Type.VEHICLE_MOVE, vehicleListener);
+		
 		registerEvent(Event.Type.INVENTORY_TRANSACTION, inventoryListener);
 		registerEvent(Event.Type.INVENTORY_OPEN, inventoryListener);
 		registerEvent(Event.Type.MAP_INITIALIZE, mapListener);

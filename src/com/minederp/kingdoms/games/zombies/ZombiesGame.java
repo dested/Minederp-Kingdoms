@@ -52,7 +52,6 @@ public class ZombiesGame extends Game {
 
 	private boolean setZombieSpawn;
 
-	private Random randomizer = new Random();
 
 	private Runnable zombieMaker = new Runnable() {
 
@@ -63,12 +62,12 @@ public class ZombiesGame extends Game {
 				return;
 			}
 
-			int jc = randomizer.nextInt(4 * playingInTheArea.size());
+			int jc = logic.randomizer.nextInt(4 * playingInTheArea.size());
 
 			for (int i = 0; i < jc; i++) {
 
 				CreatureType t;
-				switch (randomizer.nextInt(3)) {
+				switch (logic.randomizer.nextInt(3)) {
 				case 0:
 					t = CreatureType.SKELETON;
 					break;
@@ -83,7 +82,7 @@ public class ZombiesGame extends Game {
 					break;
 				}
 
-				Location j = zombieSpawns.get(randomizer.nextInt(zombieSpawns.size()));
+				Location j = zombieSpawns.get(logic.randomizer.nextInt(zombieSpawns.size()));
 				zombieEntities.add(gameWorld.spawnCreature(new Location(j.getWorld(), j.getBlockX(), j.getBlockY() + 1, j.getBlockZ()), t)
 						.getEntityId());
 			}
@@ -277,7 +276,7 @@ public class ZombiesGame extends Game {
 	private Location getPlayerSpawn() {
 		if (playerSpawns.size() == 0)
 			return null;
-		return playerSpawns.get(randomizer.nextInt(playerSpawns.size()));
+		return playerSpawns.get(logic.randomizer.nextInt(playerSpawns.size()));
 	}
 
 	private Timer respawn = new Timer();
@@ -631,7 +630,7 @@ public class ZombiesGame extends Game {
 	public void entityDied(Entity entity, EntityDeathEvent event) {
 		if (zombieEntities.contains(entity.getEntityId())) {
 			zombieEntities.remove((Object) entity.getEntityId());
-			event.getDrops().add(new ItemStack(Material.ARROW, randomizer.nextInt(10)));
+			event.getDrops().add(new ItemStack(Material.ARROW, logic.randomizer.nextInt(10)));
 		}
 	}
 

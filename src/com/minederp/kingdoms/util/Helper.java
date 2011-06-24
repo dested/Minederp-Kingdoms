@@ -1,10 +1,19 @@
 package com.minederp.kingdoms.util;
 
+import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockVector;
+
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.regions.CuboidRegion;
 
 public class Helper {
 	public static void messagePlayerInList(List<Player> players, String message) {
@@ -86,4 +95,60 @@ public class Helper {
 		return null;
 	}
 
+	public static BlockFace faceGetRight(BlockFace facing) {
+		switch (facing) {
+		case EAST:
+			return BlockFace.SOUTH;
+		case NORTH:
+			return BlockFace.EAST;
+		case SOUTH:
+			return BlockFace.WEST;
+		case WEST:
+			return BlockFace.NORTH;
+
+		}
+		return null;
+	}
+
+	public static BlockFace faceGetLeft(BlockFace facing) {
+		switch (facing) {
+		case EAST:
+			return BlockFace.NORTH;
+		case NORTH:
+			return BlockFace.WEST;
+		case SOUTH:
+			return BlockFace.WEST;
+		case WEST:
+			return BlockFace.SOUTH;
+
+		}
+		return null;
+	}
+
+	public static BlockFace faceGetOpposite(BlockFace facing) {
+		switch (facing) {
+		case EAST:
+			return BlockFace.WEST;
+		case NORTH:
+			return BlockFace.SOUTH;
+		case SOUTH:
+			return BlockFace.NORTH;
+		case WEST:
+			return BlockFace.EAST;
+
+		}
+		return null;
+	}
+
+	public static void drawRectangle(Block relative, Block relative2, Material type) {
+		CuboidRegion cb = new CuboidRegion(new Vector(relative.getX(), relative.getY(), relative.getZ()), new Vector(relative2.getX(),
+				relative2.getY(), relative2.getZ()));
+		World wl = relative.getWorld();
+
+		for (Iterator<com.sk89q.worldedit.BlockVector> iterator = cb.iterator(); iterator.hasNext();) {
+			com.sk89q.worldedit.BlockVector tp = (com.sk89q.worldedit.BlockVector) iterator.next();
+			wl.getBlockAt(tp.getBlockX(), tp.getBlockY(), tp.getBlockZ()).setType(type);
+		}
+
+	}
 }

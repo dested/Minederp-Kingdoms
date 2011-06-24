@@ -17,6 +17,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.entity.CraftFireball;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -29,6 +31,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.maps.MapDrawer;
+import org.bukkit.util.Vector;
 
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.GameItem;
@@ -87,110 +90,70 @@ public class KingdomsPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
 		switch (event.getAction()) {
-		case LEFT_CLICK_AIR:/*
-			World w = event.getPlayer().getWorld();
+		case LEFT_CLICK_AIR:
 
-			int chunksPerPiece = 1;
-			int mapSize = 1000;
+			/*
+			 * Player player = event.getPlayer();
+			 * 
+			 * Fireball fb = player.getWorld().spawn(player.getLocation(),
+			 * Fireball.class);
+			 * fb.setDirection(player.getVelocity().multiply(50));
+			 * fb.setYield(1);
+			 */
 
-			int chunkX = 0,
-			chunkZ = 0;
-			int per = mapSize / chunksPerPiece / 16 + 1;
-			int[][] worldMap = new int[per][per];
-
-			int lX = 0,
-			lY = 0;
-			int defaultBlock = Material.OBSIDIAN.getId();
-
-			for (int j = 0; j < mapSize; j += chunksPerPiece * 16) {
-				System.out.print("X: " + lX + " Y: " + lY + " ");
-				chunkZ = 0;
-				lY = 0;
-				for (int j1 = 0; j1 < mapSize; j1 += chunksPerPiece * 16) {
-
-					int[] ints = new int[chunksPerPiece * 16 * chunksPerPiece * 16];
-					for (int xChunk = 0; xChunk < chunksPerPiece; xChunk++) {
-						for (int yChunk = 0; yChunk < chunksPerPiece; yChunk++) {
-							if (w.loadChunk(chunkX, chunkZ, true)) {
-								// va.getHighestBlockYAt(x, z)
-								// Chunk va = w.getChunkAt(chunkX, chunkZ);
-								// if (w.loadChunk(chunkX, chunkZ, false)) {
-								w.loadChunk(chunkX, chunkZ);
-								for (int i = 0; i < 16; i++) {
-									for (int k = 0; k < 16; k++) {
-										int y=0;
-										for (int yy = 127; yy >= 0; yy--) {
-											int id = w.getBlockTypeIdAt(j + i, yy, j1 + k);
-											if (id != 0) {
-												y = yy;
-												break;
-											}
-										}
-
-										int id = w.getBlockAt(j + i, y - 1, j1 + k).getTypeId();
-
-										ints[(i + (xChunk * 16)) + (k + (yChunk * 16)) * (chunksPerPiece) * 16] = id;
-									}
-								}
-							}
-							/*
-							 * } else { for (int i = 0; i < 16; i++) { for (int
-							 * k = 0; k < 16; k++) { ints[(i + (xChunk * 16)) +
-							 * (k + (yChunk * 16)) * (chunksPerPiece) * 16] =
-							 * defaultBlock; } } }
-							 * /
-							chunkZ++;
-						}
-						chunkX++;
-					}
-
-					HashMap<Integer, Integer> ids = new HashMap<Integer, Integer>();
-					for (int i = 0; i < ints.length; i++) {
-						int k = ints[i];
-						Integer f;
-						if ((f = ids.get(k)) != null) {
-							ids.put(k, f + 1);
-						} else
-							ids.put(k, 1);
-					}
-					int[] iids = new int[ids.size()];
-					int index = 0;
-					Set<Entry<Integer, Integer>> st = ids.entrySet();
-					for (Entry<Integer, Integer> i : st) {
-						iids[index++] = i.getValue();
-					}
-					int highest = 0;
-					int hIndex = 0;
-					for (int i = 0; i < iids.length; i++) {
-						int k = iids[i];
-						if (k > highest) {
-							highest = k;
-							hIndex = i;
-						}
-					}
-					index = 0;
-					for (Entry<Integer, Integer> i : st) {
-						if (index == hIndex)
-							break;
-						worldMap[lY][lX] = i.getKey();
-						index++;
-					}
-					lY++;
-				}
-				lX++;
-			}
-
-			for (int x = 0; x < per; x++) {
-				for (int y = 0; y < per; y++) {
-					int fd = worldMap[y][x];
-					System.out.println(x + " " + y + "  " + fd);
-					w.getBlockAt(x + 100, 80, y + 100).setTypeId(fd);
-				}
-			}
-
-			event.getPlayer().teleport(new Location(w, 100, 90, 100));
-*/
+			/*
+			 * World w = event.getPlayer().getWorld();
+			 * 
+			 * int chunksPerPiece = 1; int mapSize = 1000;
+			 * 
+			 * int chunkX = 0, chunkZ = 0; int per = mapSize / chunksPerPiece /
+			 * 16 + 1; int[][] worldMap = new int[per][per];
+			 * 
+			 * int lX = 0, lY = 0; int defaultBlock = Material.OBSIDIAN.getId();
+			 * 
+			 * for (int j = 0; j < mapSize; j += chunksPerPiece * 16) {
+			 * System.out.print("X: " + lX + " Y: " + lY + " "); chunkZ = 0; lY
+			 * = 0; for (int j1 = 0; j1 < mapSize; j1 += chunksPerPiece * 16) {
+			 * 
+			 * int[] ints = new int[chunksPerPiece * 16 * chunksPerPiece * 16];
+			 * for (int xChunk = 0; xChunk < chunksPerPiece; xChunk++) { for
+			 * (int yChunk = 0; yChunk < chunksPerPiece; yChunk++) { if
+			 * (w.loadChunk(chunkX, chunkZ, true)) { // va.getHighestBlockYAt(x,
+			 * z) // Chunk va = w.getChunkAt(chunkX, chunkZ); // if
+			 * (w.loadChunk(chunkX, chunkZ, false)) { w.loadChunk(chunkX,
+			 * chunkZ); for (int i = 0; i < 16; i++) { for (int k = 0; k < 16;
+			 * k++) { int y=0; for (int yy = 127; yy >= 0; yy--) { int id =
+			 * w.getBlockTypeIdAt(j + i, yy, j1 + k); if (id != 0) { y = yy;
+			 * break; } }
+			 * 
+			 * int id = w.getBlockAt(j + i, y - 1, j1 + k).getTypeId();
+			 * 
+			 * ints[(i + (xChunk * 16)) + (k + (yChunk * 16)) * (chunksPerPiece)
+			 * * 16] = id; } } } /* } else { for (int i = 0; i < 16; i++) { for
+			 * (int k = 0; k < 16; k++) { ints[(i + (xChunk * 16)) + (k +
+			 * (yChunk * 16)) * (chunksPerPiece) * 16] = defaultBlock; } } } /
+			 * chunkZ++; } chunkX++; }
+			 * 
+			 * HashMap<Integer, Integer> ids = new HashMap<Integer, Integer>();
+			 * for (int i = 0; i < ints.length; i++) { int k = ints[i]; Integer
+			 * f; if ((f = ids.get(k)) != null) { ids.put(k, f + 1); } else
+			 * ids.put(k, 1); } int[] iids = new int[ids.size()]; int index = 0;
+			 * Set<Entry<Integer, Integer>> st = ids.entrySet(); for
+			 * (Entry<Integer, Integer> i : st) { iids[index++] = i.getValue();
+			 * } int highest = 0; int hIndex = 0; for (int i = 0; i <
+			 * iids.length; i++) { int k = iids[i]; if (k > highest) { highest =
+			 * k; hIndex = i; } } index = 0; for (Entry<Integer, Integer> i :
+			 * st) { if (index == hIndex) break; worldMap[lY][lX] = i.getKey();
+			 * index++; } lY++; } lX++; }
+			 * 
+			 * for (int x = 0; x < per; x++) { for (int y = 0; y < per; y++) {
+			 * int fd = worldMap[y][x]; System.out.println(x + " " + y + "  " +
+			 * fd); w.getBlockAt(x + 100, 80, y + 100).setTypeId(fd); } }
+			 * 
+			 * event.getPlayer().teleport(new Location(w, 100, 90, 100));
+			 */
 			break;
 		case LEFT_CLICK_BLOCK:
 			event.setCancelled(kingdomsPlugin.blockClick(event.getClickedBlock(), event.getPlayer()));
@@ -199,6 +162,38 @@ public class KingdomsPlayerListener extends PlayerListener {
 		case PHYSICAL:
 			break;
 		case RIGHT_CLICK_AIR:
+			if (player.isSneaking()) {
+				Block bl = player.getLocation().getBlock();
+				int j = 0;
+				while (true) {
+					bl = bl.getRelative(BlockFace.UP);
+					bl.setType(Material.FENCE);
+					j++;
+					if (j > 10)
+						break;
+				}
+				bl = bl.getRelative(BlockFace.UP);
+				bl.setType(Material.GLASS);
+				int c = 0;
+				while (true) {
+					bl = bl.getRelative(BlockFace.DOWN);
+					bl.setType(Material.GLASS);
+					bl.getRelative(-c, 0, c).setType(Material.GLASS);
+					bl.getRelative(-c, 0, 0).setType(Material.GLASS);
+					bl.getRelative(-c, 0, -c).setType(Material.GLASS);
+
+					bl.getRelative(0, 0, c).setType(Material.GLASS);
+					bl.getRelative(0, 0, 0).setType(Material.GLASS);
+					bl.getRelative(0, 0, -c).setType(Material.GLASS);
+					bl.getRelative(c, 0, c).setType(Material.GLASS);
+					bl.getRelative(c, 0, 0).setType(Material.GLASS);
+					bl.getRelative(c, 0, -c).setType(Material.GLASS);
+
+					c++;
+					if (c > 10)
+						break;
+				}
+			}
 			break;
 		case RIGHT_CLICK_BLOCK:
 			event.setCancelled(this.kingdomsPlugin.gameLogic.blockPlaced(event.getClickedBlock(), event.getPlayer()));

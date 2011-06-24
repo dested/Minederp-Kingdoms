@@ -2,14 +2,17 @@ package com.minederp.kingdoms.games;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 
@@ -38,18 +41,27 @@ public class GameLogic extends Game {
 
 	private List<GameItem> blocksForReprint = new ArrayList<GameItem>();
 
+	public Random randomizer = new Random();
+
 	public void clearReprint(World w, String key) {
 		if (blocksForReprint.size() > 0) {
 
 			for (int i = blocksForReprint.size() - 1; i >= 0; i--) {
 				GameItem it = blocksForReprint.get(i);
 				if (it.Key.equals(key)) {
-					w.getBlockAt(it.X, it.Y, it.Z).setTypeIdAndData(it.Type, it.Data, false);
 					blocksForReprint.remove(i);
+					if (it.drop) {
+						w.getBlockAt(it.X, it.Y, it.Z).setType(Material.AIR);
+
+						if (it.Type != 0 && randomizer.nextInt(100) < 7) {
+							w.dropItem(new Location(w, it.X, it.Y, it.Z), new ItemStack(it.Type));
+						}
+					} else {
+						w.getBlockAt(it.X, it.Y, it.Z).setTypeIdAndData(it.Type, it.Data, false);
+
+					}
 				}
-
 			}
-
 		}
 	}
 

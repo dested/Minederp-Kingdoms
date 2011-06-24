@@ -35,4 +35,10 @@ commands:
     construction:
         description: Construction based commands
         usage: /t (CreateJob(jobname)|AddChestToJob(jobname)|AddCraneToJob(jobname))
+    b:
+        description: Bulldozer based commands
+        usage: /b ()
+    bulldozer:
+        description: Bulldozer based commands
+        usage: /b ()
         

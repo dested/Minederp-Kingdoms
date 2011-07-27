@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -113,9 +114,9 @@ public class GameLogic extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(BlockFace face, Block block, Player clickedPlayer) {
 		for (Game g : Games)
-			if (g.blockClick(block, clickedPlayer))
+			if (g.blockClick(face,block, clickedPlayer))
 				return true;
 		return false;
 	}
@@ -163,9 +164,9 @@ public class GameLogic extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face, Block block, Player player) {
 		for (Game g : Games)
-			if (g.blockPlaced(block, player))
+			if (g.blockPlaced(face,block, player))
 				return true;
 		return false;
 	}

@@ -27,6 +27,7 @@ import net.minecraft.server.World;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,6 +42,8 @@ import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.games.bulldozer.BulldozerGame;
 import com.minederp.kingdoms.games.construction.ConstructionGame;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
+import com.minederp.kingdoms.games.tetris.TetrisGame;
+import com.minederp.kingdoms.games.tictactoeJap.TictactoeGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
 import com.minederp.kingdoms.listeners.KingdomsBlockListener;
 import com.minederp.kingdoms.listeners.KingdomsEntityListener;
@@ -129,6 +132,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(TownCommands.class);
 		commands.register(MapsCommands.class);
 		commands.register(ConstructionCommands.class);
+		commands.register(TetrisCommands.class);
 
 		// commands.register(GeneralCommands.class);
 
@@ -143,7 +147,8 @@ public class KingdomsPlugin extends JavaPlugin {
 		for (org.bukkit.World w : getServer().getWorlds()) {
 			gameLogic.addGame(new ConstructionGame(this, w));
 			gameLogic.addGame(new BulldozerGame(this, w));
-
+			gameLogic.addGame(new TictactoeGame(this, w));
+			gameLogic.addGame(new TetrisGame(this, w)); 
 		}
 
 		// The permissions resolver has some hooks of its own
@@ -324,8 +329,8 @@ public class KingdomsPlugin extends JavaPlugin {
 		}
 	}
 
-	public boolean blockClick(Block clickedBlock, Player player) {
-		return gameLogic.blockClick(clickedBlock, player);
+	public boolean blockClick(BlockFace face, Block clickedBlock, Player player) {
+		return gameLogic.blockClick(face,clickedBlock, player);
 
 	}
 

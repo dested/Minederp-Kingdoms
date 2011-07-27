@@ -98,7 +98,7 @@ public class TictactoeGame extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(BlockFace face,Block block, Player clickedPlayer) {
 
 		return false;
 	}
@@ -136,7 +136,7 @@ public class TictactoeGame extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		return false;
 	}
 }

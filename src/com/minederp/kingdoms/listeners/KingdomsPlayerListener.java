@@ -156,12 +156,13 @@ public class KingdomsPlayerListener extends PlayerListener {
 			 */
 			break;
 		case LEFT_CLICK_BLOCK:
-			event.setCancelled(kingdomsPlugin.blockClick(event.getClickedBlock(), event.getPlayer()));
+			event.setCancelled(kingdomsPlugin.blockClick(event.getBlockFace(),event.getClickedBlock(), event.getPlayer()));
 
 			break;
 		case PHYSICAL:
 			break;
 		case RIGHT_CLICK_AIR:
+			if(true)return ;
 			if (player.isSneaking()) {
 				Block bl = player.getLocation().getBlock();
 				int j = 0;
@@ -196,7 +197,7 @@ public class KingdomsPlayerListener extends PlayerListener {
 			}
 			break;
 		case RIGHT_CLICK_BLOCK:
-			event.setCancelled(this.kingdomsPlugin.gameLogic.blockPlaced(event.getClickedBlock(), event.getPlayer()));
+			event.setCancelled(this.kingdomsPlugin.gameLogic.blockPlaced(event.getBlockFace(),event.getClickedBlock(), event.getPlayer()));
 
 			break;
 

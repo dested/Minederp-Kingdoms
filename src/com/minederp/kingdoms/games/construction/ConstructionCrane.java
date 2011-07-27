@@ -1,13 +1,19 @@
 package com.minederp.kingdoms.games.construction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.smartcardio.Card;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+
+import sun.util.logging.resources.logging;
 
 import com.minederp.kingdoms.games.GameItem;
 import com.minederp.kingdoms.util.Helper;
@@ -23,14 +29,8 @@ public class ConstructionCrane {
 		craneID = IDS++;
 		this.constructionJob = constructionJob;
 		this.block = block;
-		arms.add(BlockFace.NORTH);
-		arms.add(BlockFace.NORTH);
-		currentIdealHeight = constructionJob.getIdealPoleHeight(craneID);
+		arms.add(BlockFace.UP);
 	}
-
-	private int poleHeight = 7;
-	private int hangLength = 2;
-	int currentIdealHeight;
 
 	ConstructionTask currentTask;
 	ConstructionTaskPiece currentTaskPiece;
@@ -60,80 +60,212 @@ public class ConstructionCrane {
 
 	Location getCurrentHead() {
 		Block bl = block;
-		for (int i = 0; i < poleHeight; i++) {
-			bl = bl.getRelative(BlockFace.UP);
-		}
 		for (BlockFace arm : arms) {
 			bl = bl.getRelative(arm);
 		}
-		for (int i = hangLength; i >= 0; i--) {
-			bl = bl.getRelative(BlockFace.DOWN);
-		}
 		return bl.getLocation();
 	}
+/*
+	private List<Location> astar(Location start, Location end) {
+		List<Location> closedSet = new ArrayList<Location>();
+		List<Location> openSet = new ArrayList<Location>();
+		openSet.add(start);
+		HashMap<Location, Location> cameFrom = new HashMap<Location, Location>();
+
+		HashMap<Location, Integer> gScore = new HashMap<Location, Integer>();
+		gScore.put(start, 0);
+
+		HashMap<Location, Double> hScore = new HashMap<Location, Double>();
+		hScore.put(start, start.distance(end));
+
+		HashMap<Location, Double> fScore = new HashMap<Location, Double>();
+		fScore.put(start, hScore.get(start));
+
+		while (openSet.size() > 0) {
+			double lowestfs = Double.MAX_VALUE;
+			Location x = null;
+			for (Location l : openSet) {
+				if (fScore.get(l) < lowestfs) {
+					x = l;
+					lowestfs = fScore.get(l);
+				}
+			}
+			if (x.equals(end)) {
+
+				List<Location> gf = reconstructPath(cameFrom, cameFrom.get(end));
+				gf.add(end);
+				return gf;
+			}
+
+			openSet.remove(x);
+			closedSet.add(x);
+
+			for (Location y : neighborNodes(x)) {
+				if (closedSet.contains(y))
+					continue;
+				boolean tentative_is_better;
+
+				int tentative_g_score = gScore.get(x) + 1;
+				if (tentative_g_score > 15)
+					continue;
+				if (!openSet.contains(y)) {
+					openSet.add(y);
+					tentative_is_better = true;
+				} else if (tentative_g_score < gScore.get(y)) {
+					tentative_is_better = true;
+				} else
+					tentative_is_better = false;
+				if (tentative_is_better) {
+					cameFrom.put(y, x);
+					Double df = (double) tentative_g_score;
+					gScore.put(y, tentative_g_score);
+					hScore.put(y, df += start.distance(end));
+					fScore.put(y, df);
+				}
+			}
+		}
+		return null;
+	}
+
+	private List<Location> neighborNodes(Location x) {
+		World w = x.getWorld();
+		List<Location> arl = new ArrayList<Location>();
+		Location loc;
+		if (w.getBlockTypeIdAt(loc = new Location(w, x.getBlockX(), x.getBlockY() + 1, x.getBlockZ())) == 0)
+			arl.add(loc);
+		if (w.getBlockTypeIdAt(loc = new Location(w, x.getBlockX(), x.getBlockY() - 1, x.getBlockZ())) == 0)
+			arl.add(loc);
+
+		if (w.getBlockTypeIdAt(loc = new Location(w, x.getBlockX() - 1, x.getBlockY(), x.getBlockZ())) == 0)
+			arl.add(loc);
+		if (w.getBlockTypeIdAt(loc = new Location(w, x.getBlockX() + 1, x.getBlockY(), x.getBlockZ())) == 0)
+			arl.add(loc);
+		if (w.getBlockTypeIdAt(loc = new Location(w, x.getBlockX(), x.getBlockY(), x.getBlockZ() - 1)) == 0)
+			arl.add(loc);
+		if (w.getBlockTypeIdAt(loc = new Location(w, x.getBlockX(), x.getBlockY(), x.getBlockZ() + 1)) == 0)
+			arl.add(loc);
+		return arl;
+	}
+
+	private List<Location> reconstructPath(HashMap<Location, Location> cameFrom, Location location) {
+		List<Location> lp;
+		if (cameFrom.get(location) != null) {
+			lp = reconstructPath(cameFrom, cameFrom.get(location));
+			lp.add(location);
+			return lp;
+		}
+		lp = new ArrayList<Location>();
+		lp.add(location);
+		return lp;
+	}*/
 
 	private List<BlockFace> arms = new ArrayList<BlockFace>();
 	private Material headPiece;
-
-	private int getIdealPoleHeight() {
-		return constructionJob.getIdealPoleHeight(craneID);
-	}
+	boolean emptyswitch = true;
 
 	private void animate() {
-		currentIdealHeight = getIdealPoleHeight();
-		if (poleHeight != currentIdealHeight) {
-			poleHeight = currentIdealHeight;
 
-		}
 		ConstructionChest cs;
 		switch (currentStep) {
 		case EmptyWatchChest:
 
-			cs = currentTaskPiece.getChest();
-			if (Helper.firstNonEmpty(cs.getChest().getInventory()) != null) {
-				currentStep = CraneStep.GoingToChest;
-				break;
-			}
-
-			if (hangLength > 0) {
-				hangLength -= 1;
-				break;
-			}
-
-			if (arms.size() > 2) {
+			if (emptyswitch) {
+				if (arms.size() == 1) {
+					emptyswitch = false;
+					break;
+				}
 				arms.remove(arms.size() - 1);
 				break;
 			}
-			if (arms.size() == 1) {
+
+			switch (arms.size()) {
+			case 1:
+				arms.clear();
+				arms.add(BlockFace.UP);
+				arms.add(BlockFace.UP);
+				break;
+			case 2:
+				arms.add(BlockFace.UP);
+				break;
+			case 3:
+				arms.add(BlockFace.UP);
+				break;
+			case 4:
+				arms.add(BlockFace.UP);
+				break;
+			case 5:
+				arms.add(BlockFace.UP);
+				break;
+			case 6:
 				arms.add(BlockFace.NORTH);
+				break;
+			case 7:
+				arms.add(BlockFace.NORTH);
+				break;
+			case 8:
+				arms.add(BlockFace.DOWN);
+				break;
+			default:
+				emptyswitch = true;
+				cs = currentTaskPiece.getChest();
+				if (Helper.firstNonEmpty(cs.getChest().getInventory()) != null) {
+					currentStep = CraneStep.GoingToChest;
+					break;
+				}
 				break;
 			}
 
 			break;
 		case Empty:
+
+			switch (arms.size()) {
+			case 1:
+				arms.clear();
+				arms.add(BlockFace.UP);
+				arms.add(BlockFace.UP);
+				break;
+			case 2:
+				arms.add(BlockFace.UP);
+				break;
+			case 3:
+				arms.add(BlockFace.UP);
+				break;
+			case 4:
+				arms.add(BlockFace.UP);
+				break;
+			case 5:
+				arms.add(BlockFace.UP);
+				break;
+			case 6:
+				arms.add(BlockFace.NORTH);
+				break;
+			case 7:
+				arms.add(BlockFace.NORTH);
+				break;
+			case 8:
+				arms.add(BlockFace.DOWN);
+				break;
+			default:
+				if (currentTaskPiece != null)
+					currentStep = CraneStep.GoingToChest;
+				break;
+			}
+
+			break;
+		case RetractToEmpty:
 			if (currentTaskPiece == null) {
-				if (hangLength > 0) {
-					hangLength -= 1;
-					break;
-				}
-				if (poleHeight != currentIdealHeight) {
-					if (poleHeight > currentIdealHeight)
-						poleHeight -= 1;
-					else
-						poleHeight += 1;
-					break;
-				}
-				if (arms.size() > 2) {
+				if (arms.size() > 1) {
 					arms.remove(arms.size() - 1);
 					break;
 				}
 				if (arms.size() == 1) {
-					arms.add(BlockFace.NORTH);
+					currentStep = CraneStep.Empty;
 					break;
 				}
 				break;
 			}
 			currentStep = CraneStep.GoingToChest;
+			break;
 		case GoingToChest:// fall through if the current task isnt null
 
 			if (currentTaskPiece != null) {
@@ -157,16 +289,63 @@ public class ConstructionCrane {
 
 					}
 					headPiece = d.item1.getType();
-					currentStep = CraneStep.RetractOneY;
+					currentStep = CraneStep.RetractY;
 				} else
 					moveToLocation(head, loc);
 			}
 			break;
-		case RetractOneY:
-			hangLength -= 1;
+		case RetractY:
+			int i;
+			for (i = 0; i < arms.size(); i++) {
+				if (arms.get(i) != BlockFace.UP)
+					break;
+			}
+			if (i > 5) {
+				arms.remove(0);
+				break;
+			} else if (i < 5) {
+				arms.add(0, BlockFace.UP);
+				break;
+			} else if (i == 5) {
+				BlockFace cur = null;
+				int step = 0;
+				for (i = 0; i < arms.size(); i++) {
+					if (step == 0) {
+						if (arms.get(i) != BlockFace.UP) {
 
-			currentStep = CraneStep.GoingToSpot;
-			break;
+							cur = arms.get(i);
+							step = 1;
+							continue;
+						}
+					} else if (step == 1) {
+						if (arms.get(i) != cur) {
+							step = 2;
+							continue;
+						}
+					} else if (step == 2) {
+						if (arms.get(i) == BlockFace.DOWN) {
+							step = 3;
+							continue;
+						} else
+							break;
+					} else if (step == 3) {
+						if (arms.get(i) == BlockFace.DOWN) {
+							i++;
+							break;
+						} else {
+							break;
+						}
+					}
+				}
+				if (i + 1 == arms.size()) {
+					currentStep = CraneStep.GoingToSpot;// fall through;
+				} else {
+					arms.remove(arms.size() - 1);
+					break;
+				}
+			} else {
+				break;
+			}
 		case GoingToSpot:
 			ConstructionModelPiece sp = currentTaskPiece.getConstructionModelPiece();
 
@@ -179,155 +358,166 @@ public class ConstructionCrane {
 					currentTaskPiece = null;
 					cc.getBlock().setType(headPiece);
 					headPiece = null;
-					currentStep = CraneStep.RetractToChestY;
-				}
-			}
-
-			break;
-		case RetractToChestY:
-			if (poleHeight != currentIdealHeight) {
-				if (poleHeight > currentIdealHeight) {
-					poleHeight -= 1;
-					hangLength--;
-				} else {
-					poleHeight += 1;
-					hangLength++;
-				}
-				break;
-			}
-			if (currentTaskPiece != null) {
-				ConstructionChest cs1 = currentTaskPiece.getChest();
-				Location loc = cs1.getChest().getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.UP).getLocation();
-				Location head = getCurrentHead();
-				if (loc.getBlockY() == (head.getY())) {
 					currentStep = CraneStep.GoingToChest;
-				} else {
-					if (head.getBlockY() < loc.getBlockY()) {
-						hangLength--;
-					} else {
-						hangLength++;
-					}
 				}
 			}
 			break;
-
 		}
-		drawCrane();
+		drawCrane(arms, true, null);
 	}
 
 	private boolean moveToLocation(Location head, Location loc) {
 
-		if (poleHeight < currentIdealHeight) {
-			poleHeight++;
-			//return false;
-		} else if (poleHeight > currentIdealHeight) {
-			poleHeight--;
-			//return false;
-		}
-
 		if (!head.equals(loc)) {
 
-			if (head.getBlockY() < loc.getBlockY()) {
-				if (hangLength >1 )
-					hangLength --;
-				else
-					poleHeight++;
-	//			return false;
-			}
+			
+			
+/*			List<Location> farw = astar(head, loc);
+			if (far == null) {
+				if (arms.size() > 0)
+					arms.remove(arms.size() - 1);
+				return false;
+			} else if (far.size() > 1) {
 
-			if (true) {
-				if (head.getBlockX() > loc.getBlockX()) {
-					if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.SOUTH) {
-						arms.remove(arms.size() - 1);
-						return false;
-					}
+				List<Location> ls = new ArrayList<Location>();
+				Block gc;
+				ls.add((gc = block).getLocation());
+				for (BlockFace f : arms) {
+					ls.add((gc = gc.getRelative(f)).getLocation());
 				}
-				if (head.getBlockX() < loc.getBlockX()) {
-					if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.NORTH) {
-						arms.remove(arms.size() - 1);
-						return false;
-					}
-				}
-				if (head.getBlockZ() > loc.getBlockZ()) {
-					if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.WEST) {
-						arms.remove(arms.size() - 1);
-						return false;
-					}
-				}
-				if (head.getBlockZ() < loc.getBlockZ()) {
-					if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.EAST) {
-						arms.remove(arms.size() - 1);
-						return false;
-					}
-				}
-			}
-			if (head.getBlockX() > loc.getBlockX()) {
-				if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.SOUTH)
-					arms.remove(arms.size() - 1);
-				else
-					arms.add(BlockFace.NORTH);
-				return false;
-			}
-			if (head.getBlockX() < loc.getBlockX()) {
-				if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.NORTH) {
-					arms.remove(arms.size() - 1);
-				} else {
-					arms.add(BlockFace.SOUTH);
-				}
-				return false;
-			}
 
-			if (head.getBlockZ() > loc.getBlockZ()) {
-				if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.WEST)
-					arms.remove(arms.size() - 1);
-				else
-					arms.add(BlockFace.EAST);
+				//BlockFace fc = head.getBlock().getFace(far.get(1).getBlock());
+
+				switch (fc) {
+				case DOWN:
+				case UP:
+					if (!tryblockadd(fc, ls, true)) {
+						if (!tryblockmove(Helper.faceGetOpposite(fc), ls)) {
+							arms.add(fc);
+						}
+					}
+					break;
+				case EAST:
+				case NORTH:
+				case SOUTH:
+				case WEST:
+					if (!tryblockmove(Helper.faceGetOpposite(fc), ls)) {
+						if (!tryblockadd(fc, ls, true)) {
+							if (!tryblockadd(fc, ls, false)) {
+								arms.add(fc);
+							}
+						}
+					}
+					break;
+				}
+
 				return false;
 			}
-			if (head.getBlockZ() < loc.getBlockZ()) {
-				if (arms.size() != 0 && arms.get(arms.size() - 1) == BlockFace.EAST)
-					arms.remove(arms.size() - 1);
-				else
-					arms.add(BlockFace.WEST);
-				return false;
-			}
-			if (head.getBlockY() > loc.getBlockY()) {
-				hangLength++;
-				return false;
-			}
+*/
 		}
 		return true;
 	}
 
-	private void drawCrane() {
+	private boolean tryblockmove(BlockFace fc, List<Location> ls) {
+		BlockFace oldf = null;
+		int index = 0;
+
+		for (BlockFace f : arms) {
+			if (f != oldf) {
+				if (oldf != null) {
+					// bend
+					if (f == fc) {
+						if (!tryRemove(index, arms, ls)) {
+							index++;
+							continue;
+						}
+						return true;
+					}
+				}
+				oldf = f;
+			}
+			index++;
+		}
+		return false;
+	}
+
+	private boolean tryblockadd(BlockFace fc, List<Location> ls, boolean dontSkip) {
+		BlockFace oldf = null;
+		int index = 0;
+
+		for (BlockFace f : arms) {
+			if (f != oldf) {
+				if (oldf != null) {
+					// bend
+					if (!dontSkip || f == fc) {
+						if (!tryAdd(index, fc, arms, ls)) {
+							index++;
+							continue;
+						}
+						return true;
+					}
+				}
+				oldf = f;
+			}
+			index++;
+		}
+		return false;
+	}
+
+	private boolean tryRemove(int fc, List<BlockFace> arms2, List<Location> ls) {
+
+		ArrayList<BlockFace> fd = new ArrayList<BlockFace>(arms2);
+		fd.remove(fc);
+		if (drawCrane(fd, false, ls)) {
+			arms = fd;
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean tryAdd(int fc, BlockFace fc2, List<BlockFace> arms2, List<Location> ls) {
+
+		ArrayList<BlockFace> fd = new ArrayList<BlockFace>(arms2);
+		fd.add(fc, fc2);
+		if (drawCrane(fd, false, ls)) {
+			arms = fd;
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean drawCrane(List<BlockFace> armsz, boolean print, List<Location> ls) {
 		constructionJob.game.logic.clearReprint(block.getWorld(), "crane" + craneID);
 		Block bl = block;
-		for (int i = 0; i < poleHeight; i++) {
-			bl = bl.getRelative(BlockFace.UP);
-			constructionJob.game.logic.addBlockForReprint(new GameItem(bl.getX(), bl.getY(), bl.getZ(), bl.getTypeId(), bl.getData(), "crane"
-					+ craneID));
-			bl.setType(Material.FENCE);
-		}
-		for (BlockFace arm : arms) {
+		for (BlockFace arm : armsz) {
 			bl = bl.getRelative(arm);
-			constructionJob.game.logic.addBlockForReprint(new GameItem(bl.getX(), bl.getY(), bl.getZ(), bl.getTypeId(), bl.getData(), "crane"
-					+ craneID));
-			bl.setType(Material.FENCE);
+
+			if (!print) {
+				if (bl.getTypeId() != 0) {
+					if (!ls.contains(bl.getLocation()))
+						return false;
+				}
+			}
+			if (print) {
+				constructionJob.game.logic.addBlockForReprint(new GameItem(bl.getX(), bl.getY(), bl.getZ(), bl.getTypeId(), bl.getData(), "crane"
+						+ craneID));
+				bl.setType(Material.FENCE);
+			}
 		}
-		for (int i = hangLength; i >= 0; i--) {
-			bl = bl.getRelative(BlockFace.DOWN);
-			constructionJob.game.logic.addBlockForReprint(new GameItem(bl.getX(), bl.getY(), bl.getZ(), bl.getTypeId(), bl.getData(), "crane"
-					+ craneID));
-			bl.setType(Material.FENCE);
-		}
+
 		if (headPiece != null) {
-			bl.setType(headPiece);
+			if (print) {
+				bl.setType(headPiece);
+			}
 		}
+		return true;
 
 	}
 
 	public enum CraneStep {
-		Empty, GoingToChest, GoingToSpot, RetractToChestY, RetractOneY, EmptyWatchChest
+		Empty, GoingToChest, GoingToSpot, EmptyWatchChest, RetractToEmpty, RetractY
 	}
 
 }

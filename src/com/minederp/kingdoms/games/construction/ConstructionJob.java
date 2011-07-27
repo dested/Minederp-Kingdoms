@@ -143,22 +143,5 @@ public class ConstructionJob {
 		}
 		return tasks.get(Helper.lowestIndex(distances));
 	}
-
-	public int getIdealPoleHeight(int craneID) {
-
-		if (cranes.size() < 2) {
-			return 4;
-		}
-		int j = 4;
-		int m = 0;
-		for (ConstructionCrane crane : cranes) {
-			if (crane.craneID != craneID) {
-				crane.currentIdealHeight = j;
-				j += 1;
-			} else
-				m = (j += 1);
-		}
-
-		return m;
-	}
+ 
 }

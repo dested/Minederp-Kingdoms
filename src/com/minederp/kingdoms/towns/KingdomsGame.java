@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -130,7 +131,7 @@ public class KingdomsGame extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block clickedBlock, Player player) {
+	public boolean blockClick(BlockFace face,Block clickedBlock, Player player) {
 
 		 
 		return false;
@@ -141,7 +142,7 @@ public class KingdomsGame extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		if (drawingPolygon == 1 && actingPlayer.getName().equals(player.getName())) {
 			drawingPolygon = 0;
 			logic.clearReprint(player.getWorld(), "Line");

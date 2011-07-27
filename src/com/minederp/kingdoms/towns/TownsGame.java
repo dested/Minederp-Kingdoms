@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -134,7 +135,7 @@ public class TownsGame extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block clickedBlock, Player player) {
+	public boolean blockClick(BlockFace face,Block clickedBlock, Player player) {
 
 		if (drawingPolygon > 0 && actingPlayer.getName().equals(player.getName())) {
 			logic.clearReprint(player.getWorld(), "Line");
@@ -225,7 +226,7 @@ public class TownsGame extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		if (drawingPolygon == 1 && actingPlayer.getName().equals(player.getName())) {
 
 			if (player.isSneaking()) {

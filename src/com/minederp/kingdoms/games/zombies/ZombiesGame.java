@@ -409,7 +409,7 @@ public class ZombiesGame extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(BlockFace face,Block block, Player clickedPlayer) {
 		if (actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
 			if (drawingRectangle > 0) {
 				drawRectangleLogic(block, clickedPlayer);
@@ -670,7 +670,7 @@ public class ZombiesGame extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -8,6 +8,9 @@ commands:
     town:
         description: Town commands
         usage: /<command> <arguments...>
+    tet:
+        description: Tetris based commands
+        usage: /tet ()
     ctf:
         description: Capture the flag commands
         usage: /ctf (setrectangle|startgame|endgame|join) ((red|blue) (setflag|setspawn))  
@@ -44,5 +47,3 @@ commands:
     tc:
         description: Tictactoe based commands
         usage: /tc ()
-       
-        

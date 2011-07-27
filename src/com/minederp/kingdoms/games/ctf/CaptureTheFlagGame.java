@@ -375,7 +375,7 @@ public class CaptureTheFlagGame extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(BlockFace face,Block block, Player clickedPlayer) {
 
 		if (drawingRectangle > 0 && actingPlayer != null && clickedPlayer.getName().equals(actingPlayer.getName())) {
 			drawRectangleLogic(block, clickedPlayer);
@@ -695,7 +695,7 @@ public class CaptureTheFlagGame extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		// TODO Auto-generated method stub
 		return false;
 	}

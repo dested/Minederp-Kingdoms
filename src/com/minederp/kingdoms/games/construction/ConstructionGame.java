@@ -47,7 +47,11 @@ public class ConstructionGame extends Game {
 			@Override
 			public void run() {
 				for (ConstructionJob job : jobs) {
-					job.jobTick();
+					try {
+						job.jobTick();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 			}
 		}, 1, 5);
@@ -69,7 +73,7 @@ public class ConstructionGame extends Game {
 				for (int z = 0; z < 9; z++) {
 					if (y < 14) {
 						if (x == 0 || x == 11 || x == 1 || x == 10) {
-							if (!(z == 5 || z == 6) && y<5)
+							if (!(z == 5 || z == 6) && y < 5)
 								ml[x][y][z] = true;
 						}
 						if (z == 0 || z == 8) {
@@ -176,7 +180,7 @@ public class ConstructionGame extends Game {
 	}
 
 	@Override
-	public boolean blockClick(Block block, Player clickedPlayer) {
+	public boolean blockClick(BlockFace face,Block block, Player clickedPlayer) {
 		for (ConstructionJob job : jobs) {
 			if (job.blockClick(block, clickedPlayer)) {
 				return true;
@@ -218,7 +222,7 @@ public class ConstructionGame extends Game {
 	}
 
 	@Override
-	public boolean blockPlaced(Block block, Player player) {
+	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		// TODO Auto-generated method stub
 		return false;
 	}

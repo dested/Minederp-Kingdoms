@@ -135,6 +135,10 @@ public class Helper {
 			return BlockFace.NORTH;
 		case WEST:
 			return BlockFace.EAST;
+		case DOWN:
+			return BlockFace.UP;
+		case UP:
+			return BlockFace.DOWN;
 
 		}
 		return null;

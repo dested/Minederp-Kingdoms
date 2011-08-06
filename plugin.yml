@@ -29,6 +29,9 @@ commands:
     t:
         description: Town based commands
         usage: /t (ShowWalls(False|True)|SetPolygon)
+    k:
+        description: Kingdom based commands
+        usage: /k (Join)
     town:
         description: Town based commands
         usage: /t (ShowWalls(False|True)|SetPolygon)

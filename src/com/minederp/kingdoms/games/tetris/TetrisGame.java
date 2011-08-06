@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import sun.net.www.content.audio.basic;
+
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.Game;
 import com.minederp.kingdoms.games.GameLogic;
@@ -27,6 +29,9 @@ public class TetrisGame extends Game {
 	private Random randomizer = new Random();
 	private Block startBlock;
 	private BlockFace startFace;
+
+	private Block rLeft;
+	private Block rRight;
 	private Block topRight;
 	private Block nextPieceOne;
 	private Block nextPieceTwo;
@@ -61,7 +66,7 @@ public class TetrisGame extends Game {
 			public void run() {
 				tetrisTick();
 			}
-		}, 1, 15);
+		}, 1, 14);
 	}
 
 	TetrisPiece nextPiece1;
@@ -161,7 +166,9 @@ public class TetrisGame extends Game {
 
 			for (int i = 0; i < 20; i++) {
 				for (int a = 0; a < 10; a++) {
-					at.setType(Material.AIR);
+					//at.setType(Material.WOOL);
+					//at.setData((byte) 15);
+
 					at = at.getRelative(getRight(startFace));
 				}
 				at = start = start.getRelative(BlockFace.DOWN);
@@ -182,6 +189,10 @@ public class TetrisGame extends Game {
 
 				} else {
 					switch (gameboard[i][a]) {
+					case 0:
+					//	at.setType(Material.WOOL);
+					//	at.setData((byte) 15);
+						break;
 					case 1:
 						at.setType(Material.WOOL);
 						at.setData((byte) 3);
@@ -272,7 +283,8 @@ public class TetrisGame extends Game {
 			for (int i = 0; i < 4; i++) {
 
 				for (int a = 0; a < 4; a++) {
-					at.setType(Material.AIR);
+					//at.setType(Material.WOOL);
+					//at.setData((byte) 15);
 					at = at.getRelative(getRight(startFace));
 				}
 				at = start = start.getRelative(BlockFace.DOWN);
@@ -284,6 +296,7 @@ public class TetrisGame extends Game {
 			for (int a = 0; a < pc.PieceInfo.length; a++) {
 
 				switch (pc.PieceInfo[i][a]) {
+			
 				case 1:
 					at.setType(Material.WOOL);
 					at.setData((byte) 3);
@@ -326,8 +339,8 @@ public class TetrisGame extends Game {
 
 	public int[][] gameboard;
 	private Block topLeft;
-	private Block moveLeft;
-	private Block moveRight;
+	private Block[] moveLefts = new Block[3];
+	private Block[] moveRights = new Block[3];
 
 	@Override
 	public void updatePlayerGamePosition(Player movingPlayer, Location to) {
@@ -400,6 +413,11 @@ public class TetrisGame extends Game {
 		startBlock = m1.getRelative(BlockFace.UP);
 		startBlock.setType(Material.OBSIDIAN);
 
+		rLeft = startBlock.getRelative(face).getRelative(face).getRelative(getLeft(face));
+		rLeft.setType(Material.OBSIDIAN);
+		rRight = startBlock.getRelative(face).getRelative(face).getRelative(getRight(face));
+		rRight.setType(Material.OBSIDIAN);
+
 		Block mj = m1;
 		for (int i = 0; i < 6; i++) {
 			mj = mj.getRelative(getLeft(face));
@@ -419,7 +437,9 @@ public class TetrisGame extends Game {
 		m = m.getRelative(getLeft(face));
 		m.setType(Material.OBSIDIAN);
 
-		(moveLeft = m.getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
+		(moveLefts[0] = m.getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
+		(moveLefts[1] = moveLefts[0].getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
+		(moveLefts[2] = moveLefts[1].getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
 
 		m = m.getRelative(getLeft(face));
 		m.setType(Material.OBSIDIAN);
@@ -431,7 +451,9 @@ public class TetrisGame extends Game {
 		m = m.getRelative(getRight(face));
 		m.setType(Material.OBSIDIAN);
 
-		(moveRight = m.getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
+		(moveRights[0] = m.getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
+		(moveRights[1] = moveRights[0].getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
+		(moveRights[2] = moveRights[1].getRelative(BlockFace.UP)).setType(Material.OBSIDIAN);
 
 		m = m.getRelative(getRight(face));
 		m.setType(Material.OBSIDIAN);
@@ -582,6 +604,7 @@ public class TetrisGame extends Game {
 	public boolean blockClick(BlockFace face, Block block, Player clickedPlayer) {
 		if (startBlock == null)
 			return false;
+
 		if (block.getLocation().equals(startBlock.getLocation()) && (curPiece == null || step != TetrisStep.RunGame)) {
 			if (!players) {
 				PlayingPlayer = clickedPlayer;
@@ -590,41 +613,43 @@ public class TetrisGame extends Game {
 				clickedPlayer.sendMessage("Game Started");
 				return true;
 			}
-			if (!PlayingPlayer.equals(clickedPlayer))
-				return true;
+
+		}
+		if (PlayingPlayer != null && !PlayingPlayer.equals(clickedPlayer))
+			return false;
+		if ((curPiece == null || step != TetrisStep.RunGame))
+			return false;
+
+		if (block.getLocation().equals(rLeft.getLocation())) {
+			curPiece.rotateLeft();
+			for (int i = 0; i < curPiece.PieceInfo.length; i++) {
+				for (int j = 0; j < curPiece.PieceInfo.length; j++) {
+
+					if (curPiece.PieceInfo[i][j] > 0 && (j + curLocation.x > 9 || j + curLocation.x < 0))
+						curPiece.rotateRight();
+				}
+			}
+		}
+		if (block.getLocation().equals(rRight.getLocation())) {
+			curPiece.rotateRight();
+
+			for (int i = 0; i < curPiece.PieceInfo.length; i++) {
+				for (int j = 0; j < curPiece.PieceInfo.length; j++) {
+					if (curPiece.PieceInfo[i][j] > 0 && (j + curLocation.x > 9 || j + curLocation.x < 0))
+						curPiece.rotateLeft();
+				}
+			}
+
 		}
 
 		if (block.getLocation().equals(startBlock.getLocation())) {
 
-			if (face == getLeft(startFace)) {
-				curPiece.rotateLeft();
-				for (int i = 0; i < curPiece.PieceInfo.length; i++) {
-					for (int j = 0; j < curPiece.PieceInfo.length; j++) {
-
-						if (curPiece.PieceInfo[i][j] > 0 && (j + curLocation.x > 9 || j + curLocation.x < 0))
-							curPiece.rotateRight();
-					}
-				}
-
-			} else if (face == getRight(startFace)) {
-				curPiece.rotateRight();
-
-				for (int i = 0; i < curPiece.PieceInfo.length; i++) {
-					for (int j = 0; j < curPiece.PieceInfo.length; j++) {
-						if (curPiece.PieceInfo[i][j] > 0 && (j + curLocation.x > 9 || j + curLocation.x < 0))
-							curPiece.rotateLeft();
-					}
-				}
-
+			if (checkCollide(false)) {
+				step = TetrisStep.CheckLine;
+				return true;
 			}
+			curLocation.y++;
 
-			else if (face == startFace.getOppositeFace() || face == BlockFace.UP) {
-				if (checkCollide(false)) {
-					step = TetrisStep.CheckLine;
-					return true;
-				}
-				curLocation.y++;
-			}
 			drawGame(false);
 			if (checkCollide(false)) {
 				step = TetrisStep.CheckLine;
@@ -634,7 +659,7 @@ public class TetrisGame extends Game {
 		}
 		if (!players)
 			return true;
-		if (block.getLocation().equals(moveRight.getLocation())) {
+		if (blockContains(moveRights, block)) {
 			if (checkCollide(false)) {
 				return true;
 			}
@@ -655,7 +680,7 @@ public class TetrisGame extends Game {
 			}
 			return true;
 		}
-		if (block.getLocation().equals(moveLeft.getLocation())) {
+		if (blockContains(moveLefts, block)) {
 			if (checkCollide(false)) {
 				return true;
 			}
@@ -676,6 +701,19 @@ public class TetrisGame extends Game {
 		}
 
 		return false;
+	}
+
+	private boolean blockContains(Block[] moveLefts2, Block block) {
+		Location loc = block.getLocation();
+		for (int i = 0; i < moveLefts2.length; i++) {
+			Block bk = moveLefts2[i];
+
+			if (bk.getLocation().equals(loc))
+				return true;
+
+		}
+		return false;
+
 	}
 
 	@Override
@@ -713,5 +751,17 @@ public class TetrisGame extends Game {
 	@Override
 	public boolean blockPlaced(BlockFace face, Block block, Player player) {
 		return false;
+	}
+
+	@Override
+	public void playerQuit(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void playerJoin(Player player) {
+		// TODO Auto-generated method stub
+		
 	}
 }

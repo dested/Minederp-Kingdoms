@@ -12,6 +12,29 @@ public class Polygon {
 
 	}
 
+	public static Polygon deserialize(String content) {
+
+		Polygon p = new Polygon();
+		if (content.length() == 0)
+			return p;
+		for (String item : content.split("&")) {
+			String[] locs = item.split(",");
+			p.add(new PolygonPoint(Integer.parseInt(locs[0]), Integer.parseInt(locs[1]), Integer.parseInt(locs[2])));
+		}
+		return p;
+
+	}
+
+	public String serialize() {
+		StringBuffer sb = new StringBuffer();
+
+		for (PolygonPoint pc : points) {
+			sb.append(pc.X + "," + pc.Y + "," + pc.Z + "&");
+		}
+
+		return sb.toString();
+	}
+
 	public void add(PolygonPoint p) {
 		points.add(p);
 		myPoly.addPoint(p.X, p.Z);

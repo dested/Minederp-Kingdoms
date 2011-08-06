@@ -1,7 +1,7 @@
 package com.minederp.kingdoms.games;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block; 
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -36,10 +36,14 @@ public abstract class Game {
 
 	public abstract void playerDying(Player entity);
 
-	public abstract void entityDied(Entity  entity, EntityDeathEvent event);
+	public abstract void entityDied(Entity entity, EntityDeathEvent event);
 
 	public abstract void entityHurt(Entity entity, EntityDamageEvent event);
 
-	public abstract boolean blockPlaced(BlockFace face,Block block, Player player) ;
+	public abstract boolean blockPlaced(BlockFace face, Block block, Player player);
+
+	public abstract void playerQuit(Player player);
+
+	public abstract void playerJoin(Player player);
 
 }

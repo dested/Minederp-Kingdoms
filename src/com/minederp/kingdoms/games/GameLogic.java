@@ -116,7 +116,7 @@ public class GameLogic extends Game {
 	@Override
 	public boolean blockClick(BlockFace face, Block block, Player clickedPlayer) {
 		for (Game g : Games)
-			if (g.blockClick(face,block, clickedPlayer))
+			if (g.blockClick(face, block, clickedPlayer))
 				return true;
 		return false;
 	}
@@ -166,9 +166,21 @@ public class GameLogic extends Game {
 	@Override
 	public boolean blockPlaced(BlockFace face, Block block, Player player) {
 		for (Game g : Games)
-			if (g.blockPlaced(face,block, player))
+			if (g.blockPlaced(face, block, player))
 				return true;
 		return false;
+	}
+
+	@Override
+	public void playerQuit(Player player) {
+		for (Game g : Games)
+			g.playerQuit(player);
+	}
+
+	@Override
+	public void playerJoin(Player player) {
+		for (Game g : Games)
+			g.playerJoin(player);
 	}
 
 }

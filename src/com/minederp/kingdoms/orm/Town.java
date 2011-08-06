@@ -17,6 +17,8 @@ public class Town {
 			f.setTownSpawn(st.getString("TownSpawn"));
 			f.setTownHeart(st.getString("TownHeart"));
 			f.setKingdomID(st.getInt("KingdomID"));
+			f.setGovernorID(st.getInt("GovernorID"));
+			f.setTownPolygon(st.getString("TownPolygon"));
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -210,6 +212,78 @@ public class Town {
 		return null;
 	}
 
+	public KingdomPlayer getGovernor() {
+		return KingdomPlayer.getFirstByKingdomPlayerID(_GovernorID);
+	}
+
+	private int _GovernorID;
+
+	public int getGovernorID() {
+		return _GovernorID;
+	}
+
+	public void setGovernorID(int aGovernorID) {
+		_GovernorID = aGovernorID;
+	}
+
+	public static List<Town> getAllByGovernorID(int aGovernorID) {
+
+		try {
+			return loopThroughTown(KingdomsPlugin.wrapper.selectQuery("*", "Town", "where GovernorID=" + aGovernorID + ""));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public static Town getFirstByGovernorID(int aGovernorID) {
+		try {
+			ResultSet fc = KingdomsPlugin.wrapper.selectQuery("*", "Town", "where GovernorID=" + aGovernorID + "");
+			if (fc.next())
+				return makeTown(fc);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	private String _TownPolygon;
+
+	public String getTownPolygon() {
+		return _TownPolygon;
+	}
+
+	public void setTownPolygon(String aTownPolygon) {
+		_TownPolygon = aTownPolygon;
+	}
+
+	public static List<Town> getAllByTownPolygon(String aTownPolygon) {
+
+		try {
+			return loopThroughTown(KingdomsPlugin.wrapper.selectQuery("*", "Town", "where TownPolygon='" + aTownPolygon + "'"));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public static Town getFirstByTownPolygon(String aTownPolygon) {
+		try {
+			ResultSet fc = KingdomsPlugin.wrapper.selectQuery("*", "Town", "where TownPolygon='" + aTownPolygon + "'");
+			if (fc.next())
+				return makeTown(fc);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public static List<Town> getAll() {
 		try {
 			return loopThroughTown(KingdomsPlugin.wrapper.selectQuery("*", "Town", ""));
@@ -221,8 +295,10 @@ public class Town {
 
 	public void insert() {
 		try {
-			KingdomsPlugin.wrapper.insertQuery("Town", "default,'" + _TownName + "', '" + _TownSpawn + "', '" + _TownHeart + "', " + _KingdomID + "");
+			KingdomsPlugin.wrapper.insertQuery("Town", "default,'" + _TownName + "', '" + _TownSpawn + "', '" + _TownHeart + "', " + _KingdomID
+					+ ", " + _GovernorID + ", '" + _TownPolygon + "'");
 
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -230,8 +306,9 @@ public class Town {
 
 	public void update() {
 		try {
-			KingdomsPlugin.wrapper.updateQuery("UPDATE Town SET TownName= '" + _TownName + "' , TownSpawn= '" + _TownSpawn + "' , TownHeart= '"
-					+ _TownHeart + "' , KingdomID= " + _KingdomID + "");
+			KingdomsPlugin.wrapper.updateQuery("UPDATE Town where TownID=" + _TownID + " SET TownName= '" + _TownName + "' , TownSpawn= '"
+					+ _TownSpawn + "' , TownHeart= '" + _TownHeart + "' , KingdomID= " + _KingdomID + " , GovernorID= " + _GovernorID
+					+ " , TownPolygon= '" + _TownPolygon + "'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -139,4 +139,15 @@ public class TictactoeGame extends Game {
 	public boolean blockPlaced(BlockFace face,Block block, Player player) {
 		return false;
 	}
-}
+
+	@Override
+	public void playerQuit(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void playerJoin(Player player) {
+		// TODO Auto-generated method stub
+		
+	}}

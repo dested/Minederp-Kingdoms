@@ -674,4 +674,15 @@ public class ZombiesGame extends Game {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public void playerQuit(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void playerJoin(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -89,7 +89,7 @@ public class TownsGame extends Game {
 			// deduct money
 			KingdomPlayer kp = KingdomPlayer.getFirstByPlayerName(player.getName());
 
-			TownContent tc = new TownContent(args.getString(0), kp, kp.getKingdom(), kingdomsPlugin, logic);
+			TownContent tc = new TownContent(args.getString(1), kp, kp.getKingdom(), kingdomsPlugin, logic);
 			towns.add(tc);
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "Town " + tc.myTown.getTownName() + " has been created.");
 			return;

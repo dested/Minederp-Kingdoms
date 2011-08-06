@@ -15,7 +15,7 @@ public class TownPlayerCacher {
 	}
 
 	public void add(KingdomPlayer kp, Player p) {
-
+		players.add(new KingdomPlayerCacher(kp, p));
 	}
 
 	public void empty() {

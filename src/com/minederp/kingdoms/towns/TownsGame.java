@@ -53,7 +53,7 @@ public class TownsGame extends Game {
 		this.logic = logic;
 
 		playersInWilderness = new ArrayList<Player>();
-
+		towns=new ArrayList<TownContent>();
 		for (Town town : Town.getAll()) {
 			towns.add(new TownContent(town, kingdomsPlugin, logic));
 		}

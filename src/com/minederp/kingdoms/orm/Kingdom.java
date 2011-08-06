@@ -173,7 +173,7 @@ KingdomsPlugin.wrapper.insertQuery("Kingdom","default,'"+ _KingdomName+"', '"+ _
 }
 								public void update(){ 
 try{
-KingdomsPlugin.wrapper.updateQuery("UPDATE Kingdom where KingdomID="+_KingdomID+" SET KingdomName= '"+ _KingdomName+"' , KingdomSpawn= '"+ _KingdomSpawn+"' , KingdomHeart= '"+ _KingdomHeart+"' , KingdomHomePolygon= '"+ _KingdomHomePolygon+"'");
+KingdomsPlugin.wrapper.updateQuery("UPDATE Kingdom SET KingdomName= '"+ _KingdomName+"' , KingdomSpawn= '"+ _KingdomSpawn+"' , KingdomHeart= '"+ _KingdomHeart+"' , KingdomHomePolygon= '"+ _KingdomHomePolygon+"' where KingdomID="+_KingdomID+" ");
 } catch (SQLException e) {
 			e.printStackTrace();
 		}

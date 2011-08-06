@@ -51,6 +51,7 @@ import com.minederp.kingdoms.listeners.KingdomsInventoryListener;
 import com.minederp.kingdoms.listeners.KingdomsMapListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
 import com.minederp.kingdoms.listeners.KingdomsVehicleListener;
+import com.minederp.kingdoms.towns.KingdomsGame;
 import com.minederp.kingdoms.towns.TownsGame;
 import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
@@ -143,12 +144,13 @@ public class KingdomsPlugin extends JavaPlugin {
 		gameLogic.addGame(new ZombiesGame(this));
 
 		gameLogic.addGame(new TownsGame(this));
-		//gameLogic.addGame(new VehicleGame(this));
+		gameLogic.addGame(new KingdomsGame(this));
+		// gameLogic.addGame(new VehicleGame(this));
 		for (org.bukkit.World w : getServer().getWorlds()) {
 			gameLogic.addGame(new ConstructionGame(this, w));
 			gameLogic.addGame(new BulldozerGame(this, w));
 			gameLogic.addGame(new TictactoeGame(this, w));
-			gameLogic.addGame(new TetrisGame(this, w)); 
+			gameLogic.addGame(new TetrisGame(this, w));
 		}
 
 		// The permissions resolver has some hooks of its own
@@ -176,7 +178,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		registerEvent(Event.Type.VEHICLE_EXIT, vehicleListener);
 		registerEvent(Event.Type.VEHICLE_ENTER, vehicleListener);
 		registerEvent(Event.Type.VEHICLE_MOVE, vehicleListener);
-		
+
 		registerEvent(Event.Type.INVENTORY_TRANSACTION, inventoryListener);
 		registerEvent(Event.Type.INVENTORY_OPEN, inventoryListener);
 		registerEvent(Event.Type.MAP_INITIALIZE, mapListener);
@@ -330,7 +332,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	}
 
 	public boolean blockClick(BlockFace face, Block clickedBlock, Player player) {
-		return gameLogic.blockClick(face,clickedBlock, player);
+		return gameLogic.blockClick(face, clickedBlock, player);
 
 	}
 

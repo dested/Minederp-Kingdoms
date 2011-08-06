@@ -50,6 +50,8 @@ public class KingdomsGame extends Game {
 	@Override
 	public void onLoad(GameLogic logic) {
 		this.logic = logic;
+		kingdoms = new ArrayList<KingdomContent>();
+
 		for (Kingdom k : Kingdom.getAll()) {
 			kingdoms.add(new KingdomContent(k, kingdomsPlugin, logic));
 		}
@@ -68,19 +70,25 @@ public class KingdomsGame extends Game {
 			return;
 
 		if (args.argsLength() > 0 && Helper.argEquals(args.getString(0), "Join")) {
-			int kingdomID = -1;
+
+			KingdomContent kc = null;
 			for (KingdomContent k : kingdoms) {
 				if (k.myKingdom.getKingdomName().equals(args.getString(1))) {
-					kingdomID = k.myKingdom.getKingdomID();
+					kc = k;
+					break;
 				}
 			}
-			if (kingdomID == -1) {
+			if (kc == null) {
 				player.sendMessage("Kingdom not found");
 				return;
 			}
 
 			KingdomPlayer kp = KingdomPlayer.getFirstByPlayerName(player.getName());
-			kp.setKingdomID(kingdomID);
+			kp.setKingdomID(kc.myKingdom.getKingdomID());
+			kp.update();
+			kc.loadPlayers();
+			player.sendMessage("Kingdom joined " + kc.myKingdom.getKingdomName());
+
 			return;
 		}
 

@@ -149,7 +149,7 @@ KingdomsPlugin.wrapper.insertQuery("TownPlot","default,"+ _OwnerID+", "+ _TownID
 }
 								public void update(){ 
 try{
-KingdomsPlugin.wrapper.updateQuery("UPDATE TownPlot where TownPlotID="+_TownPlotID+" SET OwnerID= "+ _OwnerID+" , TownID= "+ _TownID+" , PlotPolygon= '"+ _PlotPolygon+"'");
+KingdomsPlugin.wrapper.updateQuery("UPDATE TownPlot SET OwnerID= "+ _OwnerID+" , TownID= "+ _TownID+" , PlotPolygon= '"+ _PlotPolygon+"' where TownPlotID="+_TownPlotID+" ");
 } catch (SQLException e) {
 			e.printStackTrace();
 		}

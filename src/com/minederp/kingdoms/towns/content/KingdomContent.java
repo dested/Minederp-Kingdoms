@@ -41,7 +41,7 @@ public class KingdomContent {
 		player.update();
 	}
 
-	private void loadPlayers() {
+	public void loadPlayers() {
 		kingdomPlayers.empty();
 		for (KingdomPlayer kp : KingdomPlayer.getAllByKingdomID(myKingdom.getKingdomID())) {
 			kingdomPlayers.add(kp, plugin.getServer().getPlayer(kp.getPlayerName()));
@@ -58,6 +58,8 @@ public class KingdomContent {
 	}
 
 	private void load() { 
+		kingdomPlayers = new TownPlayerCacher();
+	
 		loadPlayers();
 	}
 

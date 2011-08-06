@@ -79,6 +79,7 @@ public class TownContent {
 		playersInTheArea = new ArrayList<Player>();
 		townPolygon = new PolygonBuilder(Polygon.deserialize(myTown.getTownPolygon()), logic);
 		townPlayers = new TownPlayerCacher();
+		
 		loadPlayers();
 	}
 

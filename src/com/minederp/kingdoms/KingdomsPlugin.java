@@ -131,6 +131,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(ZombiesCommands.class);
 		commands.register(KingdomCommands.class);
 		commands.register(TownCommands.class);
+		commands.register(PlotCommands.class);
 		commands.register(MapsCommands.class);
 		commands.register(ConstructionCommands.class);
 		commands.register(TetrisCommands.class);

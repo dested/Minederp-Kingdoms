@@ -12,11 +12,11 @@ import com.minederp.kingdoms.KingdomsPlugin;
 				public static Kingdom makeKingdom (ResultSet st){ 
 Kingdom f=new Kingdom();
 try{
-f.setKingdomID(st.getInt("KingdomID"));
-f.setKingdomName(st.getString("KingdomName"));
-f.setKingdomSpawn(st.getString("KingdomSpawn"));
-f.setKingdomHeart(st.getString("KingdomHeart"));
-f.setKingdomHomePolygon(st.getString("KingdomHomePolygon"));
+f.setKingdomID(st.getInt("KingdomID")  );
+f.setKingdomName(st.getString("KingdomName")  );
+f.setKingdomSpawn(st.getString("KingdomSpawn")  );
+f.setKingdomHeart(st.getString("KingdomHeart")  );
+f.setKingdomHomePolygon(st.getString("KingdomHomePolygon")  );
 
 	} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,7 +35,7 @@ return fm;
 }
 								private int _KingdomID;
 								public int getKingdomID(){ return _KingdomID; }
-								public void setKingdomID(int aKingdomID){ _KingdomID=aKingdomID; }
+								public void setKingdomID(int aKingdomID){   _KingdomID=aKingdomID; }
 								public static List<Kingdom> getAllByKingdomID(int aKingdomID){ 
 
 try{
@@ -60,7 +60,7 @@ return null;
 }
 								private String _KingdomName;
 								public String getKingdomName(){ return _KingdomName; }
-								public void setKingdomName(String aKingdomName){ _KingdomName=aKingdomName; }
+								public void setKingdomName(String aKingdomName){  if(aKingdomName==null || aKingdomName.equals("null")) return;  _KingdomName=aKingdomName; }
 								public static List<Kingdom> getAllByKingdomName(String aKingdomName){ 
 
 try{
@@ -85,7 +85,7 @@ return null;
 }
 								private String _KingdomSpawn;
 								public String getKingdomSpawn(){ return _KingdomSpawn; }
-								public void setKingdomSpawn(String aKingdomSpawn){ _KingdomSpawn=aKingdomSpawn; }
+								public void setKingdomSpawn(String aKingdomSpawn){  if(aKingdomSpawn==null || aKingdomSpawn.equals("null")) return;  _KingdomSpawn=aKingdomSpawn; }
 								public static List<Kingdom> getAllByKingdomSpawn(String aKingdomSpawn){ 
 
 try{
@@ -110,7 +110,7 @@ return null;
 }
 								private String _KingdomHeart;
 								public String getKingdomHeart(){ return _KingdomHeart; }
-								public void setKingdomHeart(String aKingdomHeart){ _KingdomHeart=aKingdomHeart; }
+								public void setKingdomHeart(String aKingdomHeart){  if(aKingdomHeart==null || aKingdomHeart.equals("null")) return;  _KingdomHeart=aKingdomHeart; }
 								public static List<Kingdom> getAllByKingdomHeart(String aKingdomHeart){ 
 
 try{
@@ -135,7 +135,7 @@ return null;
 }
 								private String _KingdomHomePolygon;
 								public String getKingdomHomePolygon(){ return _KingdomHomePolygon; }
-								public void setKingdomHomePolygon(String aKingdomHomePolygon){ _KingdomHomePolygon=aKingdomHomePolygon; }
+								public void setKingdomHomePolygon(String aKingdomHomePolygon){  if(aKingdomHomePolygon==null || aKingdomHomePolygon.equals("null")) return;  _KingdomHomePolygon=aKingdomHomePolygon; }
 								public static List<Kingdom> getAllByKingdomHomePolygon(String aKingdomHomePolygon){ 
 
 try{
@@ -178,6 +178,14 @@ KingdomsPlugin.wrapper.updateQuery("UPDATE Kingdom SET KingdomName= '"+ _Kingdom
 			e.printStackTrace();
 		}
 }
+	@Override
+	public boolean equals(Object b) {
+        if(b instanceof Kingdom)
+            if(((Kingdom)b)._KingdomID==_KingdomID)
+                return true;
+		return false;
+
+	}
 								public void delete(){ 
 try{
 KingdomsPlugin.wrapper.deleteQuery("Kingdom","KingdomID = " + _KingdomID);

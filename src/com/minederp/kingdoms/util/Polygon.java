@@ -15,7 +15,7 @@ public class Polygon {
 	public static Polygon deserialize(String content) {
 
 		Polygon p = new Polygon();
-		if (content.length() == 0)
+		if (content==null || content.length() == 0)
 			return p;
 		for (String item : content.split("&")) {
 			String[] locs = item.split(",");

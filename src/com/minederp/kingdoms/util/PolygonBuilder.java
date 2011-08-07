@@ -1,5 +1,7 @@
 package com.minederp.kingdoms.util;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,19 +12,24 @@ import org.bukkit.entity.Player;
 
 import com.minederp.kingdoms.games.GameItem;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.towns.content.PolygonSave;
 import com.sk89q.worldedit.blocks.BlockType;
 
 public class PolygonBuilder {
+	public String guid=UUID.randomUUID().toString();
 	public int drawingPolygon;
 	private int polygonSetIndex = 0;
 	private int polygonMoveIndex = 0;
 	public Polygon polygon;
 	private final GameLogic gameLogic;
 	private Player actingPlayer;
+	private final PolygonSave polygonSave;
 
-	public PolygonBuilder(Polygon pl, GameLogic logic) {
+	public PolygonBuilder(Polygon pl, GameLogic logic, PolygonSave polygonSave) {
 		polygon = pl;
 		this.gameLogic = logic;
+		this.polygonSave = polygonSave;
+
 	}
 
 	private void drawPolygon(Material mat, Material mat2, World world) {
@@ -41,7 +48,7 @@ public class PolygonBuilder {
 		for (int i = 0; i < polygon.size(); i++) {
 			p = polygon.get(i);
 			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"+guid));
 			bl.setType(mat2);
 		}
 
@@ -49,12 +56,12 @@ public class PolygonBuilder {
 
 			p = polygon.get(polygonMoveIndex - 1);
 			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"+guid));
 			bl.setType(Material.CLAY_BRICK);
 		} else {
 			p = polygon.get(polygonSetIndex - 1);
 			Block bl = world.getBlockAt(p.X, p.Y, p.Z);
-			gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line"));
+			gameLogic.addBlockForReprint(new GameItem(p.X, p.Y, p.Z, bl.getTypeId(), bl.getData(), "Line+guid"));
 			bl.setType(Material.GOLD_BLOCK);
 		}
 	}
@@ -77,7 +84,7 @@ public class PolygonBuilder {
 					break;
 			}
 
-			gameLogic.addBlockForReprint(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"));
+			gameLogic.addBlockForReprint(new GameItem(p1X, Y, p1Y, bl.getTypeId(), bl.getData(), "Line"+guid));
 			bl.setType(type);
 			if (p1X == p2X && p1Y == p2Y)
 				break;
@@ -96,7 +103,7 @@ public class PolygonBuilder {
 	public boolean blockClick(BlockFace face, Block clickedBlock, Player player) {
 
 		if (drawingPolygon > 0 && actingPlayer.getName().equals(player.getName())) {
-			gameLogic.clearReprint(player.getWorld(), "Line");
+			gameLogic.clearReprint(player.getWorld(), "Line"+guid);
 
 			int y;
 			Location loc = clickedBlock.getLocation();
@@ -113,9 +120,11 @@ public class PolygonBuilder {
 			}
 
 			if (player.isSneaking()) {
-				player.sendMessage(ChatColor.GREEN + "Corner Removed.");
-				polygon.remove(loc.getBlockX(), y, loc.getBlockZ());
-				polygonSetIndex--;
+				if (polygon.contains(loc.getBlockX(), loc.getBlockZ())) {
+					player.sendMessage(ChatColor.GREEN + "Corner Removed.");
+					polygon.remove(loc.getBlockX(), y, loc.getBlockZ());
+					polygonSetIndex--;
+				}
 
 			} else {
 
@@ -148,11 +157,12 @@ public class PolygonBuilder {
 	}
 
 	public void showWalls(World w, boolean b) {
-		if (b)
-			drawPolygon(Material.OBSIDIAN, Material.DIAMOND_BLOCK, w);
-		else {
+		if (b) {
+			drawingPolygon = 1;
+			drawPolygon(Material.CLAY, Material.DIAMOND_BLOCK, w);
+		} else {
 
-			gameLogic.clearReprint(w, "Line");
+			gameLogic.clearReprint(w, "Line"+guid);
 		}
 	}
 
@@ -189,7 +199,9 @@ public class PolygonBuilder {
 			} else {
 
 				drawingPolygon = 0;
-				gameLogic.clearReprint(player.getWorld(), "Line");
+				gameLogic.clearReprint(player.getWorld(), "Line"+guid);
+
+				polygonSave.save(polygon);
 			}
 			return true;
 		}

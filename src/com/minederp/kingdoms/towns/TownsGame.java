@@ -53,7 +53,7 @@ public class TownsGame extends Game {
 		this.logic = logic;
 
 		playersInWilderness = new ArrayList<Player>();
-		towns=new ArrayList<TownContent>();
+		towns = new ArrayList<TownContent>();
 		for (Town town : Town.getAll()) {
 			towns.add(new TownContent(town, kingdomsPlugin, logic));
 		}
@@ -82,33 +82,64 @@ public class TownsGame extends Game {
 	@Override
 	public void processCommand(String header, CommandContext args, Player player) {
 
-		if (!header.equals("t"))
-			return;
+		if (header.equals("t")) {
+			if (args.argsLength() > 0 && Helper.argEquals(args.getString(0), "CreateTown")) {
+				// deduct money
+				KingdomPlayer kp = KingdomPlayer.getFirstByPlayerName(player.getName());
+				if (kp.getKingdom() == null) {
+					player.sendMessage("Please join a kingdom");
+					return;
+				}
+				TownContent tc = new TownContent(args.getString(1), kp, kp.getKingdom(), kingdomsPlugin, logic);
+				towns.add(tc);
+				player.sendMessage(ChatColor.LIGHT_PURPLE + "Town " + tc.myTown.getTownName() + " has been created.");
+				return;
+			}
 
-		if (args.argsLength() > 0 && Helper.argEquals(args.getString(0), "CreateTown")) {
-			// deduct money
-			KingdomPlayer kp = KingdomPlayer.getFirstByPlayerName(player.getName());
+			for (TownContent town : towns) {
+				if (town.playerCommand(args, player)) {
+					return;
+				}
+			}
 
-			TownContent tc = new TownContent(args.getString(1), kp, kp.getKingdom(), kingdomsPlugin, logic);
-			towns.add(tc);
-			player.sendMessage(ChatColor.LIGHT_PURPLE + "Town " + tc.myTown.getTownName() + " has been created.");
-			return;
-		}
+			if (args.argsLength() == 0 || args.getString(0).toLowerCase().equals("help")) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(ChatColor.LIGHT_PURPLE + "not in a town help");
 
-		for (TownContent town : towns) {
-			if (town.playerCommand(args, player)) {
+				player.sendMessage(sb.toString());
 				return;
 			}
 		}
 
-		if (args.argsLength() == 0 || args.getString(0).toLowerCase().equals("help")) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ChatColor.LIGHT_PURPLE + "not in a town help");
+		if (header.equals("p")) {
 
-			player.sendMessage(sb.toString());
+			TownContent tc = null;
 
+			for (TownContent town : towns) {
+				if (town.townPlayers.contains(player)) {
+					tc = town;
+					break;
+				}
+			}
+			if (tc != null) {
+				if (tc.plotCommand(args, player)) {
+					return;
+				}
+
+			}
+
+			if (args.argsLength() == 0 || args.getString(0).toLowerCase().equals("help")) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(ChatColor.LIGHT_PURPLE + "not in a town plot help");
+				player.sendMessage(sb.toString());
+				return;
+
+			}
 		}
 
+		StringBuilder sb = new StringBuilder();
+		sb.append(ChatColor.RED + " Not a command");
+		player.sendMessage(sb.toString());
 	}
 
 	@Override

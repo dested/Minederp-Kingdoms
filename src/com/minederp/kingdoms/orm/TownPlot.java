@@ -12,10 +12,10 @@ import com.minederp.kingdoms.KingdomsPlugin;
 				public static TownPlot makeTownPlot (ResultSet st){ 
 TownPlot f=new TownPlot();
 try{
-f.setTownPlotID(st.getInt("TownPlotID"));
-f.setOwnerID(st.getInt("OwnerID"));
-f.setTownID(st.getInt("TownID"));
-f.setPlotPolygon(st.getString("PlotPolygon"));
+f.setTownPlotID(st.getInt("TownPlotID")  );
+f.setOwnerID(st.getInt("OwnerID")  );
+f.setTownID(st.getInt("TownID")  );
+f.setPlotPolygon(st.getString("PlotPolygon")  );
 
 	} catch (SQLException e) {
 			e.printStackTrace();
@@ -34,7 +34,7 @@ return fm;
 }
 								private int _TownPlotID;
 								public int getTownPlotID(){ return _TownPlotID; }
-								public void setTownPlotID(int aTownPlotID){ _TownPlotID=aTownPlotID; }
+								public void setTownPlotID(int aTownPlotID){   _TownPlotID=aTownPlotID; }
 								public static List<TownPlot> getAllByTownPlotID(int aTownPlotID){ 
 
 try{
@@ -60,7 +60,7 @@ return null;
 								public KingdomPlayer getOwner(){ return KingdomPlayer.getFirstByKingdomPlayerID(_OwnerID); }
 								private int _OwnerID;
 								public int getOwnerID(){ return _OwnerID; }
-								public void setOwnerID(int aOwnerID){ _OwnerID=aOwnerID; }
+								public void setOwnerID(int aOwnerID){   _OwnerID=aOwnerID; }
 								public static List<TownPlot> getAllByOwnerID(int aOwnerID){ 
 
 try{
@@ -86,7 +86,7 @@ return null;
 								public Town getTown(){ return Town.getFirstByTownID(_TownID); }
 								private int _TownID;
 								public int getTownID(){ return _TownID; }
-								public void setTownID(int aTownID){ _TownID=aTownID; }
+								public void setTownID(int aTownID){   _TownID=aTownID; }
 								public static List<TownPlot> getAllByTownID(int aTownID){ 
 
 try{
@@ -111,7 +111,7 @@ return null;
 }
 								private String _PlotPolygon;
 								public String getPlotPolygon(){ return _PlotPolygon; }
-								public void setPlotPolygon(String aPlotPolygon){ _PlotPolygon=aPlotPolygon; }
+								public void setPlotPolygon(String aPlotPolygon){  if(aPlotPolygon==null || aPlotPolygon.equals("null")) return;  _PlotPolygon=aPlotPolygon; }
 								public static List<TownPlot> getAllByPlotPolygon(String aPlotPolygon){ 
 
 try{
@@ -154,6 +154,14 @@ KingdomsPlugin.wrapper.updateQuery("UPDATE TownPlot SET OwnerID= "+ _OwnerID+" ,
 			e.printStackTrace();
 		}
 }
+	@Override
+	public boolean equals(Object b) {
+        if(b instanceof TownPlot)
+            if(((TownPlot)b)._TownPlotID==_TownPlotID)
+                return true;
+		return false;
+
+	}
 								public void delete(){ 
 try{
 KingdomsPlugin.wrapper.deleteQuery("TownPlot","TownPlotID = " + _TownPlotID);

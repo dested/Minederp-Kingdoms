@@ -13,14 +13,7 @@ public class KingdomsVehicleListener extends VehicleListener {
 
 	public KingdomsVehicleListener(KingdomsPlugin kingdomsPlugin) {
 		this.kingdomsPlugin = kingdomsPlugin;
-		System.out.print("exits");
-		System.out.print("exits");
-		System.out.print("exits");
-		System.out.print("exits");
-		System.out.print("exits");
-		System.out.print("exits");
-		System.out.print("exits");
-		System.out.print("exits");
+ 
 
 	}
 

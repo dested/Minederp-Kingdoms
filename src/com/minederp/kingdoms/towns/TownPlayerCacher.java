@@ -26,10 +26,38 @@ public class TownPlayerCacher {
 	public boolean contains(Player player) {
 
 		for (KingdomPlayerCacher p : players) {
-			if (p.player.equals(player))
+			if (player.equals(p.player))
 				return true;
 		}
 		return false;
+	}	
+	public KingdomPlayer getPlayer(Player player) {
+
+		for (KingdomPlayerCacher p : players) {
+			if (player.equals(p.player))
+				return p.kingdomPlayer;
+		}
+		return null;
+	}
+
+	public boolean contains(String name) {
+		name = name.toLowerCase();
+
+		for (KingdomPlayerCacher p : players) {
+			if (p.kingdomPlayer.getPlayerName().toLowerCase().equals(name))
+				return true;
+		}
+		return false;
+	}
+
+	public KingdomPlayer getPlayer(String name) {
+		name = name.toLowerCase();
+
+		for (KingdomPlayerCacher p : players) {
+			if (p.kingdomPlayer.getPlayerName().toLowerCase().equals(name))
+				return p.kingdomPlayer;
+		}
+		return null;
 	}
 
 }

@@ -31,15 +31,18 @@ public class TownPlotContent {
 	private final GameLogic logic;
 
 	private KingdomPlayer owner;
+	private final TownContent townContent;
 
-	public TownPlotContent(TownPlot tp, KingdomsPlugin plugin, GameLogic logic) {
+	public TownPlotContent(TownContent tc, TownPlot tp, KingdomsPlugin plugin, GameLogic logic) {
+		this.townContent = tc;
 		this.plugin = plugin;
 		this.logic = logic;
 		myTownPlot = tp;
 		load();
 	}
 
-	public TownPlotContent(KingdomPlayer owner, Town town, KingdomsPlugin plugin, GameLogic logic) {
+	public TownPlotContent(TownContent tc, KingdomPlayer owner, Town town, KingdomsPlugin plugin, GameLogic logic) {
+		this.townContent = tc;
 		this.plugin = plugin;
 		this.logic = logic;
 
@@ -63,14 +66,21 @@ public class TownPlotContent {
 
 	private void load() {
 		playersInTheArea = new ArrayList<Player>();
-		plotPolygon = new PolygonBuilder(Polygon.deserialize(myTownPlot.getPlotPolygon()), logic, new PolygonSave() {
+		final TownPlotContent me = this;
+		plotPolygon = new PolygonBuilder(Polygon.deserialize(myTownPlot.getPlotPolygon()), logic, new PolygonChecker() {
 			@Override
 			public void save(Polygon polygon) {
 				myTownPlot.setPlotPolygon(polygon.serialize());
 				myTownPlot.update();
 			}
+
+			@Override
+			public boolean collides(Polygon polygon) {
+
+				return townContent.checkPlotCollision(me, polygon);
+			}
 		});
-		owner=myTownPlot.getOwner();
+		owner = myTownPlot.getOwner();
 	}
 
 	public boolean playerMove(Player movingPlayer, Location to) {
@@ -80,7 +90,7 @@ public class TownPlotContent {
 			if (Helper.containsPlayers(playersInTheArea, movingPlayer)) {
 				return true;
 			}
-			movingPlayer.sendMessage(ChatColor.AQUA + " You have entered the plot of "+myTownPlot.getOwner().getPlayerName()+".");
+			movingPlayer.sendMessage(ChatColor.AQUA + " You have entered the plot of " + myTownPlot.getOwner().getPlayerName() + ".");
 			playersInTheArea.add(movingPlayer);
 			return true;
 		}
@@ -111,7 +121,7 @@ public class TownPlotContent {
 					plotPolygon.showWalls(player.getWorld(), false);
 				}
 			} else
-				plotPolygon.showWalls(player.getWorld(), true);
+				plotPolygon.showWalls(player.getWorld());
 			return true;
 		}
 		if (Helper.argEquals(args.getString(0), "SetPolygon")) {
@@ -127,6 +137,9 @@ public class TownPlotContent {
 		if (plotPolygon.blockClick(face, clickedBlock, player))
 			return true;
 
+		if (!plotPolygon.polygon.contains(clickedBlock.getX(), clickedBlock.getX()))
+			return false;
+
 		if (!owner.getPlayerName().equals(player.getName())) {
 			return true;
 		}
@@ -137,12 +150,13 @@ public class TownPlotContent {
 	public boolean blockPlaced(BlockFace face, Block clickedBlock, Player player) {
 		if (plotPolygon.blockPlaced(face, clickedBlock, player))
 			return true;
+		if (!plotPolygon.polygon.contains(clickedBlock.getX(), clickedBlock.getX()))
+			return false;
 
-		
 		if (!owner.getPlayerName().equals(player.getName())) {
 			return true;
 		}
-		
+
 		return false;
 	}
 }

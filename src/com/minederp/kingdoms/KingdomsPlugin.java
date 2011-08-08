@@ -22,8 +22,7 @@ package com.minederp.kingdoms;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.minecraft.server.World;
+ 
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -332,9 +331,5 @@ public class KingdomsPlugin extends JavaPlugin {
 		}
 	}
 
-	public boolean blockClick(BlockFace face, Block clickedBlock, Player player) {
-		return gameLogic.blockClick(face, clickedBlock, player);
-
-	}
 
 }

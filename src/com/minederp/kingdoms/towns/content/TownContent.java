@@ -79,11 +79,17 @@ public class TownContent {
 	private void load() {
 		playersInTheArea = new ArrayList<Player>();
 
-		townPolygon = new PolygonBuilder(Polygon.deserialize(myTown.getTownPolygon()), logic, new PolygonSave() {
+		townPolygon = new PolygonBuilder(Polygon.deserialize(myTown.getTownPolygon()), logic, new PolygonChecker() {
 			@Override
 			public void save(Polygon polygon) {
 				myTown.setTownPolygon(polygon.serialize());
 				myTown.update();
+			}
+
+			@Override
+			public boolean collides(Polygon polygon) {
+				// todo: collides with other town
+				return false;
 			}
 		});
 		townPlayers = new TownPlayerCacher();
@@ -92,7 +98,7 @@ public class TownContent {
 		townPlots = new ArrayList<TownPlotContent>();
 
 		for (TownPlot tp : TownPlot.getAllByTownID(myTown.getTownID())) {
-			townPlots.add(new TownPlotContent(tp, plugin, logic));
+			townPlots.add(new TownPlotContent(this, tp, plugin, logic));
 			// getplayer returns null if logged off
 		}
 
@@ -124,9 +130,6 @@ public class TownContent {
 		myTown.update();
 	}
 
-	private boolean showWalls;
-	private boolean showPlotWalls;
-
 	public boolean playerCommand(CommandContext args, Player player) {
 
 		if (!townPlayers.contains(player))
@@ -149,8 +152,7 @@ public class TownContent {
 					townPolygon.showWalls(player.getWorld(), false);
 				}
 			} else {
-				showWalls = !showWalls;
-				townPolygon.showWalls(player.getWorld(), showWalls);
+				townPolygon.showWalls(player.getWorld());
 			}
 			return true;
 		}
@@ -202,8 +204,9 @@ public class TownContent {
 				tp.insert();
 				tp = TownPlot.getFirstByOwnerID(kp.getKingdomPlayerID());
 
+				loadPlayers();
 				player.sendMessage("You have added this player to the town.");
-				
+
 				Player pl = plugin.getServer().getPlayer(kp.getPlayerName());
 				if (pl != null) {
 					pl.sendMessage("You can now build a plot.");
@@ -238,7 +241,8 @@ public class TownContent {
 					if (tpc.playerCommand(args, player))
 						return true;
 				}
-			} else if (tpc.myTownPlot.getOwner().getPlayerName().equals(player.getName())) {
+			}
+			if (tpc.myTownPlot.getOwner().getPlayerName().equals(player.getName())) {
 				if (tpc.playerCommand(args, player))
 					return true;
 			}
@@ -260,18 +264,19 @@ public class TownContent {
 			return true;
 
 		if (townPolygon.polygon.contains(clickedBlock.getX(), clickedBlock.getZ())) {
-			if (myTown.getGovernor().getPlayerName().equals(player.getName())) {
-				return false;
-			}
-
-			if (!townPlayers.contains(player))
-				return true;
-
 			for (TownPlotContent tp : townPlots) {
 				if (tp.blockClick(face, clickedBlock, player)) {
 					return true;
 				}
 			}
+
+			if (!townPlayers.contains(player))
+				return true;
+
+			if (myTown.getGovernor().getPlayerName().equals(player.getName())) {
+				return false;
+			}
+
 			return true;
 
 		}
@@ -284,9 +289,6 @@ public class TownContent {
 			return true;
 
 		if (townPolygon.polygon.contains(clickedBlock.getX(), clickedBlock.getZ())) {
-			if (myTown.getGovernor().getPlayerName().equals(player.getName())) {
-				return false;
-			}
 
 			if (!townPlayers.contains(player))
 				return true;
@@ -296,10 +298,22 @@ public class TownContent {
 					return true;
 				}
 			}
+			if (myTown.getGovernor().getPlayerName().equals(player.getName())) {
+				return false;
+			}
 			return true;
 		}
 
 		return false;
+	}
+
+	public boolean checkPlotCollision(TownPlotContent me, Polygon polygon) {
+		for (TownPlotContent tpc : townPlots) {
+			if (!tpc.equals(me) && tpc.plotPolygon.polygon.collides(polygon))
+				return true;
+		}
+		return false;
+
 	}
 
 }

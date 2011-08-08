@@ -65,12 +65,11 @@ public class KingdomsPlayerListener extends PlayerListener {
 			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
 					+ " Has just begun his Kingdoms Journey.");
 		} else {
-			
+
 			player.sendMessage(ChatColor.AQUA + " Welcome back to the game. Please read the help map. (Help map not available)");
 			Helper.messagePlayerInList(player.getWorld().getPlayers(), ChatColor.LIGHT_PURPLE + p.getPlayerNickName()
 					+ " Has resumed his Kingdoms Journey.");
 		}
-		
 
 		kingdomsPlugin.gameLogic.playerJoin(player);
 	}
@@ -161,48 +160,18 @@ public class KingdomsPlayerListener extends PlayerListener {
 			 */
 			break;
 		case LEFT_CLICK_BLOCK:
-			event.setCancelled(kingdomsPlugin.blockClick(event.getBlockFace(),event.getClickedBlock(), event.getPlayer()));
+			event.setCancelled(this.kingdomsPlugin.gameLogic.blockClick(event.getBlockFace(), event.getClickedBlock(), event.getPlayer()));
 
 			break;
 		case PHYSICAL:
 			break;
 		case RIGHT_CLICK_AIR:
-			if(true)return ;
-			if (player.isSneaking()) {
-				Block bl = player.getLocation().getBlock();
-				int j = 0;
-				while (true) {
-					bl = bl.getRelative(BlockFace.UP);
-					bl.setType(Material.FENCE);
-					j++;
-					if (j > 10)
-						break;
-				}
-				bl = bl.getRelative(BlockFace.UP);
-				bl.setType(Material.GLASS);
-				int c = 0;
-				while (true) {
-					bl = bl.getRelative(BlockFace.DOWN);
-					bl.setType(Material.GLASS);
-					bl.getRelative(-c, 0, c).setType(Material.GLASS);
-					bl.getRelative(-c, 0, 0).setType(Material.GLASS);
-					bl.getRelative(-c, 0, -c).setType(Material.GLASS);
+			if (true)
+				return;
 
-					bl.getRelative(0, 0, c).setType(Material.GLASS);
-					bl.getRelative(0, 0, 0).setType(Material.GLASS);
-					bl.getRelative(0, 0, -c).setType(Material.GLASS);
-					bl.getRelative(c, 0, c).setType(Material.GLASS);
-					bl.getRelative(c, 0, 0).setType(Material.GLASS);
-					bl.getRelative(c, 0, -c).setType(Material.GLASS);
-
-					c++;
-					if (c > 10)
-						break;
-				}
-			}
 			break;
 		case RIGHT_CLICK_BLOCK:
-			event.setCancelled(this.kingdomsPlugin.gameLogic.blockPlaced(event.getBlockFace(),event.getClickedBlock(), event.getPlayer()));
+			event.setCancelled(this.kingdomsPlugin.gameLogic.blockPlaced(event.getBlockFace(), event.getClickedBlock(), event.getPlayer()));
 
 			break;
 

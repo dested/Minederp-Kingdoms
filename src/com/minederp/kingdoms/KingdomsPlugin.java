@@ -22,7 +22,6 @@ package com.minederp.kingdoms;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
- 
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -33,6 +32,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerListener;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.WorldListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
@@ -41,6 +43,7 @@ import com.minederp.kingdoms.games.GameLogic;
 import com.minederp.kingdoms.games.bulldozer.BulldozerGame;
 import com.minederp.kingdoms.games.construction.ConstructionGame;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
+import com.minederp.kingdoms.games.soundByte.SoundByteGame;
 import com.minederp.kingdoms.games.tetris.TetrisGame;
 import com.minederp.kingdoms.games.tictactoeJap.TictactoeGame;
 import com.minederp.kingdoms.games.zombies.ZombiesGame;
@@ -134,6 +137,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(MapsCommands.class);
 		commands.register(ConstructionCommands.class);
 		commands.register(TetrisCommands.class);
+		commands.register(SoundByteCommands.class);
 
 		// commands.register(GeneralCommands.class);
 
@@ -148,6 +152,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		// gameLogic.addGame(new VehicleGame(this));
 		for (org.bukkit.World w : getServer().getWorlds()) {
 			gameLogic.addGame(new ConstructionGame(this, w));
+			gameLogic.addGame(new SoundByteGame(this, w));
 			gameLogic.addGame(new BulldozerGame(this, w));
 			gameLogic.addGame(new TictactoeGame(this, w));
 			gameLogic.addGame(new TetrisGame(this, w));
@@ -163,6 +168,7 @@ public class KingdomsPlugin extends JavaPlugin {
 	protected void registerEvents() {
 		registerEvent(Event.Type.BLOCK_CANBUILD, blockListener);
 		registerEvent(Event.Type.BLOCK_BREAK, blockListener);
+		registerEvent(Event.Type.REDSTONE_CHANGE, blockListener);
 
 		registerEvent(Event.Type.ENTITY_DEATH, entityListener);
 		registerEvent(Event.Type.ENTITY_DAMAGE, entityListener);
@@ -181,7 +187,14 @@ public class KingdomsPlugin extends JavaPlugin {
 
 		registerEvent(Event.Type.INVENTORY_TRANSACTION, inventoryListener);
 		registerEvent(Event.Type.INVENTORY_OPEN, inventoryListener);
-		registerEvent(Event.Type.MAP_INITIALIZE, mapListener);
+
+		registerEvent(Event.Type.CHUNK_LOAD, new WorldListener() {
+			public void onChunkLoad(ChunkLoadEvent event) {
+
+			}
+		});
+
+		// registerEvent(Event.Type.MAP_INITIALIZE, mapListener);
 	}
 
 	/**
@@ -330,6 +343,5 @@ public class KingdomsPlugin extends JavaPlugin {
 			throw new CommandPermissionsException();
 		}
 	}
-
 
 }

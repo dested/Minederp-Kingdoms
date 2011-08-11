@@ -56,3 +56,9 @@ commands:
     tc:
         description: Tictactoe based commands
         usage: /tc ()
+    soundbyte:
+        description: Soundbyte based commands
+        usage: /Soundbyte  ()
+    sb:
+        description: Soundbyte based commands
+        usage: /sb ()

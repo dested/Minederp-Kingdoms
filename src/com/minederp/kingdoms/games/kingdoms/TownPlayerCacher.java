@@ -1,13 +1,14 @@
-package com.minederp.kingdoms.towns;
+package com.minederp.kingdoms.games.kingdoms;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.entity.Player;
 
 import com.minederp.kingdoms.orm.KingdomPlayer;
 
-public class TownPlayerCacher {
+public class TownPlayerCacher implements Iterable<KingdomPlayerCacher> {
 	private List<KingdomPlayerCacher> players;
 
 	public TownPlayerCacher() {
@@ -58,6 +59,11 @@ public class TownPlayerCacher {
 				return p.kingdomPlayer;
 		}
 		return null;
+	}
+
+	@Override
+	public Iterator<KingdomPlayerCacher> iterator() {
+return players.iterator();
 	}
 
 }

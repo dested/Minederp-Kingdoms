@@ -3,6 +3,7 @@ package com.minederp.kingdoms.util;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -153,6 +154,15 @@ public class Helper {
 			com.sk89q.worldedit.BlockVector tp = (com.sk89q.worldedit.BlockVector) iterator.next();
 			wl.getBlockAt(tp.getBlockX(), tp.getBlockY(), tp.getBlockZ()).setType(type);
 		}
+
+	}
+
+	public static Location parseLocation(World w, String townHeart) {
+		if (townHeart == null)
+			return null;
+		String[] sts = townHeart.split(",");
+		
+		return new Location(w, Double.parseDouble(sts[0]), Double.parseDouble(sts[1]), Double.parseDouble(sts[2]));
 
 	}
 }

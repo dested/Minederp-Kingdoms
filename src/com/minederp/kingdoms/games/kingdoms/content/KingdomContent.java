@@ -1,4 +1,4 @@
-package com.minederp.kingdoms.towns.content;
+package com.minederp.kingdoms.games.kingdoms.content;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.games.kingdoms.TownPlayerCacher;
 import com.minederp.kingdoms.orm.Kingdom;
 import com.minederp.kingdoms.orm.KingdomPlayer;
 import com.minederp.kingdoms.orm.Town;
-import com.minederp.kingdoms.towns.TownPlayerCacher;
 import com.minederp.kingdoms.util.Helper;
 import com.minederp.kingdoms.util.Polygon;
 import com.minederp.kingdoms.util.PolygonBuilder;

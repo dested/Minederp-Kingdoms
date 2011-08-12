@@ -40,9 +40,12 @@ import org.bukkit.util.config.Configuration;
 
 import com.minederp.kingdoms.commands.*;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.games.advancedWar.AdvancedWarGame;
 import com.minederp.kingdoms.games.bulldozer.BulldozerGame;
 import com.minederp.kingdoms.games.construction.ConstructionGame;
 import com.minederp.kingdoms.games.ctf.CaptureTheFlagGame;
+import com.minederp.kingdoms.games.kingdoms.KingdomsGame;
+import com.minederp.kingdoms.games.kingdoms.TownsGame;
 import com.minederp.kingdoms.games.soundByte.SoundByteGame;
 import com.minederp.kingdoms.games.tetris.TetrisGame;
 import com.minederp.kingdoms.games.tictactoeJap.TictactoeGame;
@@ -53,8 +56,6 @@ import com.minederp.kingdoms.listeners.KingdomsInventoryListener;
 import com.minederp.kingdoms.listeners.KingdomsMapListener;
 import com.minederp.kingdoms.listeners.KingdomsPlayerListener;
 import com.minederp.kingdoms.listeners.KingdomsVehicleListener;
-import com.minederp.kingdoms.towns.KingdomsGame;
-import com.minederp.kingdoms.towns.TownsGame;
 import com.minederp.kingdoms.util.InventoryStasher;
 import com.minederp.mysql.mysqlWrapper;
 import com.sk89q.bukkit.migration.PermissionsResolverManager;
@@ -91,6 +92,8 @@ public class KingdomsPlugin extends JavaPlugin {
 	private Listener inventoryListener = new KingdomsInventoryListener(this);
 	private Listener mapListener = new KingdomsMapListener(this);
 	private Listener vehicleListener = new KingdomsVehicleListener(this);
+
+	public TownsGame townGame;
 
 	/**
 	 * Called when the plugin is enabled. This is where configuration is loaded,
@@ -136,6 +139,7 @@ public class KingdomsPlugin extends JavaPlugin {
 		commands.register(PlotCommands.class);
 		commands.register(MapsCommands.class);
 		commands.register(ConstructionCommands.class);
+		commands.register(AdvancedWarCommands.class);
 		commands.register(TetrisCommands.class);
 		commands.register(SoundByteCommands.class);
 
@@ -146,11 +150,12 @@ public class KingdomsPlugin extends JavaPlugin {
 
 		gameLogic.addGame(new CaptureTheFlagGame(this));
 		gameLogic.addGame(new ZombiesGame(this));
-
-		gameLogic.addGame(new TownsGame(this));
+		gameLogic.addGame(townGame = new TownsGame(this));
 		gameLogic.addGame(new KingdomsGame(this));
+
 		// gameLogic.addGame(new VehicleGame(this));
 		for (org.bukkit.World w : getServer().getWorlds()) {
+			gameLogic.addGame(new AdvancedWarGame(this,w));
 			gameLogic.addGame(new ConstructionGame(this, w));
 			gameLogic.addGame(new SoundByteGame(this, w));
 			gameLogic.addGame(new BulldozerGame(this, w));

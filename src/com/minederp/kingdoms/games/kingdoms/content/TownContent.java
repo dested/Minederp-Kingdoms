@@ -1,4 +1,4 @@
-package com.minederp.kingdoms.towns.content;
+package com.minederp.kingdoms.games.kingdoms.content;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 
 import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.games.kingdoms.TownPlayerCacher;
 import com.minederp.kingdoms.orm.Kingdom;
 import com.minederp.kingdoms.orm.KingdomPlayer;
 import com.minederp.kingdoms.orm.Town;
 import com.minederp.kingdoms.orm.TownPlot;
-import com.minederp.kingdoms.towns.TownPlayerCacher;
 import com.minederp.kingdoms.util.Helper;
 import com.minederp.kingdoms.util.Polygon;
 import com.minederp.kingdoms.util.PolygonBuilder;
@@ -25,13 +25,15 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 
 public class TownContent {
 	public Town myTown;
-	private PolygonBuilder townPolygon;
+	public PolygonBuilder townPolygon;
 	private List<Player> playersInTheArea;
 	private final KingdomsPlugin plugin;
 	private final GameLogic logic;
 	public TownPlayerCacher townPlayers;
 
 	private List<TownPlotContent> townPlots;
+	private Player settingHeart;
+	
 
 	public TownContent(Town t, KingdomsPlugin plugin, GameLogic logic) {
 		this.plugin = plugin;
@@ -130,6 +132,91 @@ public class TownContent {
 		myTown.update();
 	}
 
+	public void buildHeart(Block b) {
+
+		myTown.setTownHeart(b.getLocation().getBlockX() + "," + b.getLocation().getBlockY() + "," + b.getLocation().getBlockZ());
+		save();
+
+		b.setType(Material.GOLD_BLOCK);
+		buildRect(b = b.getRelative(-1, -1, -1), 3, Material.OBSIDIAN);
+		buildRect(b = b.getRelative(-1, -1, -1), 5, Material.WOOD);
+		buildRect(b = b.getRelative(-1, -1, -1), 7, Material.DIAMOND_ORE);
+		buildRect(b = b.getRelative(-1, -1, -1), 9, Material.WOOL);
+
+	}
+
+	private void buildRect(Block start, int size, Material type) {
+
+		Block b = start;
+		Block bWall1 = start;
+
+		for (int y = 0; y < size; y++) {
+			for (int z = 0; z < size; z++) {
+				b.setType(type);
+				b=	b.getRelative(0, 0, 1);
+			}
+			b.setType(type);
+			b = bWall1 = bWall1.getRelative(0, 1, 0);
+		}
+
+		b = start;
+		bWall1 = start;
+
+		for (int x = 0; x < size; x++) {
+			for (int z = 0; z < size; z++) {
+				b.setType(type);
+				b=b.getRelative(1, 0, 0);
+			}
+			b.setType(type);
+			b = bWall1 = bWall1.getRelative(0, 0, 1);
+		}
+		b = start;
+		bWall1 = start;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				b.setType(type);
+				b=b.getRelative(0, 1, 0);
+			}
+			b.setType(type);
+			b = bWall1 = bWall1.getRelative(1, 0, 0);
+		}
+
+		start = start.getRelative(size, size, size);
+		b = start;
+		bWall1 = start;
+
+		for (int y = 0; y < size; y++) {
+			for (int z = 0; z < size; z++) {
+				b.setType(type);
+				b=b.getRelative(0, 0, -1);
+			}
+			b.setType(type);
+			b = bWall1 = bWall1.getRelative(0, -1, 0);
+		}
+
+		b = start;
+		bWall1 = start;
+
+		for (int x = 0; x < size; x++) {
+			for (int z = 0; z < size; z++) {
+				b.setType(type);
+				b=b.getRelative(-1, 0, 0);
+			}
+			b.setType(type);
+			b = bWall1 = bWall1.getRelative(0, 0, -1);
+		}
+		b = start;
+		bWall1 = start;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				b.setType(type);
+				b=	b.getRelative(0, -1, 0);
+			}
+			b.setType(type);
+			b = bWall1 = bWall1.getRelative(-1, 0, 0);
+		}
+	}
+
 	public boolean playerCommand(CommandContext args, Player player) {
 
 		if (!townPlayers.contains(player))
@@ -162,6 +249,14 @@ public class TownContent {
 			return true;
 		}
 
+		if (Helper.argEquals(args.getString(0), "SetHeart")) {
+
+			player.sendMessage("The next block you click will be the center of the heart.");
+
+			settingHeart = player;
+
+			return true;
+		}
 		if (Helper.argEquals(args.getString(0), "AddPlayer")) {
 
 			KingdomPlayer kp = KingdomPlayer.getFirstByPlayerName(args.getString(1));
@@ -264,6 +359,15 @@ public class TownContent {
 			return true;
 
 		if (townPolygon.polygon.contains(clickedBlock.getX(), clickedBlock.getZ())) {
+
+			if (settingHeart != null && settingHeart.equals(player)) {
+				buildHeart(clickedBlock);
+				player.teleport(player.getLocation().getBlock().getRelative(-3, 1, -3).getLocation());
+				player.sendMessage("The heart has been set.");
+				settingHeart = null;
+				return true;
+			}
+
 			for (TownPlotContent tp : townPlots) {
 				if (tp.blockClick(face, clickedBlock, player)) {
 					return true;
@@ -313,6 +417,12 @@ public class TownContent {
 				return true;
 		}
 		return false;
+
+	}
+
+	public boolean isInTown(Location location) {
+
+		return townPolygon.contains(location);
 
 	}
 

@@ -1,4 +1,4 @@
-package com.minederp.kingdoms.towns;
+package com.minederp.kingdoms.games.kingdoms;
 
 import org.bukkit.entity.Player;
 

@@ -8,6 +8,12 @@ commands:
     town:
         description: Town commands
         usage: /<command> <arguments...>
+    advancedwar:
+        description: Advanced War commands
+        usage: /<command> <arguments...>
+    aw:
+        description: Advanced War commands
+        usage: /<command> <arguments...>
     plot:
         description: Plot commands
         usage: /<command> <arguments...>

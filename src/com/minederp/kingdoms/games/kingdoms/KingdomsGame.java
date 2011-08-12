@@ -1,4 +1,4 @@
-package com.minederp.kingdoms.towns;
+package com.minederp.kingdoms.games.kingdoms;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -19,11 +19,11 @@ import com.minederp.kingdoms.KingdomsPlugin;
 import com.minederp.kingdoms.games.Game;
 import com.minederp.kingdoms.games.GameItem;
 import com.minederp.kingdoms.games.GameLogic;
+import com.minederp.kingdoms.games.kingdoms.content.KingdomContent;
+import com.minederp.kingdoms.games.kingdoms.content.TownContent;
 import com.minederp.kingdoms.orm.Kingdom;
 import com.minederp.kingdoms.orm.KingdomPlayer;
 import com.minederp.kingdoms.orm.Town;
-import com.minederp.kingdoms.towns.content.KingdomContent;
-import com.minederp.kingdoms.towns.content.TownContent;
 import com.minederp.kingdoms.util.Helper;
 import com.minederp.kingdoms.util.Polygon;
 import com.minederp.kingdoms.util.PolygonPoint;

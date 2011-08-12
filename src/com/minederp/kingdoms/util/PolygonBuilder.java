@@ -1,5 +1,6 @@
 package com.minederp.kingdoms.util;
 
+import java.awt.Point;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player;
 
 import com.minederp.kingdoms.games.GameItem;
 import com.minederp.kingdoms.games.GameLogic;
-import com.minederp.kingdoms.towns.content.PolygonChecker;
+import com.minederp.kingdoms.games.kingdoms.content.PolygonChecker;
 import com.sk89q.worldedit.blocks.BlockType;
 
 public class PolygonBuilder {
@@ -155,8 +156,10 @@ public class PolygonBuilder {
 				}
 
 				PolygonPoint p;
+				if (setIndex == 0) {
+					polygon.add(p = new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
 
-				if (setIndex == polygon.size() - 1) {
+				} else if (setIndex == polygon.size() - 1) {
 					polygon.add(p = new PolygonPoint(loc.getBlockX(), y, loc.getBlockZ()));
 					setIndex++;
 				} else {
@@ -168,8 +171,7 @@ public class PolygonBuilder {
 					polygon.remove(p);
 					setIndex--;
 					player.sendMessage(ChatColor.GREEN + "Collision detected.");
-				}
-				else
+				} else
 					player.sendMessage(ChatColor.GREEN + "Corner Added.");
 			}
 
@@ -248,4 +250,7 @@ public class PolygonBuilder {
 		return false;
 	}
 
+	public boolean contains(Location location) {
+return polygon.contains(new Point(location.getBlockX(),location.getBlockZ()));
+	}
 }

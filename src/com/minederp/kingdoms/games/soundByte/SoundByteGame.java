@@ -62,7 +62,7 @@ public class SoundByteGame extends Game {
 		if (created) {
 
 			for (int i = 0; i < 24; i++) {
-				NoteTracker nb = noteBlocks[((index - 1)+24) % 24][i];
+				NoteTracker nb = noteBlocks[((index - 1) + 24) % 24][i];
 
 				nb.tickBlock.getRelative(BlockFace.UP).setTypeId(0);
 			}
@@ -132,9 +132,9 @@ public class SoundByteGame extends Game {
 		for (int y = 0; y < 10; y++) {
 			startBlock = startBlock.getRelative(BlockFace.UP);
 			Block startBL = startBlock;
-			for (int x = 0; x < 24 ; x++) {
+			for (int x = 0; x < 24; x++) {
 				Block at = startBL;
-				for (int z = 0; z < 24 ; z++) {
+				for (int z = 0; z < 24; z++) {
 					at.setTypeId(0);
 					at = at.getRelative(getRight(face));
 
@@ -147,18 +147,18 @@ public class SoundByteGame extends Game {
 		startBlock = st.getRelative(BlockFace.UP);
 		Block startBL = startBlock;
 
-		for (int x = 0; x < 24 ; x += 1) {
+		for (int x = 0; x < 24; x += 1) {
 			Block at = startBL;
 
-			for (int z = 0; z < 24 ; z += 1) {
+			for (int z = 0; z < 24; z += 1) {
 				at.setType(Material.NOTE_BLOCK);
 				NoteBlock nb = ((NoteBlock) at.getState());
 
-				nb.setNote((byte) (z ));
+				nb.setNote((byte) (z));
 
 				Block tick = at.getRelative(BlockFace.UP).getRelative(BlockFace.UP);
 				tick.setType(Material.BEDROCK);
-				noteBlocks[x ][z ] = new NoteTracker(nb, tick);
+				noteBlocks[x][z] = new NoteTracker(nb, tick);
 
 				at = at.getRelative(getRight(face));
 			}

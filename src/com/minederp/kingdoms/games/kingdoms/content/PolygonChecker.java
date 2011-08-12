@@ -1,4 +1,4 @@
-package com.minederp.kingdoms.towns.content;
+package com.minederp.kingdoms.games.kingdoms.content;
 
 import com.minederp.kingdoms.util.Polygon;
 
